@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detail Kaba Nagari</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="footer-styles.css" rel="stylesheet"/>
+  <style>
+    body { background: #f6f9fb; }
+    .article-hero {
+      position: relative;
+      height: 45vh;
+      border-radius: 0 0 24px 24px;
+      overflow: hidden;
+      background: #e5f6ec;
+    }
+    .article-hero img { width: 100%; height: 100%; object-fit: cover; }
+    .article-hero .overlay {
+      position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.55));
+    }
+    .article-hero .meta {
+      position: absolute; left: 0; right: 0; bottom: 24px;
+      color: #fff; text-align: center; padding: 0 16px;
+    }
+    .chip { display:inline-block; padding:6px 12px; background:#22c55e; color:#fff; border-radius:999px; font-size: .8rem; }
+    .article-wrap { margin-top: -40px; }
+    .article-card {
+      background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      padding: 24px; position: relative;
+    }
+    .article-card h1 { font-size: 1.8rem; font-weight: 800; color: #1f2937; }
+    .article-card .date { color: #6b7280; font-size: .95rem; }
+    .article-card p { color: #374151; line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <header class="article-hero">
+    <img id="heroImage" src="image/bg.jpg" alt="Gambar Berita" />
+    <div class="overlay"></div>
+    <div class="meta">
+      <div class="chip" id="heroCategory">Kategori</div>
+      <h1 class="mt-3" id="heroTitle">Judul Kaba</h1>
+      <div class="date"><i class="bi bi-calendar3 me-2"></i><span id="heroDate">Tanggal</span></div>
+    </div>
+  </header>
+
+  <main class="container article-wrap">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <article class="article-card">
+          <div id="articleContent">
+            <p>Memuat konten...</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer" class="mt-5"></div>
+
+  <script src="kaba-data.js"></script>
+  <script>
+    // Navbar & footer include
+    fetch('navbar.html').then(r=>r.text()).then(t=>document.getElementById('navbar').innerHTML=t);
+    fetch('footer.html').then(r=>r.text()).then(t=>document.getElementById('footer').innerHTML=t);
+
+    function getParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    function render() {
+      const id = getParam('id');
+      const post = (window.KABA_POSTS || []).find(p => p.id === id) || null;
+      if (!post) {
+        document.getElementById('articleContent').innerHTML = '<p>Konten tidak ditemukan.</p>';
+        return;
+      }
+      document.getElementById('heroImage').src = post.image;
+      document.getElementById('heroCategory').textContent = post.category;
+      document.getElementById('heroTitle').textContent = post.title;
+      document.getElementById('heroDate').textContent = post.date;
+      document.getElementById('articleContent').innerHTML = `
+        <img src="${post.image}" alt="${post.title}" class="img-fluid rounded mb-3" />
+        ${post.detail || post.excerpt}
+      `;
+    }
+
+    render();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

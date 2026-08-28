@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220">
+  <!-- Outer Double Circles -->
+  <circle cx="110" cy="110" r="102" fill="none" stroke="#0a58ca" stroke-width="4.5" />
+  <circle cx="110" cy="110" r="92" fill="none" stroke="#0a58ca" stroke-width="2.5" />
+  <circle cx="110" cy="110" r="62" fill="none" stroke="#0a58ca" stroke-width="1.8" />
+
+  <!-- Curved Texts -->
+  <path id="curveTop" fill="none" d="M 28,110 A 82,82 0 0,1 192,110" />
+  <path id="curveBottom" fill="none" d="M 192,110 A 82,82 0 0,1 28,110" />
+
+  <text font-family="'Inter', Arial, sans-serif" font-size="12" font-weight="900" fill="#0a58ca" letter-spacing="1.5">
+    <textPath href="#curveTop" startOffset="50%" text-anchor="middle">PEMERINTAH KABUPATEN AGAM</textPath>
+  </text>
+  <text font-family="'Inter', Arial, sans-serif" font-size="11" font-weight="900" fill="#0a58ca" letter-spacing="1.8">
+    <textPath href="#curveBottom" startOffset="50%" text-anchor="middle">★ NAGARI KOTO MALINTANG ★</textPath>
+  </text>
+
+  <!-- Center Content: Star & Wali Nagari -->
+  <polygon points="110,68 115,80 128,80 118,88 122,100 110,92 98,100 102,88 92,80 105,80" fill="#0a58ca" />
+  <text x="110" y="118" font-family="'Inter', Arial, sans-serif" font-size="12" font-weight="900" fill="#0a58ca" text-anchor="middle" letter-spacing="1">WALI NAGARI</text>
+  <text x="110" y="134" font-family="'Inter', Arial, sans-serif" font-size="10" font-weight="800" fill="#0a58ca" text-anchor="middle" letter-spacing="2">TANJUNG RAYA</text>
+</svg>

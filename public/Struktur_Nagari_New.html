@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktur Nagari Koto Malintang</title>
+    <link rel="icon" href="image/logo agam.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #198754;
+            --secondary-color: #6c757d;
+            --accent-color: #ffc107;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar.scrolled {
+            background-color: rgba(25, 135, 84, 0.95) !important;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('image/bg2.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .org-chart {
+            position: relative;
+            margin: 50px auto;
+            max-width: 1200px;
+        }
+
+        .org-level {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .org-box {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .org-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .org-box.walinagari {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .org-box.wakil {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .org-box.sekretaris {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .org-box.bendahara {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: white;
+        }
+
+        .interactive-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .interactive-card:hover {
+            transform: scale(1.02);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary-color);
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .floating-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-transparent px-3">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="image/logo agam.png" alt="Logo" width="40" class="me-2">
+                <span class="fw-bold">NAGARI KOTO MALINTANG</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/profil-nagari">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">Struktur</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/perangkat-nagari">Perangkat</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3 fade-in">STRUKTUR NAGARI</h1>
+            <h2 class="h3 mb-4 fade-in">Koto Malintang</h2>
+            <p class="lead fade-in">Mengenal Lebih Dekat Struktur Organisasi Nagari Kami</p>
+            <button class="btn btn-primary btn-lg fade-in" onclick="scrollToContent()">
+                <i class="bi bi-arrow-down"></i> Jelajahi Struktur
+            </button>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container-fluid py-5" id="main-content">
+        <!-- Interactive Introduction -->
+        <section class="container mb-5">
+            <div class="interactive-card text-center">
+                <h3 class="mb-3">🎯 Tindakan: Memulai Eksplorasi Struktur</h3>
+                <p class="lead">Selamat datang di halaman struktur Nagari Koto Malintang. Di sini Anda dapat menjelajahi organisasi pemerintahan nagari kami secara interaktif.</p>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <i class="bi bi-people-fill text-primary fs-1"></i>
+                        <h5>Tim Profesional</h5>
+                        <p>Dipimpin oleh tim yang kompeten dan berpengalaman</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="bi bi-diagram-3 text-success fs-1"></i>
+                        <h5>Struktur Jelas</h5>
+                        <p>Sistem organisasi yang terstruktur dan efisien</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="bi bi-gear text-warning fs-1"></i>
+                        <h5>Pelayanan Optimal</h5>
+                        <p>Berorientasi pada pelayanan masyarakat</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Organizational Chart -->
+        <section class="container mb-5">
+            <h2 class="text-center mb-4 fade-in">📊 Tindakan: Menampilkan Struktur Organisasi</h2>
+            <div class="org-chart">
+                <!-- Level 1: Walinagari -->
+                <div class="org-level fade-in">
+                    <div class="org-box walinagari" onclick="showDetail('walinagari')">
+                        <h5>Wali Nagari</h5>
+                        <p>Kepala Nagari</p>
+                        <i class="bi bi-person-badge fs-3"></i>
+                    </div>
+                </div>
+                
+                <div class="connector fade-in"></div>
+                
+                <!-- Level 2: Wakil & Sekretaris -->
+                <div class="org-level fade-in">
+                    <div class="org-box wakil" onclick="showDetail('wakil')">
+                        <h5>Wakil Wali Nagari</h5>
+                        <p>Pendamping Kepala</p>
+                        <i class="bi bi-person-plus fs-3"></i>
+                    </div>
+                    <div class="org-box sekretaris" onclick="showDetail('sekretaris')">
+                        <h5>Sekretaris Nagari</h5>
+                        <p>Administrasi</p>
+                        <i class="bi bi-file-earmark-text fs-3"></i>
+                    </div>
+                    <div class="org-box bendahara" onclick="showDetail('bendahara')">
+                        <h5>Bendahara Nagari</h5>
+                        <p>Keuangan</p>
+                        <i class="bi bi-cash-coin fs-3"></i>
+                    </div>
+                </div>
+                
+                <div class="connector fade-in"></div>
+                
+                <!-- Level 3: Bidang -->
+                <div class="org-level fade-in">
+                    <div class="org-box" onclick="showDetail('pemerintahan')" style="background: linear-gradient(135deg, #ffecd2, #fcb69f);">
+                        <h5>Kasi Pemerintahan</h5>
+                        <p>Urusan Pemerintahan</p>
+                        <i class="bi bi-building fs-3"></i>
+                    </div>
+                    <div class="org-box" onclick="showDetail('kesejahteraan')" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">
+                        <h5>Kasi Kesejahteraan</h5>
+                        <p>Urusan Kesejahteraan</p>
+                        <i class="bi bi-heart fs-3"></i>
+                    </div>
+                    <div class="org-box" onclick="showDetail('pembangunan')" style="background: linear-gradient(135deg, #d299c2, #fef9d7);">
+                        <h5>Kasi Pembangunan</h5>
+                        <p>Urusan Pembangunan</p>
+                        <i class="bi bi-hammer fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Timeline -->
+        <section class="container mb-5">
+            <h2 class="text-center mb-4 fade-in">📅 Tindakan: Menjelajahi Timeline Organisasi</h2>
+            <div class="timeline">
+                <div class="timeline-item fade-in">
+                    <h5><i class="bi bi-calendar-event text-primary"></i> 2020 - Awal Pembentukan</h5>
+                    <p>Pembentukan struktur organisasi Nagari Koto Malintang dengan visi untuk menjadi nagari yang mandiri dan sejahtera.</p>
+                </div>
+                <div class="timeline-item fade-in">
+                    <h5><i class="bi bi-people-fill text-success"></i> 2021 - Penyusunan Tim</h5>
+                    <p>Pengangkatan perangkat nagari yang kompeten sesuai dengan kebutuhan masyarakat.</p>
+                </div>
+                <div class="timeline-item fade-in">
+                    <h5><i class="bi bi-gear text-warning"></i> 2022 - Optimalisasi Pelayanan</h5>
+                    <p>Peningkatan kualitas pelayanan publik melalui digitalisasi dan transparansi.</p>
+                </div>
+                <div class="timeline-item fade-in">
+                    <h5><i class="bi bi-graph-up text-info"></i> 2023 - Perkembangan</h5>
+                    <p>Pencapaian target pembangunan dan peningkatan kesejahteraan masyarakat.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="container mb-5">
+            <div class="interactive-card text-center">
+                <h3><i class="bi bi-telephone"></i> Hubungi Kami</h3>
+                <p>Untuk informasi lebih lanjut tentang struktur nagari, silakan hubungi kami:</p>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <i class="bi bi-geo-alt text-danger fs-2"></i>
+                        <h6>Kantor Nagari</h6>
+                        <p>Koto Malintang, Agam</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="bi bi-telephone text-primary fs-2"></i>
+                        <h6>Telepon</h6>
+                        <p>+62 8xx-xxxx-xxxx</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="bi bi-envelope text-success fs-2"></i>
+                        <h6>Email</h6>
+                        <p>nagari@kotomalintang.id</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <p>&copy; 2025 Nagari Koto Malintang. All rights reserved.</p>
+            <p>Dikelola dengan ❤️ untuk masyarakat</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Tindakan: Inisialisasi Halaman
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Fade in animation
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Tindakan: Scroll ke konten utama
+        function scrollToContent() {
+            document.getElementById('main-content').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        // Tindakan: Menampilkan detail jabatan
+        function showDetail(position) {
+            const details = {
+                walinagari: {
+                    title: 'Wali Nagari',
+                    content: `
+                        <h6>Tugas dan Fungsi:</h6>
+                        <ul>
+                            <li>Memimpin penyelenggaraan pemerintahan nagari</li>
+                            <li>Menyusun kebijakan pembangunan nagari</li>
+                            <li>Mewakili nagari dalam hubungan dengan pihak luar</li>
+                        </ul>
+                        <p><strong>Kontak:</strong> wali.nagari@kotomalintang.id</p>
+                    `
+                },
+                wakil: {
+                    title: 'Wakil Wali Nagari',
+                    content: `
+                        <h6>Tugas dan Fungsi:</h6>
+                        <ul>
+                            <li>Membantu Wali Nagari dalam pelaksanaan tugas</li>
+                            <li>Menggantikan Wali Nagari saat berhalangan</li>
+                            <li>Koordinasi bidang-bidang tertentu</li>
+                        </ul>
+                        <p><strong>Kontak:</strong> wakil@kotomalintang.id</p>
+                    `
+                },
+                sekretaris: {
+                    title: 'Sekretaris Nagari',
+                    content: `
+                        <h6>Tugas dan Fungsi:</h6>
+                        <ul>
+                            <li>Mengelola administrasi nagari</li>
+                            <li>Penyusunan surat menyurat</li>
+                            <li>Penyimpanan dokumen penting</li>
+                        </ul>
+                        <p><strong>Kontak:</strong> sekretaris@kotomalintang.id</p>
+                    `
+                },
+                bendahara: {
+                    title: 'Bendahara Nagari',
+                    content: `
+                        <h6>Tugas dan Fungsi:</h6>
+                        <ul>
+                            <li>Mengelola keuangan nagari</li>
+                            <li>Penyusunan laporan keuangan</li>
+                            <li>Pengelolaan APB nagari</li>
+                        </ul>
+                        <p><strong>Kontak:</strong> bendahara@kotomalintang.id</p>
+                    `
+                }
+            };
+
+            const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+            document.getElementById('modalTitle').textContent = details[position].title;
+            document.getElementById('modalBody').innerHTML = details[position].content;
+            modal.show();
+        }
+    </script>
+</body>
+</html>

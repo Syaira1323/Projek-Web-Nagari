@@ -1,0 +1,178 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: white;
+}
+
+.hero {
+  background-image: url(image/bg2.jpg);
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  position: relative;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.7);
+  height: 100%;
+  padding: 20px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.navbar .logo {
+  flex: 0 0 auto;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  margin-left: auto;
+}
+
+.menu a,
+.menu .dropdown > a {
+  color: white;
+  text-decoration: none;
+  padding: 6px 8px;
+  white-space: nowrap;
+}
+
+.menu a:hover {
+  text-decoration: underline;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #222;
+  min-width: 150px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 10px 15px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #333;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.social-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 1px;
+}
+
+.hero-content {
+  margin-top: 80px;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+  font-size: 0.9rem;
+}
+
+.swipe {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 10px;
+  color: #f87171;
+}
+
+.recommendations {
+  padding: 40px 20px;
+  text-align: center;
+  background: #111;
+}
+
+.recommendations h2 {
+  text-transform: uppercase;
+  margin-bottom: 30px;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.card {
+  background: #222;
+  padding: 10px;
+  width: 200px;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+.card img:hover {
+  transform: scale(1.05);
+}
+
+.card img {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.holiday {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.galeri img {
+  width: 200px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.galeri img:hover {
+  transform: scale(1.05);
+}
+
+
+.link {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 14px;
+  margin-top: 40px;
+}

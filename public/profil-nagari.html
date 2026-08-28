@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil Nagari - Nagari Koto Malintang</title>
+    <link rel="icon" href="image/logo agam.png" type="image/png" />
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+
+    <!-- Footer styles -->
+    <link href="footer-styles.css" rel="stylesheet" />
+
+    <style>
+        /* === BASE STYLES === */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+            position: relative;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* === NAVBAR BEHAVIOR === */
+        .navbar {
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            z-index: 1050;
+        }
+
+        .navbar.transparent {
+            background-color: transparent !important;
+        }
+
+        .navbar.scrolled {
+            background-color: #198754 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Desktop Dropdown Hover */
+        @media (min-width: 992px) {
+            .dropdown:hover > .dropdown-menu {
+                display: block;
+            }
+            .dropdown-submenu {
+                position: relative;
+            }
+            .dropdown-submenu .dropdown-menu {
+                top: 0;
+                left: 100%;
+                margin-left: 0;
+                display: none;
+                position: absolute;
+            }
+            .dropdown-submenu:hover .dropdown-menu {
+                display: block;
+            }
+        }
+
+        .dropdown-menu {
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: none;
+        }
+
+        .dropdown-item {
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #e8f5e9;
+            color: #198754;
+            padding-left: 20px;
+        }
+
+        .social-icons a {
+            margin-left: 12px;
+            color: white;
+            font-size: 1.1rem;
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .social-icons a:hover {
+            color: #ffc107;
+            transform: scale(1.15);
+        }
+    </style>
+    <style>
+    body {
+        background-color: #0b2e22;
+        color: white;
+        padding-top: 70px;
+    }
+
+    /* Hero */
+    .hero-profil {
+        background: url("image/forest1.jpg") no-repeat center center / cover;
+        position: relative;
+        padding: 50px 0 30px;
+        margin-bottom: 20px;
+    }
+
+    .hero-overlay {
+        background-color: rgba(11, 46, 34, 0.78);
+        padding: 30px 0;
+    }
+
+    /* Profil card */
+    .profil-card {
+        background-color: #102c1e !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1.25rem;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .profil-image {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+        min-height: 400px;
+    }
+
+    .profil-content {
+        background-color: #1e3b2c;
+        padding: 2.5rem;
+    }
+
+    .profil-content h5 {
+        color: #81c784;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+    }
+
+    .profil-content h2 {
+        font-weight: bold;
+        color: white;
+        margin-bottom: 1.25rem;
+    }
+
+    .profil-content .uraian-text {
+        color: #e0e6ed;
+        font-size: 1.02rem;
+        line-height: 1.8;
+        white-space: pre-line;
+        text-align: justify;
+    }
+
+    /* Stats */
+    .stats-section {
+        background: linear-gradient(135deg, #1e3b2c, #0b2e22);
+        padding: 50px 0;
+        margin-bottom: 40px;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1.75rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-6px);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        color: #4caf50;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-number {
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: #4caf50;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        color: #cfd8dc;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    /* Section Card Dark */
+    .section-card-dark {
+        background: linear-gradient(135deg, #1e3b2c, #102c1e);
+        border-radius: 20px;
+        padding: 2.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 40px;
+    }
+
+    .kegiatan-badge {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(76, 175, 80, 0.4);
+        color: #e8f5e9;
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.2s ease;
+    }
+
+    .kegiatan-badge:hover {
+        background: rgba(76, 175, 80, 0.2);
+        transform: translateX(4px);
+    }
+
+    /* Feature cards */
+    .feature-cards {
+        background: #0b2e22;
+        padding: 20px 0 60px;
+    }
+
+    .feature-card {
+        background: linear-gradient(135deg, #1e3b2c, #102c1e);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        color: #4caf50;
+        margin-bottom: 1rem;
+    }
+
+    .feature-title {
+        color: white;
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-desc {
+        color: #cfd8dc;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+</style>
+</head>
+<body>
+
+    <!-- NAVBAR (Match user frontend navbar) -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-success px-3" id="mainNavbar">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
+                <img src="image/logo agam.png" alt="Logo Agam" width="40" class="me-2" />
+                NAGARI KOTO MALINTANG
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- MENU NAVIGASI -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link " href="/">
+                            Beranda
+                        </a>
+                    </li>
+
+                    <!-- Dropdown Profil Nagari -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active fw-bold text-warning" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profil Nagari
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item active text-success" href="/profil-nagari">Profil Nagari</a></li>
+                            <li><a class="dropdown-item " href="/sejarah">Sejarah Nagari</a></li>
+                            <li><a class="dropdown-item " href="/struktur-nagari">Struktur Nagari</a></li>
+                            <li><a class="dropdown-item " href="/visi-misi">Visi Misi</a></li>
+                            <li><a class="dropdown-item " href="/perangkat-nagari">Perangkat Nagari</a></li>
+                            <li><a class="dropdown-item " href="/umkm">UMKM Nagari</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Menu Lainnya -->
+                    <li class="nav-item">
+                        <a class="nav-link " href="/layanan-surat">
+                            <i class="bi bi-file-earmark-text me-1"></i> Layanan Surat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/objek-wisata">Objek Wisata</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/kaba-nagari">Kaba Nagari</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://ppid.agamkab.go.id/" target="_blank">PPID</a>
+                    </li>
+
+                    <!-- MENU AUTENTIKASI / USER -->
+                                            <li class="nav-item ms-lg-2">
+                            <a href="login.html" class="btn btn-warning btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Masuk / Daftar
+                            </a>
+                        </li>
+                    
+                    <!-- Sosial Media -->
+                    <li class="nav-item social-icons d-flex align-items-center ms-lg-2 mt-2 mt-lg-0">
+                        <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main>
+        <!-- HERO PROFIL -->
+<header class="hero-profil">
+    <div class="hero-overlay">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-11">
+                    <div class="d-md-flex profil-card">
+                        <!-- Gambar Samping -->
+                        <div class="col-md-4 p-0">
+                            <img src="image/forest2.jpg" alt="Nagari Koto Malintang" class="profil-image" />
+                        </div>
+                        <!-- Konten Utama: Mengambil langsung isi data Adat & Budaya -->
+                        <div class="col-md-8 profil-content">
+                            <h5>PROFIL NAGARI</h5>
+                            <h2>Nagari Koto Malintang</h2>
+                            
+                            <div class="uraian-text mb-4">
+                                Dalam pelaksanaan secara umum adat Minang Kabau mengajak kepada masyarakatnya untuk senantiasa bertingkah laku baik dan bermoral mulia. Tata kehidupan masyarakat Minang Kabau didasarkan pada falsafah hidup adat Minang Kabau yaitu adat basandi syara’, syara’ basandi kitabullah yang mempunyai makna syara’ mangato adat mamakai.
+
+Dalam tata kehidupan masyarakat Nagari Koto Malintang selalu memegang teguh ajaran agama dan adat istiadat yang berlaku di nagari. Penyelenggaraan pemerintahan dalam pelaksanaan pembangunan selalu menggunakan jalan musyawarah mufakat yang ada seperti niniak mamak, cadiak pandai, alim ulama, bundo kandung dan pemuda yang terakomodir dalam wadah lembaga Badan Permusyawaratan Nagari.
+
+Di zaman era globalisasi sekarang, perkembangan teknologi informasi dan komunikasi juga memberikan dampak negatif pada pelunturan nilai-nilai agama dan adat istiadat. Di sinilah peran penting tokoh agama dan adat untuk mengantisipasi dampak negatif masuknya pengaruh dari luar yang dapat merusak nilai-nilai agama dan adat istiadat tersebut dengan mendorong agar masyarakat dapat menghayati dan mengamalkan filosofis ABS-SBK dalam kehidupan sehari-hari.
+
+Nagari Koto Malintang merupakan salah satu nagari yang berkelarasan, di mana masing-masing kaum dipimpin oleh seorang mamak kepala kaum (penghulu) yang secara adatnya berbunyi “duduak samo randah tagak samo tinggi”, artinya setiap keputusan tidak bisa diputuskan oleh seorang penghulu, maka setiap keputusan didasarkan atas musyawarah mufakat. Berdasarkan garis keturunan sakaum, ini berarti tiap-tiap penghulu suatu kaum yang ada di Nagari Koto Malintang memiliki seorang Ninik Mamak (Penghulu) tidak akan berpindah kepada kaum lainnya.
+
+Menurut monografi Nagari Koto Malintang, Nagari Koto Malintang mempunyai tujuh suku. Masing-masing suku memiliki seorang ninik mamak. Dari tujuh suku yang ada, suku Tanjuang dan Sikumbang tercatat sebagai suku yang terbanyak sementara yang sedikit adalah suku Malayu. Suku-suku di Nagari Koto Malintang mempunyai aturan dan kegiatan yang sama.
+                            </div>
+
+                            <div class="pt-3 border-top border-secondary">
+                                <div class="row g-2 small">
+                                    <div class="col-6 col-sm-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-geo-alt-fill text-success me-2 fs-5"></i>
+                                            <span class="text-light">Kec. Tanjung Raya</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-people-fill text-success me-2 fs-5"></i>
+                                            <span class="text-light">2.500 Jiwa</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-house-fill text-success me-2 fs-5"></i>
+                                            <span class="text-light">8 Jorong</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-shield-check text-success me-2 fs-5"></i>
+                                            <span class="text-light">7 Suku Kaum</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- STATS SECTION -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+                    <div class="stat-number">2.500</div>
+                    <div class="stat-label">Jumlah Penduduk (Jiwa)</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Jorong Administratif</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="bi bi-map-fill"></i></div>
+                    <div class="stat-number">45.00</div>
+                    <div class="stat-label">Luas Wilayah (km²)</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="bi bi-shield-check"></i></div>
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Suku / Kaum Adat</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SUKU KAUM & KEGIATAN ADAT SECTION -->
+<div class="container mb-5">
+    <div class="section-card-dark">
+        <div class="row g-4 align-items-center">
+            <!-- Jumlah Suku -->
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 text-center h-100" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                    <i class="bi bi-people-fill text-warning fs-1 mb-2 d-block"></i>
+                    <h3 class="fw-bold text-warning display-6 mb-1">7 Suku</h3>
+                    <p class="small text-light mb-0">Dipimpin oleh Ninik Mamak dengan prinsip adat Minangkabau <em>"Duduak samo randah, tagak samo tinggi"</em>.</p>
+                </div>
+            </div>
+
+            <!-- Kegiatan Adat -->
+            <div class="col-md-8">
+                <h5 class="text-success fw-bold mb-3"><i class="bi bi-calendar-event me-2"></i>Tradisi & Kegiatan Sepanjang Adat:</h5>
+                                                    <div class="row g-2">
+                                                    <div class="col-sm-6">
+                                <div class="kegiatan-badge">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span>Wirid Kepayungan</span>
+                                </div>
+                            </div>
+                                                    <div class="col-sm-6">
+                                <div class="kegiatan-badge">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span>Rapat Adat</span>
+                                </div>
+                            </div>
+                                                    <div class="col-sm-6">
+                                <div class="kegiatan-badge">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span>Nikah kawin menurut sepanjang adat</span>
+                                </div>
+                            </div>
+                                                    <div class="col-sm-6">
+                                <div class="kegiatan-badge">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span>Batagak pangulu</span>
+                                </div>
+                            </div>
+                                                    <div class="col-sm-6">
+                                <div class="kegiatan-badge">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span>Syukuran/mengaji tamaik</span>
+                                </div>
+                            </div>
+                                                    <div class="col-sm-6">
+                                <div class="kegiatan-badge">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span>Akikah menurut sepanjang adat</span>
+                                </div>
+                            </div>
+                                                    <div class="col-sm-6">
+                                <div class="kegiatan-badge">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span>Manatiang pungku/bapungku</span>
+                                </div>
+                            </div>
+                                                    <div class="col-sm-6">
+                                <div class="kegiatan-badge">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span>Khitanan menurut adat</span>
+                                </div>
+                            </div>
+                                            </div>
+                            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KEUNGGULAN NAGARI SECTION -->
+<section class="feature-cards">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-white mb-2">Keunggulan Nagari</h2>
+            <p class="text-white text-opacity-75">Hal yang Menjadikan Nagari Koto Malintang Istimewa & Berkelanjutan</p>
+            <div class="mx-auto" style="width: 50px; height: 3px; background-color: #4caf50; border-radius: 2px;"></div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-tree-fill"></i></div>
+                    <div class="feature-title">Alam Asri</div>
+                    <div class="feature-desc">Dikelilingi perbukitan hijau, pohon binuang raksasa, dan danau yang mempesona.</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-people-fill"></i></div>
+                    <div class="feature-title">Masyarakat Ramah</div>
+                    <div class="feature-desc">Penduduk yang hangat, menjunjung tinggi kekeluargaan dan semangat gotong royong.</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-house-heart-fill"></i></div>
+                    <div class="feature-title">Budaya Kuat</div>
+                    <div class="feature-desc">Falsafah ABS-SBK dan tatanan adat salingka nagari yang lestari turun-temurun.</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                    <div class="feature-title">Nagari Mandiri</div>
+                    <div class="feature-desc">Pertumbuhan potensi UMKM dan pelayanan digital terdepan untuk kesejahteraan bersama.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    </main>
+
+    <!-- === FOOTER WITH MAP (Match user frontend footer.html) === -->
+    <footer class="elegant-footer">
+        <div class="footer-background">
+            <div class="footer-shapes">
+                <div class="footer-shape footer-shape-1"></div>
+                <div class="footer-shape footer-shape-2"></div>
+                <div class="footer-shape footer-shape-3"></div>
+            </div>
+        </div>
+
+        <div class="container position-relative">
+            <div class="row g-4">
+                <!-- Informasi Kontak -->
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <h4 class="footer-title">
+                            <i class="bi bi-geo-alt-fill me-2"></i>
+                            Nagari Koto Malintang
+                        </h4>
+                        <div class="footer-content">
+                            <div class="contact-item">
+                                <i class="bi bi-house-door-fill"></i>
+                                <div>
+                                    <strong>Alamat Kantor</strong>
+                                    <p>Koto Malintang, Kec. Tanjung Raya, Kabupaten Agam, Sumatera Barat 26454</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-telephone-fill"></i>
+                                <div>
+                                    <strong>Telepon</strong>
+                                    <p>+62 752 123456</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-envelope-fill"></i>
+                                <div>
+                                    <strong>Email</strong>
+                                    <p>info@kotomalintang.go.id</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jam Pelayanan -->
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <h4 class="footer-title">
+                            <i class="bi bi-clock-fill me-2"></i>
+                            Jam Pelayanan
+                        </h4>
+                        <div class="footer-content">
+                            <div class="schedule-item">
+                                <div class="day">Senin - Kamis</div>
+                                <div class="time">08:00 - 16:00 WIB</div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="day">Jumat</div>
+                                <div class="time">08:00 - 11:30 WIB</div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="day">Sabtu - Minggu</div>
+                                <div class="time">Tutup</div>
+                            </div>
+                            <div class="emergency-contact">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <span>Layanan Darurat: 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Peta Lokasi -->
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <h4 class="footer-title">
+                            <i class="bi bi-map-fill me-2"></i>
+                            Lokasi Kami
+                        </h4>
+                        <div class="map-container">
+                            <div class="map-placeholder">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.817267894847!2d100.2134567!3d-0.2876543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b942e2b9d2c5%3A0x5c5c5c5c5c5c5c5c!2sKoto%20Malintang%2C%20Agam%2C%20West%20Sumatra!5e0!3m2!1sen!2sid!4v1234567890123"
+                                    width="100%" 
+                                    height="200" 
+                                    style="border:0; border-radius: 15px;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                            <div class="map-actions">
+                                <a href="https://maps.google.com/?q=Nagari+Koto+Malintang+Agam" target="_blank" class="btn btn-outline-light btn-sm">
+                                    <i class="bi bi-arrow-up-right-square"></i>
+                                    Buka di Google Maps
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="footer-logo">
+                            <img src="image/logo agam.png" alt="Logo Agam" width="40" class="me-3">
+                            <div>
+                                <h6 class="mb-0">Nagari Koto Malintang</h6>
+                                <small>Kabupaten Agam, Sumatera Barat</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="social-links">
+                            <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
+                            <a href="mailto:info@kotomalintang.go.id" class="social-link"><i class="bi bi-envelope"></i></a>
+                        </div>
+                        <p class="copyright">
+                            &copy; 2026 Nagari Koto Malintang. All rights reserved.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Navbar Scroll Effect -->
+    <script>
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('mainNavbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+
+    </body>
+</html>

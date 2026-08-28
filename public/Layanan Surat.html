@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Layanan Surat Mandiri - Nagari Koto Malintang</title>
+    <link rel="icon" href="image/logo agam.png" type="image/png" />
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
+    <link href="footer-styles.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --hijau-tua: #0f1d10;
+            --hijau-primer: #1e3a20;
+            --hijau-aksen: #198754;
+            --hijau-terang: #22c55e;
+            --bg-body: #f8fdf9;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: #1f2937;
+            padding-top: 70px;
+        }
+        .navbar {
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            z-index: 1050;
+        }
+        .navbar.scrolled {
+            background-color: #198754 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .hero-surat {
+            background: linear-gradient(135deg, #0f1d10 0%, #1e3a20 50%, #2c5530 100%);
+            color: white;
+            padding: 45px 0 35px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .hero-surat h1 { font-weight: 800; font-size: 2.2rem; }
+        .hero-surat p { opacity: 0.9; max-width: 700px; margin: 8px auto 0; font-size: 1rem; }
+
+        .ai-assistant-card {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border: 1px solid #d1fae5;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+        .ai-header {
+            background: linear-gradient(135deg, #198754 0%, #15803d 100%);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .ai-header-icon {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem;
+        }
+        .ai-chat-body {
+            height: 200px;
+            overflow-y: auto;
+            padding: 16px;
+            background: #fdfdfd;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ai-bubble {
+            background: #e8f5e9;
+            color: #14532d;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border-bottom-left-radius: 2px;
+            font-size: 0.88rem;
+            max-width: 90%;
+            line-height: 1.5;
+            border: 1px solid #c8e6c9;
+        }
+        .user-bubble {
+            background: #198754;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 14px;
+            border-bottom-right-radius: 2px;
+            font-size: 0.88rem;
+            align-self: flex-end;
+            max-width: 85%;
+        }
+        .ai-input-area {
+            padding: 12px 16px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 8px;
+        }
+        .ai-input-area input {
+            border-radius: 25px;
+            padding: 8px 16px;
+            font-size: 0.88rem;
+        }
+        .ai-send-btn {
+            background: #198754;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 38px; height: 38px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .ai-send-btn:hover { transform: scale(1.08); }
+
+                .surat-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 14px;
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            text-align: center;
+            height: 100%;
+            user-select: none;
+            position: relative;
+        }
+        .surat-card:hover {
+            border-color: #198754 !important;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(25,135,84,0.15);
+        }
+        .surat-card.selected {
+            border-color: #198754 !important;
+            background: #f0fdf4 !important;
+            box-shadow: 0 0 0 3px rgba(25,135,84,0.2) !important;
+        }
+        .surat-card * {
+            pointer-events: none;
+        }
+        .surat-icon {
+            font-size: 1.8rem;
+            color: #198754;
+            margin-bottom: 6px;
+        }
+        .generator-box {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border: 1px solid #e5e7eb;
+            padding: 26px;
+        }
+        .preview-paper {
+            background: white;
+            padding: 30px 40px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            font-family: 'Times New Roman', Times, serif;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+        <!-- NAVBAR (Consistent with all website pages) -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-success px-3" id="mainNavbar">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
+                <img src="image/logo agam.png" alt="Logo Agam" width="40" class="me-2" />
+                NAGARI KOTO MALINTANG
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- MENU NAVIGASI -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            Beranda
+                        </a>
+                    </li>
+
+                    <!-- Dropdown Profil Nagari -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profil Nagari
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/profil-nagari">Profil Nagari</a></li>
+                            <li><a class="dropdown-item" href="/sejarah">Sejarah Nagari</a></li>
+                            <li><a class="dropdown-item" href="/struktur-nagari">Struktur Nagari</a></li>
+                            <li><a class="dropdown-item" href="/visi-misi">Visi Misi</a></li>
+                            <li><a class="dropdown-item" href="/perangkat-nagari">Perangkat Nagari</a></li>
+                            <li><a class="dropdown-item" href="/umkm">UMKM Nagari</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Menu Lainnya -->
+                    <li class="nav-item">
+                        <a class="nav-link active fw-bold text-warning" href="/layanan-surat">
+                            <i class="bi bi-file-earmark-text me-1"></i> Layanan Surat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/objek-wisata">Objek Wisata</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/kaba-nagari">Kaba Nagari</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://ppid.agamkab.go.id/" target="_blank">PPID</a>
+                    </li>
+
+                    <!-- MENU AUTENTIKASI / USER -->
+                    <li class="nav-item ms-lg-2">
+                        <a href="login.html" class="btn btn-warning btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Masuk / Daftar
+                        </a>
+                    </li>
+                    
+                    <!-- Sosial Media -->
+                    <li class="nav-item social-icons d-flex align-items-center ms-lg-2 mt-2 mt-lg-0">
+                        <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero-surat">
+        <div class="container">
+            <h1>Layanan Surat Mandiri Online</h1>
+            <p>Pengajuan surat administrasi Nagari Koto Malintang secara cepat, transparan, dan dilengkapi tanda tangan serta stempel digital resmi Wali Nagari.</p>
+        </div>
+    </section>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container mb-5">
+        <div class="row g-4">
+            
+                        <!-- KOLOM KIRI: PILIHAN 7 JENIS SURAT -->
+            <div class="col-lg-5">
+                
+                <!-- Info Header Box -->
+                <div class="card border-0 shadow-sm rounded-4 mb-3" style="background: linear-gradient(135deg, #1e3a20, #0f1d10); color: white;">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-warning text-dark px-2 py-1 fw-bold" style="font-size:0.75rem;"><i class="bi bi-shield-fill-check me-1"></i>RESMI NAGARI</span>
+                            <span class="badge bg-white bg-opacity-20 text-white px-2 py-1" style="font-size:0.75rem;"><i class="bi bi-clock me-1"></i>Layanan 24 Jam</span>
+                        </div>
+                        <h5 class="fw-bold mb-1">Pilih Jenis Surat</h5>
+                        <p class="small text-white-50 mb-0" style="line-height:1.6;font-size:0.85rem;">
+                            Klik salah satu jenis surat di bawah. Formulir pengajuan dan syarat unggahan dokumen akan berganti otomatis.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 7 Jenis Surat Grid -->
+                <div class="mb-4">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="surat-card selected" id="card_suket_usaha" onclick="selectSurat('suket_usaha', 'Surat Keterangan Usaha')">
+                                <div class="surat-icon"><i class="bi bi-shop"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKU</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Keterangan Usaha</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_suket_domisili" onclick="selectSurat('suket_domisili', 'Surat Keterangan Domisili')">
+                                <div class="surat-icon"><i class="bi bi-geo-alt"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKD</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Keterangan Domisili</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_suket_tidak_mampu" onclick="selectSurat('suket_tidak_mampu', 'Surat Keterangan Tidak Mampu')">
+                                <div class="surat-icon"><i class="bi bi-people"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKTM</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Keterangan Tidak Mampu</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_surat_nikah_na" onclick="selectSurat('surat_nikah_na', 'Surat Pengantar Nikah NA')">
+                                <div class="surat-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">Model NA</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Pengantar Nikah (KUA)</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_sket_penghasilan" onclick="selectSurat('sket_penghasilan', 'Surat Keterangan Penghasilan')">
+                                <div class="surat-icon"><i class="bi bi-cash-coin"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKP</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Keterangan Penghasilan</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_suket_meninggal" onclick="selectSurat('suket_meninggal', 'Surat Keterangan Meninggal')">
+                                <div class="surat-icon"><i class="bi bi-file-earmark-medical"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKM</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Keterangan Kematian</small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="surat-card" id="card_suket_belum_menikah" onclick="selectSurat('suket_belum_menikah', 'Surat Keterangan Belum Menikah')">
+                                <div class="surat-icon"><i class="bi bi-person-check"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKBM (Belum Menikah)</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Untuk Persyaratan Kerja / Pendaftaran Instansi</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- KOLOM KANAN: FORM PENGAJUAN -->
+            <div class="col-lg-7">
+
+                <!-- FORMULIR PENGAJUAN SURAT -->
+                <div class="generator-box">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                        <div>
+                            <span class="badge bg-success rounded-pill px-3 py-1 mb-1" id="labelSelectedSurat">Surat Keterangan Usaha (SKU)</span>
+                            <h4 class="fw-bold text-dark mb-0">Formulir Permohonan Surat</h4>
+                        </div>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25"><i class="bi bi-file-earmark-check me-1"></i> Surat Resmi</span>
+                    </div>
+
+                    <form id="formSurat" onsubmit="handleWargaFormSubmit(event)">
+                        <input type="hidden" name="jenis_surat" id="form_jenis_surat" value="suket_usaha" />
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nama Lengkap Pemohon <span class="text-danger">*</span></label>
+                                <input type="text" id="f_nama" class="form-control" placeholder="Nama lengkap sesuai KTP" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">NIK Pemohon (KTP) <span class="text-danger">*</span></label>
+                                <input type="text" id="f_nik" class="form-control font-monospace" placeholder="16 digit NIK KTP" maxlength="16" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Tempat Lahir</label>
+                                <input type="text" id="f_tempat_lahir" class="form-control" placeholder="Tempat lahir" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Tanggal Lahir</label>
+                                <input type="date" id="f_tanggal_lahir" class="form-control" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Jenis Kelamin</label>
+                                <select id="f_jk" class="form-select" required>
+                                    <option value="" disabled selected>Pilih Jenis Kelamin</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Pekerjaan</label>
+                                <input type="text" id="f_pekerjaan" class="form-control" placeholder="Pekerjaan saat ini (cth: Wiraswasta, Petani)" required />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Alamat Tempat Tinggal / Jorong <span class="text-danger">*</span></label>
+                                <input type="text" id="f_alamat" class="form-control" placeholder="Jorong tempat tinggal di Nagari Koto Malintang" required />
+                            </div>
+                        </div>
+
+                        <!-- Data Keterangan Khusus -->
+                        <div class="p-3 bg-light rounded-3 mb-3 border">
+                            <h6 class="fw-bold text-success mb-2"><i class="bi bi-sliders me-1"></i>Data Keterangan Surat:</h6>
+                            <div class="mb-2">
+                                <label class="form-label small fw-semibold">Keperluan Pembuatan Surat <span class="text-danger">*</span></label>
+                                <textarea id="f_keperluan" rows="2" class="form-control" placeholder="Jelaskan keperluan pembuatan surat secara lengkap..." required></textarea>
+                            </div>
+                            <div class="row g-2" id="extra_fields">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold" id="label_extra1">Nama Usaha</label>
+                                    <input type="text" id="f_extra1" class="form-control form-control-sm" placeholder="Contoh: Kedai Kopi Tradisional" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold" id="label_extra2">Bidang Usaha</label>
+                                    <input type="text" id="f_extra2" class="form-control form-control-sm" placeholder="Contoh: Kuliner & Minuman" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upload Dokumen Persyaratan Dinamis (Batas 5MB) -->
+                        <div class="p-3 rounded-3 mb-3 border" style="background:#f0fdf4;border-color:#86efac !important;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold text-success mb-0">
+                                    <i class="bi bi-paperclip me-1"></i>Upload Dokumen Persyaratan Surat:
+                                </h6>
+                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25" style="font-size:0.75rem;">Maksimal 5MB per file</span>
+                            </div>
+                            <p class="text-muted small mb-2" style="font-size:0.78rem;">Silakan unggah dokumen persyaratan dalam format <strong>PDF, JPG, atau PNG</strong>:</p>
+                            <div id="dokumen_persyaratan_container" class="row g-2">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label small fw-semibold text-dark d-flex justify-content-between mb-1" style="font-size:0.8rem;">
+                                        <span><i class="bi bi-file-earmark-arrow-up text-success me-1"></i>KTP & Kartu Keluarga (KK)</span>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger" style="font-size:0.68rem;">Wajib</span>
+                                    </label>
+                                    <input type="file" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.pdf" required onchange="validateDocSize(this, 5)" />
+                                    <div class="file-size-feedback text-muted mt-1" style="font-size:0.72rem;">Maks. 5MB (PDF/JPG/PNG)</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label small fw-semibold text-dark d-flex justify-content-between mb-1" style="font-size:0.8rem;">
+                                        <span><i class="bi bi-file-earmark-arrow-up text-success me-1"></i>Surat Pengantar Wali Jorong</span>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger" style="font-size:0.68rem;">Wajib</span>
+                                    </label>
+                                    <input type="file" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.pdf" required onchange="validateDocSize(this, 5)" />
+                                    <div class="file-size-feedback text-muted mt-1" style="font-size:0.72rem;">Maks. 5MB (PDF/JPG/PNG)</div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label small fw-semibold text-dark d-flex justify-content-between mb-1" style="font-size:0.8rem;">
+                                        <span><i class="bi bi-file-earmark-arrow-up text-success me-1"></i>Foto Tempat / Aktivitas Usaha</span>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger" style="font-size:0.68rem;">Wajib</span>
+                                    </label>
+                                    <input type="file" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.pdf" required onchange="validateDocSize(this, 5)" />
+                                    <div class="file-size-feedback text-muted mt-1" style="font-size:0.72rem;">Maks. 5MB (PDF/JPG/PNG)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pt-2">
+                            <button type="button" class="btn btn-outline-success rounded-pill px-3" onclick="showPreviewModal()">
+                                <i class="bi bi-eye-fill me-1"></i> Pratinjau Surat Resmi
+                            </button>
+                            <button type="submit" class="btn btn-success rounded-pill px-4 py-2 fw-bold shadow">
+                                <i class="bi bi-send-fill me-1"></i> Ajukan Surat ke Nagari
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PREVIEW SURAT -->
+    <div class="modal fade" id="modalPreviewSurat" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-success text-white p-4">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-file-earmark-text-fill me-2"></i>Draf Naskah Surat Resmi Nagari</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <div class="preview-paper">
+                        <div class="d-flex align-items-center justify-content-center gap-3 border-bottom border-dark border-3 pb-3 mb-3 text-center">
+                            <img src="image/logo agam.png" alt="Logo Agam" style="width:65px;height:65px;object-fit:contain;"/>
+                            <div>
+                                <h6 class="fw-bold mb-0" style="font-size:0.9rem;">PEMERINTAH KABUPATEN AGAM</h6>
+                                <h6 class="fw-bold mb-0" style="font-size:0.9rem;">KECAMATAN TANJUNG RAYA</h6>
+                                <h5 class="fw-bold mb-0 text-success" style="font-size:1.05rem;">PEMERINTAH NAGARI KOTO MALINTANG</h5>
+                                <small style="font-size:0.75rem;">Alamat: Jl. Raya Maninjau - Lubuk Basung, Kode Pos: 26454</small>
+                            </div>
+                        </div>
+                        <div class="text-center mb-3">
+                            <h6 class="fw-bold text-decoration-underline mb-0" id="pv_judul">SURAT KETERANGAN USAHA</h6>
+                            <small id="pv_nomor">Nomor: 470 / 024 / WN-KM / VIII / 2026</small>
+                        </div>
+                        <div id="pv_isi" class="lh-lg mb-4" style="font-size:0.92rem;text-align:justify;"></div>
+                        <div class="row pt-3">
+                            <div class="col-7"></div>
+                            <div class="col-5 text-center position-relative">
+                                <div style="font-size:0.85rem;">Koto Malintang, 26 Agustus 2026</div>
+                                <div class="fw-bold mb-2" style="font-size:0.85rem;">WALI NAGARI KOTO MALINTANG</div>
+                                <div class="position-relative d-flex align-items-center justify-content-center my-2" style="height:75px;">
+                                    <img src="image/stempel_resmi.svg" alt="Stempel" style="position:absolute;left:5px;top:-5px;width:75px;height:75px;opacity:0.85;transform:rotate(-8deg);"/>
+                                    <div style="position:absolute;right:15px;top:15px;font-family:'Pacifico', cursive;font-size:1.3rem;color:#1a365d;transform:rotate(-6deg);">Nazaruddin</div>
+                                </div>
+                                <div class="fw-bold text-decoration-underline" style="font-size:0.85rem;">NAZARUDDIN, S.Pd.I</div>
+                                <small style="font-size:0.75rem;">NIP. -</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-white">
+                    <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-success rounded-pill px-4" onclick="window.print()"><i class="bi bi-printer me-1"></i> Cetak PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER WITH MAP (Consistent with all website pages) -->
+    <footer class="elegant-footer">
+        <div class="footer-background">
+            <div class="footer-shapes">
+                <div class="footer-shape footer-shape-1"></div>
+                <div class="footer-shape footer-shape-2"></div>
+                <div class="footer-shape footer-shape-3"></div>
+            </div>
+        </div>
+
+        <div class="container position-relative">
+            <div class="row g-4">
+                <!-- Informasi Kontak -->
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <h4 class="footer-title">
+                            <i class="bi bi-geo-alt-fill me-2"></i>
+                            Nagari Koto Malintang
+                        </h4>
+                        <div class="footer-content">
+                            <div class="contact-item">
+                                <i class="bi bi-house-door-fill"></i>
+                                <div>
+                                    <span>Kantor Wali Nagari Koto Malintang</span>
+                                    <small>Jl. Raya Maninjau - Lubuk Basung, Kec. Tanjung Raya, Kab. Agam, Sumatera Barat 26454</small>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-envelope-fill"></i>
+                                <div>
+                                    <span>Email Resmi</span>
+                                    <small>info@kotomalintang.go.id</small>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-telephone-fill"></i>
+                                <div>
+                                    <span>Telepon / WhatsApp</span>
+                                    <small>+62 812-3456-7890</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jam Pelayanan -->
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <h4 class="footer-title">
+                            <i class="bi bi-clock-fill me-2"></i>
+                            Jam Pelayanan Kantor
+                        </h4>
+                        <div class="service-hours">
+                            <div class="hour-item">
+                                <span class="day">Senin - Kamis:</span>
+                                <span class="time">08.00 - 16.00 WIB</span>
+                            </div>
+                            <div class="hour-item">
+                                <span class="day">Jumat:</span>
+                                <span class="time">08.00 - 16.30 WIB</span>
+                            </div>
+                            <div class="hour-item">
+                                <span class="day">Sabtu - Minggu:</span>
+                                <span class="time closed">Libur</span>
+                            </div>
+                            <div class="hour-item highlight">
+                                <span class="day">Layanan Surat Online:</span>
+                                <span class="time">24 Jam Non-stop</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Peta Lokasi -->
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <h4 class="footer-title">
+                            <i class="bi bi-map-fill me-2"></i>
+                            Lokasi Kami
+                        </h4>
+                        <div class="map-container">
+                            <div class="map-placeholder">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.817267894847!2d100.2134567!3d-0.2876543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b942e2b9d2c5%3A0x5c5c5c5c5c5c5c5c!2sKoto%20Malintang%2C%20Agam%2C%20West%20Sumatra!5e0!3m2!1sen!2sid!4v1234567890123"
+                                    width="100%" 
+                                    height="200" 
+                                    style="border:0; border-radius: 15px;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                            <div class="map-actions">
+                                <a href="https://maps.google.com/?q=Nagari+Koto+Malintang+Agam" target="_blank" class="btn btn-outline-light btn-sm">
+                                    <i class="bi bi-arrow-up-right-square"></i>
+                                    Buka di Google Maps
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="footer-logo">
+                            <img src="image/logo agam.png" alt="Logo Agam" width="40" class="me-3">
+                            <div>
+                                <h6 class="mb-0">Nagari Koto Malintang</h6>
+                                <small>Kabupaten Agam, Sumatera Barat</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="social-links">
+                            <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
+                            <a href="mailto:info@kotomalintang.go.id" class="social-link"><i class="bi bi-envelope"></i></a>
+                        </div>
+                        <p class="copyright">
+                            &copy; 2026 Nagari Koto Malintang. All rights reserved.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+                <!-- Bootstrap 5 JS Bundle & Auth.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="Auth.js"></script>
+
+    <script>
+    // 1. Data Konfigurasi 7 Jenis Surat & Syarat Upload
+    const suratTypes = {
+        'suket_usaha': {
+            nama: 'Surat Keterangan Usaha (SKU)',
+            judulResmi: 'SURAT KETERANGAN USAHA',
+            keperluanHint: 'Contoh: Untuk keperluan pengajuan tambahan modal usaha KUR Bank BRI',
+            extra1Label: 'Nama Usaha',
+            extra2Label: 'Bidang Usaha',
+            extra1Hint: 'Contoh: Kedai Kopi Tradisional / Bengkel Las',
+            extra2Hint: 'Contoh: Kuliner / Jasa Perbaikan',
+            dokumenSyarat: [
+                { label: 'Fotokopi KTP & Kartu Keluarga (KK)', wajib: true, folder: 'uploads/ktp' },
+                { label: 'Surat Pengantar Wali Jorong Setempat', wajib: true, folder: 'uploads/pengantar_jorong' },
+                { label: 'Foto Tempat / Aktivitas Usaha', wajib: true, folder: 'uploads/foto_usaha' }
+            ]
+        },
+        'suket_domisili': {
+            nama: 'Surat Keterangan Domisili (SKD)',
+            judulResmi: 'SURAT KETERANGAN DOMISILI',
+            keperluanHint: 'Contoh: Untuk kelengkapan administrasi domisili tempat tinggal dan perbankan',
+            extra1Label: 'Lama Menetap',
+            extra2Label: 'Status Tempat Tinggal',
+            extra1Hint: 'Contoh: Sejak tahun 2018 / Sejak Lahir',
+            extra2Hint: 'Contoh: Rumah Milik Sendiri / Sewa',
+            dokumenSyarat: [
+                { label: 'Fotokopi KTP & Kartu Keluarga (KK)', wajib: true, folder: 'uploads/ktp' },
+                { label: 'Surat Pengantar Wali Jorong Setempat', wajib: true, folder: 'uploads/pengantar_jorong' }
+            ]
+        },
+        'suket_tidak_mampu': {
+            nama: 'Surat Keterangan Tidak Mampu (SKTM)',
+            judulResmi: 'SURAT KETERANGAN TIDAK MAMPU (SKTM)',
+            keperluanHint: 'Contoh: Untuk permohonan beasiswa pendidikan KIP-Kuliah / Keringanan Biaya',
+            extra1Label: 'Penghasilan Keluarga',
+            extra2Label: 'Kondisi Ekonomi',
+            extra1Hint: 'Contoh: Rp 800.000 / Bulan',
+            extra2Hint: 'Contoh: Buruh Harian / Keluarga Pra-Sejahtera',
+            dokumenSyarat: [
+                { label: 'Fotokopi KTP & Kartu Keluarga (KK)', wajib: true, folder: 'uploads/ktp' },
+                { label: 'Surat Rekomendasi Tidak Mampu dari Wali Jorong', wajib: true, folder: 'uploads/pengantar_jorong' },
+                { label: 'Foto Rumah Tampak Depan / KIS / BPJS / KIP', wajib: true, folder: 'uploads/foto_rumah' }
+            ]
+        },
+        'surat_nikah_na': {
+            nama: 'Surat Pengantar Nikah (Model NA)',
+            judulResmi: 'SURAT PENGANTAR NIKAH (MODEL N-1 s.d N-4)',
+            keperluanHint: 'Contoh: Untuk pendaftaran kehendak nikah di Kantor Urusan Agama (KUA)',
+            extra1Label: 'Nama Calon Pasangan',
+            extra2Label: 'Bin / Binti Pasangan',
+            extra1Hint: 'Contoh: Nama Lengkap Calon Pasangan',
+            extra2Hint: 'Contoh: Nama Ayah Kandung Pasangan',
+            dokumenSyarat: [
+                { label: 'Fotokopi KTP & KK Calon Pengantin (Pria & Wanita)', wajib: true, folder: 'uploads/ktp' },
+                { label: 'Akta Kelahiran & Ijazah Terakhir', wajib: true, folder: 'uploads/akta_kelahiran' },
+                { label: 'Fotokopi KTP Orang Tua / Wali Nikah', wajib: true, folder: 'uploads/ktp' },
+                { label: 'Surat Pengantar Wali Jorong Setempat', wajib: true, folder: 'uploads/pengantar_jorong' },
+                { label: 'Pas Foto 2x3 & 4x6 Latar Biru (3 Lembar)', wajib: true, folder: 'uploads/pas_foto' }
+            ]
+        },
+        'sket_penghasilan': {
+            nama: 'Surat Keterangan Penghasilan (SKP)',
+            judulResmi: 'SURAT KETERANGAN PENGHASILAN',
+            keperluanHint: 'Contoh: Untuk persyaratan pengajuan beasiswa pendidikan anak',
+            extra1Label: 'Rata-rata Penghasilan (Rp)',
+            extra2Label: 'Sumber Penghasilan',
+            extra1Hint: 'Contoh: Rp 1.500.000 / Bulan',
+            extra2Hint: 'Contoh: Hasil Pertanian & Perkebunan',
+            dokumenSyarat: [
+                { label: 'Fotokopi KTP & Kartu Keluarga (KK)', wajib: true, folder: 'uploads/ktp' },
+                { label: 'Surat Pengantar Wali Jorong Setempat', wajib: true, folder: 'uploads/pengantar_jorong' }
+            ]
+        },
+        'suket_meninggal': {
+            nama: 'Surat Keterangan Meninggal (SKM)',
+            judulResmi: 'SURAT KETERANGAN MENINGGAL DUNIA',
+            keperluanHint: 'Contoh: Untuk pencatatan administrasi kependudukan dan klaim ahli waris',
+            extra1Label: 'Nama Almarhum / Almarhumah',
+            extra2Label: 'Penyebab / Lokasi Wafat',
+            extra1Hint: 'Contoh: Nama Lengkap Almarhum/ah',
+            extra2Hint: 'Contoh: Sakit Menua / Wafat di Rumah Duka',
+            dokumenSyarat: [
+                { label: 'Fotokopi KTP & KK Almarhum / Almarhumah', wajib: true, folder: 'uploads/ktp' },
+                { label: 'Fotokopi KTP & KK Pelapor (Ahli Waris)', wajib: true, folder: 'uploads/ktp' },
+                { label: 'Surat Pengantar Wali Jorong Setempat', wajib: true, folder: 'uploads/pengantar_jorong' }
+            ]
+        },
+        'suket_belum_menikah': {
+            nama: 'Surat Keterangan Belum Menikah (SKBM)',
+            judulResmi: 'SURAT KETERANGAN BELUM PERNAH MENIKAH',
+            keperluanHint: 'Contoh: Untuk persyaratan administrasi melamar pekerjaan / pendaftaran instansi',
+            extra1Label: 'Status Perkawinan',
+            extra2Label: 'Keterangan Tambahan',
+            extra1Hint: 'Contoh: Belum Pernah Menikah / Lajang',
+            extra2Hint: 'Contoh: Warga Asli Nagari Koto Malintang',
+            dokumenSyarat: [
+                { label: 'Fotokopi KTP & Kartu Keluarga (KK)', wajib: true, folder: 'uploads/ktp' },
+                { label: 'Surat Pengantar Wali Jorong Setempat', wajib: true, folder: 'uploads/pengantar_jorong' }
+            ]
+        }
+    };
+
+    // 2. Fungsi Utama Pemilihan Surat
+    window.selectSurat = function(key, label) {
+        if (!key || !suratTypes[key]) key = 'suket_usaha';
+
+        // Update visual card active state
+        document.querySelectorAll('.surat-card').forEach(function(el) {
+            el.classList.remove('selected');
+            el.style.borderColor = '#e5e7eb';
+            el.style.backgroundColor = '#ffffff';
+        });
+
+        var activeCard = document.getElementById('card_' + key);
+        if (activeCard) {
+            activeCard.classList.add('selected');
+            activeCard.style.borderColor = '#198754';
+            activeCard.style.backgroundColor = '#f0fdf4';
+        }
+
+        // Update Badge & Hidden Type Value
+        var labelElem = document.getElementById('labelSelectedSurat');
+        if (labelElem) labelElem.innerText = suratTypes[key].nama;
+
+        var formJenis = document.getElementById('form_jenis_surat');
+        if (formJenis) formJenis.value = key;
+
+        // Update Dynamic Form Fields
+        var item = suratTypes[key];
+        var fKeperluan = document.getElementById('f_keperluan');
+        if (fKeperluan) {
+            fKeperluan.placeholder = item.keperluanHint;
+            fKeperluan.value = '';
+        }
+
+        var lExtra1 = document.getElementById('label_extra1');
+        var lExtra2 = document.getElementById('label_extra2');
+        var fExtra1 = document.getElementById('f_extra1');
+        var fExtra2 = document.getElementById('f_extra2');
+
+        if (lExtra1) lExtra1.innerText = item.extra1Label;
+        if (lExtra2) lExtra2.innerText = item.extra2Label;
+        if (fExtra1) {
+            fExtra1.placeholder = item.extra1Hint;
+            fExtra1.value = '';
+        }
+        if (fExtra2) {
+            fExtra2.placeholder = item.extra2Hint;
+            fExtra2.value = '';
+        }
+
+        // Render Dynamic Upload Requirements
+        var docContainer = document.getElementById('dokumen_persyaratan_container');
+        if (docContainer && item.dokumenSyarat) {
+            docContainer.innerHTML = item.dokumenSyarat.map(function(doc, idx) {
+                var wajibText = doc.wajib ? 'Wajib' : 'Opsional';
+                var reqAttr = doc.wajib ? 'required' : '';
+                return '<div class="col-md-6 mb-2">' +
+                    '<label class="form-label small fw-semibold text-dark d-flex justify-content-between mb-1" style="font-size:0.8rem;">' +
+                        '<span><i class="bi bi-file-earmark-arrow-up text-success me-1"></i>' + doc.label + '</span>' +
+                        '<span class="badge bg-danger bg-opacity-10 text-danger" style="font-size:0.68rem;">' + wajibText + '</span>' +
+                    '</label>' +
+                    '<input type="file" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.pdf" ' + reqAttr + ' onchange="validateDocSize(this, 5)" data-folder="' + doc.folder + '" />' +
+                    '<div class="file-size-feedback text-muted mt-1" style="font-size:0.72rem;">Format: JPG, PNG, PDF (Maks 5MB)</div>' +
+                '</div>';
+            }).join('');
+        }
+    };
+
+    // 3. Validasi Ukuran File Upload (5MB)
+    window.validateDocSize = function(input, maxMb) {
+        if (!input.files || !input.files[0]) return;
+        var file = input.files[0];
+        var maxBytes = maxMb * 1024 * 1024;
+        var feedback = input.nextElementSibling;
+
+        if (file.size > maxBytes) {
+            var actualMb = (file.size / (1024 * 1024)).toFixed(2);
+            alert('⚠️ Perhatian:\nUkuran file "' + file.name + '" adalah ' + actualMb + ' MB, melebihi batas maksimal ' + maxMb + ' MB.\n\nSilakan pilih file dokumen dengan ukuran maksimal ' + maxMb + ' MB.');
+            input.value = '';
+            if (feedback) feedback.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-circle me-1"></i>File ditolak (Ukuran > ' + maxMb + 'MB)</span>';
+        } else {
+            var sizeKb = (file.size / 1024).toFixed(0);
+            var sizeDisplay = file.size > 1024 * 1024 ? (file.size / (1024 * 1024)).toFixed(2) + ' MB' : sizeKb + ' KB';
+            if (feedback) feedback.innerHTML = '<span class="text-success"><i class="bi bi-check-circle me-1"></i>' + file.name + ' (' + sizeDisplay + ')</span>';
+        }
+    };
+
+    // 4. Modal Pratinjau Surat Resmi
+    window.showPreviewModal = function() {
+        var jenis = document.getElementById('form_jenis_surat').value;
+        var conf = suratTypes[jenis] || suratTypes['suket_usaha'];
+        var nama = document.getElementById('f_nama').value || '[Nama Pemohon]';
+        var nik = document.getElementById('f_nik').value || '[NIK Pemohon]';
+        var tempat = document.getElementById('f_tempat_lahir').value || '[Tempat Lahir]';
+        var tgl = document.getElementById('f_tanggal_lahir').value || '[Tanggal Lahir]';
+        var jk = document.getElementById('f_jk').value || '[Jenis Kelamin]';
+        var pekerjaan = document.getElementById('f_pekerjaan').value || '[Pekerjaan]';
+        var alamat = document.getElementById('f_alamat').value || '[Alamat Lengkap]';
+        var keperluan = document.getElementById('f_keperluan').value || '[Keperluan Surat]';
+        var extra1 = document.getElementById('f_extra1')?.value || '-';
+        var extra2 = document.getElementById('f_extra2')?.value || '-';
+
+        document.getElementById('pv_judul').innerText = conf.judulResmi;
+        document.getElementById('pv_isi').innerHTML = 
+            '<p>Yang bertanda tangan di bawah ini, Wali Nagari Koto Malintang, Kecamatan Tanjung Raya, Kabupaten Agam, menerangkan bahwa:</p>' +
+            '<table style="width:100%;margin-bottom:12px;">' +
+                '<tr><td style="width:180px;">Nama Lengkap</td><td>: <strong>' + nama + '</strong></td></tr>' +
+                '<tr><td>NIK KTP</td><td>: ' + nik + '</td></tr>' +
+                '<tr><td>Tempat / Tgl Lahir</td><td>: ' + tempat + ', ' + tgl + '</td></tr>' +
+                '<tr><td>Jenis Kelamin</td><td>: ' + jk + '</td></tr>' +
+                '<tr><td>Pekerjaan</td><td>: ' + pekerjaan + '</td></tr>' +
+                '<tr><td>Alamat</td><td>: ' + alamat + '</td></tr>' +
+                '<tr><td>' + conf.extra1Label + '</td><td>: <strong>' + extra1 + '</strong></td></tr>' +
+                '<tr><td>' + conf.extra2Label + '</td><td>: ' + extra2 + '</td></tr>' +
+            '</table>' +
+            '<p>Orang tersebut di atas adalah benar penduduk yang berdomisili di Nagari Koto Malintang dan surat ini diberikan untuk keperluan: <strong>' + keperluan + '</strong>.</p>' +
+            '<p>Demikian surat keterangan ini kami perbuat dengan sebenarnya agar dapat dipergunakan sebagaimana mestinya.</p>';
+
+        var modal = new bootstrap.Modal(document.getElementById('modalPreviewSurat'));
+        modal.show();
+    };
+
+    // 5. Pengiriman Formulir Surat ke Backend Laravel & MySQL
+    window.handleWargaFormSubmit = async function(e) {
+        e.preventDefault();
+        var jenis = document.getElementById('form_jenis_surat').value;
+        var nama = document.getElementById('f_nama').value.trim();
+        var nik = document.getElementById('f_nik').value.trim();
+        var tempat = document.getElementById('f_tempat_lahir').value.trim();
+        var tgl = document.getElementById('f_tanggal_lahir').value;
+        var jk = document.getElementById('f_jk').value;
+        var agama = document.getElementById('f_agama') ? document.getElementById('f_agama').value : 'Islam';
+        var pekerjaan = document.getElementById('f_pekerjaan').value.trim();
+        var alamat = document.getElementById('f_alamat').value.trim();
+        var keperluan = document.getElementById('f_keperluan').value.trim();
+        var extra1 = document.getElementById('f_extra1')?.value || '';
+        var extra2 = document.getElementById('f_extra2')?.value || '';
+
+        var formData = new FormData();
+        formData.append('jenis_surat', jenis);
+        formData.append('nama_pemohon', nama);
+        formData.append('nik_pemohon', nik);
+        formData.append('tempat_lahir', tempat);
+        formData.append('tanggal_lahir', tgl);
+        formData.append('jenis_kelamin', jk);
+        formData.append('agama', agama);
+        formData.append('pekerjaan', pekerjaan);
+        formData.append('alamat', alamat);
+        formData.append('keperluan', keperluan);
+        formData.append('nama_usaha', extra1);
+        formData.append('bidang_usaha', extra2);
+
+        // Lampirkan berkas persyaratan
+        var fileInputs = document.querySelectorAll('#dokumen_persyaratan_container input[type="file"]');
+        fileInputs.forEach(function(input, index) {
+            if (input.files && input.files[0]) {
+                if (index === 0) formData.append('berkas_ktp', input.files[0]);
+                else if (index === 1) formData.append('berkas_kk', input.files[0]);
+                else formData.append('berkas_lainnya', input.files[0]);
+            }
+        });
+
+        const res = await KotoAuth.submitSurat(formData);
+        if (res.ok && res.data.success) {
+            alert('✅ Permohonan Surat Berhasil Diajukan!\n\nNomor Pengajuan: ' + (res.data.nomor_pengajuan || '') + '\nData telah tersimpan di database MySQL nagari_koto_malintang dan berkas diunggah ke Google Drive.');
+            e.target.reset();
+            window.location.href = '/warga/surat';
+        } else {
+            alert('Gagal mengajukan surat: ' + (res.data?.message || 'Silakan login terlebih dahulu.'));
+            if (res.status === 401) {
+                window.location.href = '/login';
+            }
+        }
+    };
+
+    // 6. Event Binding saat Halaman Dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inisialisasi surat pertama (SKU)
+        window.selectSurat('suket_usaha', 'Surat Keterangan Usaha (SKU)');
+
+        // Pasang Event Listener langsung pada kartu 7 surat
+        document.querySelectorAll('.surat-card').forEach(function(card) {
+            card.addEventListener('click', function() {
+                var id = this.id.replace('card_', '');
+                var name = this.querySelector('h6')?.innerText || 'Surat';
+                window.selectSurat(id, name);
+            });
+        });
+    });
+    </script>
+</body>
+</html>

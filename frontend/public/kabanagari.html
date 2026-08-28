@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kaba Nagari - Nagari Koto Malintang</title>
+    <link rel="icon" href="image/logo agam.png" type="image/png" />
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+
+    <!-- Footer styles -->
+    <link href="footer-styles.css" rel="stylesheet" />
+
+    <style>
+        /* === BASE STYLES === */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+            position: relative;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* === NAVBAR BEHAVIOR === */
+        .navbar {
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            z-index: 1050;
+        }
+
+        .navbar.transparent {
+            background-color: transparent !important;
+        }
+
+        .navbar.scrolled {
+            background-color: #198754 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Desktop Dropdown Hover */
+        @media (min-width: 992px) {
+            .dropdown:hover > .dropdown-menu {
+                display: block;
+            }
+            .dropdown-submenu {
+                position: relative;
+            }
+            .dropdown-submenu .dropdown-menu {
+                top: 0;
+                left: 100%;
+                margin-left: 0;
+                display: none;
+                position: absolute;
+            }
+            .dropdown-submenu:hover .dropdown-menu {
+                display: block;
+            }
+        }
+
+        .dropdown-menu {
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: none;
+        }
+
+        .dropdown-item {
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #e8f5e9;
+            color: #198754;
+            padding-left: 20px;
+        }
+
+        .social-icons a {
+            margin-left: 12px;
+            color: white;
+            font-size: 1.1rem;
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .social-icons a:hover {
+            color: #ffc107;
+            transform: scale(1.15);
+        }
+    </style>
+    <style>
+    body {
+        background: #f8f9fa;
+        padding-top: 70px;
+    }
+
+    .hero-kaba {
+        background: linear-gradient(135deg, #198754 0%, #04543a 100%);
+        color: white;
+        padding: 90px 0 60px;
+        position: relative;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .hero-kaba h1 {
+        font-size: 3.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .kaba-card {
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+        padding: 24px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .kaba-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 35px rgba(0,0,0,0.12);
+    }
+</style>
+</head>
+<body>
+
+    <!-- NAVBAR (Match user frontend navbar) -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-success px-3" id="mainNavbar">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="index.html">
+                <img src="image/logo agam.png" alt="Logo Agam" width="40" class="me-2" />
+                NAGARI KOTO MALINTANG
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- MENU NAVIGASI -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link " href="index.html">
+                            Beranda
+                        </a>
+                    </li>
+
+                    <!-- Dropdown Profil Nagari -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle " role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profil Nagari
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item " href="profil-nagari.html">Profil Nagari</a></li>
+                            <li><a class="dropdown-item " href="sejarah.html">Sejarah Nagari</a></li>
+                            <li><a class="dropdown-item " href="struktur-nagari.html">Struktur Nagari</a></li>
+                            <li><a class="dropdown-item " href="visi-misi.html">Visi Misi</a></li>
+                            <li><a class="dropdown-item " href="perangkat-nagari.html">Perangkat Nagari</a></li>
+                            <li><a class="dropdown-item " href="umkm.html">UMKM Nagari</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Menu Lainnya -->
+                    <li class="nav-item">
+                        <a class="nav-link " href="layanan-surat.html">
+                            <i class="bi bi-file-earmark-text me-1"></i> Layanan Surat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="objek-wisata.html">Objek Wisata</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active fw-bold text-warning" href="kaba-nagari.html">Kaba Nagari</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://ppid.agamkab.go.id/" target="_blank">PPID</a>
+                    </li>
+
+                    <!-- MENU AUTENTIKASI / USER -->
+                                            <li class="nav-item ms-lg-2">
+                            <a href="login.html" class="btn btn-warning btn-sm rounded-pill px-3 fw-bold text-dark shadow-sm">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Masuk / Daftar
+                            </a>
+                        </li>
+                    
+                    <!-- Sosial Media -->
+                    <li class="nav-item social-icons d-flex align-items-center ms-lg-2 mt-2 mt-lg-0">
+                        <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <main>
+        <!-- Hero Section -->
+<section class="hero-kaba">
+    <div class="container">
+        <h1>Kaba Nagari</h1>
+        <p class="lead text-light mb-0">Warta Terkini, Kabar Nagari, dan Informasi Publik Koto Malintang</p>
+    </div>
+</section>
+
+<div class="container mb-5">
+            <div class="row g-4">
+                            <div class="col-md-6 col-lg-4">
+                    <div class="kaba-card">
+                                                
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2">
+                                <i class="bi bi-tag-fill me-1"></i> Pemberdayaan Masyarakat
+                            </span>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3 me-1 text-warning"></i>
+                                10 Aug 2026
+                            </small>
+                        </div>
+
+                        <h4 class="fw-bold text-dark fs-5 mb-3" style="line-height: 1.4;">
+                            LPPM Universitas Andalas, PLN Indonesia Power, dan Nagari Koto Malintang Jalin Kerja Sama Pemberdayaan Masyarakat Berbasis Aren
+                        </h4>
+
+                        <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
+                            Nagari Koto Malintang menjalin kerja sama dengan LPPM Universitas Andalas dan PLN Indonesia Power dalam pemberdayaan masyarakat me...
+                        </p>
+
+                        <div class="pt-3 border-top mt-auto">
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill w-100 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalKaba1">
+                                Baca Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Detail Berita -->
+                <div class="modal fade" id="modalKaba1" tabindex="-1" aria-labelledby="labelKaba1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+                        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                            <div class="modal-header bg-success text-white p-4">
+                                <div>
+                                    <span class="badge bg-warning text-dark mb-2">Pemberdayaan Masyarakat</span>
+                                    <h4 class="modal-title fw-bold" id="labelKaba1">LPPM Universitas Andalas, PLN Indonesia Power, dan Nagari Koto Malintang Jalin Kerja Sama Pemberdayaan Masyarakat Berbasis Aren</h4>
+                                    <div class="small text-white text-opacity-75 mt-1">
+                                        <i class="bi bi-calendar3 me-1"></i> 10 August 2026
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <div class="p-3 bg-light rounded-3 mb-4 border-start border-4 border-success fst-italic text-secondary">
+                                    Nagari Koto Malintang menjalin kerja sama dengan LPPM Universitas Andalas dan PLN Indonesia Power dalam pemberdayaan masyarakat melalui pelatihan pengelolaan tanaman aren.
+                                </div>
+                                <div class="text-dark lh-lg" style="white-space: pre-line; font-size: 1.05rem;">
+                                    Lembaga Penelitian dan Pengabdian kepada Masyarakat (LPPM) Universitas Andalas bersama PT PLN Indonesia Power UBP Bukittinggi dan Pemerintah Nagari Koto Malintang, Kecamatan Tanjung Raya, Kabupaten Agam, menandatangani Perjanjian Kerja Sama tentang pemberdayaan masyarakat melalui pelatihan pengelolaan tanaman aren pada 10 Agustus 2026 di Kantor LPPM Universitas Andalas, Padang.
+
+Kerja sama ini menjadi langkah kolaboratif antara dunia usaha, perguruan tinggi, dan pemerintah nagari untuk mengembangkan potensi lokal. Program tersebut diharapkan dapat meningkatkan kapasitas masyarakat sekaligus mendukung peningkatan kesejahteraan masyarakat Nagari Koto Malintang.
+
+Perjanjian kerja sama ditandatangani oleh Budi Murianto selaku Manager PT PLN Indonesia Power UBP Bukittinggi, Prof. Dr. techn. Marzuki selaku Ketua LPPM Universitas Andalas, dan Hendra Yanto selaku Wali Nagari Koto Malintang.
+                                </div>
+                            </div>
+                            <div class="modal-footer border-0 p-4 pt-0">
+                                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                            <div class="col-md-6 col-lg-4">
+                    <div class="kaba-card">
+                                                
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2">
+                                <i class="bi bi-tag-fill me-1"></i> Olahraga
+                            </span>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3 me-1 text-warning"></i>
+                                07 Jul 2026
+                            </small>
+                        </div>
+
+                        <h4 class="fw-bold text-dark fs-5 mb-3" style="line-height: 1.4;">
+                            Boss Kids Koto Malintang Juara Satu Open Turnamen Bola Voli Merpati Cup 2026
+                        </h4>
+
+                        <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
+                            Tim Boss Kids Nagari Koto Malintang berhasil meraih juara pertama Open Turnamen Bola Voli Merpati Cup 2026 setelah mengalahkan Pat...
+                        </p>
+
+                        <div class="pt-3 border-top mt-auto">
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill w-100 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalKaba2">
+                                Baca Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Detail Berita -->
+                <div class="modal fade" id="modalKaba2" tabindex="-1" aria-labelledby="labelKaba2" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+                        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                            <div class="modal-header bg-success text-white p-4">
+                                <div>
+                                    <span class="badge bg-warning text-dark mb-2">Olahraga</span>
+                                    <h4 class="modal-title fw-bold" id="labelKaba2">Boss Kids Koto Malintang Juara Satu Open Turnamen Bola Voli Merpati Cup 2026</h4>
+                                    <div class="small text-white text-opacity-75 mt-1">
+                                        <i class="bi bi-calendar3 me-1"></i> 07 July 2026
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <div class="p-3 bg-light rounded-3 mb-4 border-start border-4 border-success fst-italic text-secondary">
+                                    Tim Boss Kids Nagari Koto Malintang berhasil meraih juara pertama Open Turnamen Bola Voli Merpati Cup 2026 setelah mengalahkan Patriot Nagari Maninjau dengan skor 3-1.
+                                </div>
+                                <div class="text-dark lh-lg" style="white-space: pre-line; font-size: 1.05rem;">
+                                    Boss Kids Nagari Koto Malintang, Kecamatan Tanjung Raya, Kabupaten Agam, berhasil meraih juara pertama Open Turnamen Bola Voli Merpati Cup 2026. Pertandingan final berlangsung di Lapangan Merpati, Jorong Ambacang, Nagari Koto Malintang, pada Senin malam, 6 Juli 2026.
+
+Dalam pertandingan final, Boss Kids Koto Malintang berhasil mengalahkan Patriot Nagari Maninjau dengan skor 3-1. Sementara itu, juara ketiga diraih Sabena Padang Tarok setelah mengalahkan Patagok A Nagari Koto Gadang dengan skor 3-2.
+
+Untuk kategori putri, juara pertama diraih oleh tuan rumah Merpati Koto Malintang. Kegiatan ini juga menjadi wadah silaturahmi masyarakat serta memberikan ruang bagi generasi muda untuk mengembangkan bakat di bidang olahraga.
+                                </div>
+                            </div>
+                            <div class="modal-footer border-0 p-4 pt-0">
+                                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                            <div class="col-md-6 col-lg-4">
+                    <div class="kaba-card">
+                                                
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2">
+                                <i class="bi bi-tag-fill me-1"></i> Adat &amp; Budaya
+                            </span>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3 me-1 text-warning"></i>
+                                01 Jun 2026
+                            </small>
+                        </div>
+
+                        <h4 class="fw-bold text-dark fs-5 mb-3" style="line-height: 1.4;">
+                            Mangaji Tamaik KAN Koto Malintang, Wujud Syukur dan Pelestarian Tradisi Adat Bernuansa Religius
+                        </h4>
+
+                        <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
+                            KAN Koto Malintang menggelar Mangaji Tamaik sebagai bentuk rasa syukur masyarakat sekaligus upaya melestarikan tradisi adat yang t...
+                        </p>
+
+                        <div class="pt-3 border-top mt-auto">
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill w-100 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalKaba3">
+                                Baca Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Detail Berita -->
+                <div class="modal fade" id="modalKaba3" tabindex="-1" aria-labelledby="labelKaba3" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+                        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                            <div class="modal-header bg-success text-white p-4">
+                                <div>
+                                    <span class="badge bg-warning text-dark mb-2">Adat &amp; Budaya</span>
+                                    <h4 class="modal-title fw-bold" id="labelKaba3">Mangaji Tamaik KAN Koto Malintang, Wujud Syukur dan Pelestarian Tradisi Adat Bernuansa Religius</h4>
+                                    <div class="small text-white text-opacity-75 mt-1">
+                                        <i class="bi bi-calendar3 me-1"></i> 01 June 2026
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <div class="p-3 bg-light rounded-3 mb-4 border-start border-4 border-success fst-italic text-secondary">
+                                    KAN Koto Malintang menggelar Mangaji Tamaik sebagai bentuk rasa syukur masyarakat sekaligus upaya melestarikan tradisi adat yang telah diwariskan secara turun-temurun.
+                                </div>
+                                <div class="text-dark lh-lg" style="white-space: pre-line; font-size: 1.05rem;">
+                                    Kerapatan Adat Nagari (KAN) Koto Malintang menggelar kegiatan Mangaji Tamaik bersama Ust. Ristawardi Dt. Marajo di Masjid Nurul Huda, Jorong Rambai, Nagari Koto Malintang, Kecamatan Tanjung Raya, pada Senin, 1 Juni 2026.
+
+Tradisi Mangaji Tamaik telah diwariskan secara turun-temurun sejak zaman nenek moyang dan masih terus dilestarikan oleh masyarakat hingga saat ini. Kegiatan ini menjadi bentuk ungkapan rasa syukur masyarakat nagari atas berbagai nikmat dan rezeki yang diperoleh selama satu tahun, baik dari usaha di perairan Danau Maninjau maupun usaha di daratan.
+
+Kegiatan tersebut turut dihadiri unsur pemerintah daerah, Camat Tanjung Raya, Wali Nagari Koto Malintang, alim ulama, niniak mamak, serta sejumlah tokoh dan undangan lainnya.
+                                </div>
+                            </div>
+                            <div class="modal-footer border-0 p-4 pt-0">
+                                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+    </div>
+    </main>
+
+    <!-- === FOOTER WITH MAP (Match user frontend footer.html) === -->
+    <footer class="elegant-footer">
+        <div class="footer-background">
+            <div class="footer-shapes">
+                <div class="footer-shape footer-shape-1"></div>
+                <div class="footer-shape footer-shape-2"></div>
+                <div class="footer-shape footer-shape-3"></div>
+            </div>
+        </div>
+
+        <div class="container position-relative">
+            <div class="row g-4">
+                <!-- Informasi Kontak -->
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <h4 class="footer-title">
+                            <i class="bi bi-geo-alt-fill me-2"></i>
+                            Nagari Koto Malintang
+                        </h4>
+                        <div class="footer-content">
+                            <div class="contact-item">
+                                <i class="bi bi-house-door-fill"></i>
+                                <div>
+                                    <strong>Alamat Kantor</strong>
+                                    <p>Koto Malintang, Kec. Tanjung Raya, Kabupaten Agam, Sumatera Barat 26454</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-telephone-fill"></i>
+                                <div>
+                                    <strong>Telepon</strong>
+                                    <p>+62 752 123456</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-envelope-fill"></i>
+                                <div>
+                                    <strong>Email</strong>
+                                    <p>info@kotomalintang.go.id</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jam Pelayanan -->
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <h4 class="footer-title">
+                            <i class="bi bi-clock-fill me-2"></i>
+                            Jam Pelayanan
+                        </h4>
+                        <div class="footer-content">
+                            <div class="schedule-item">
+                                <div class="day">Senin - Kamis</div>
+                                <div class="time">08:00 - 16:00 WIB</div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="day">Jumat</div>
+                                <div class="time">08:00 - 11:30 WIB</div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="day">Sabtu - Minggu</div>
+                                <div class="time">Tutup</div>
+                            </div>
+                            <div class="emergency-contact">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <span>Layanan Darurat: 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Peta Lokasi -->
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <h4 class="footer-title">
+                            <i class="bi bi-map-fill me-2"></i>
+                            Lokasi Kami
+                        </h4>
+                        <div class="map-container">
+                            <div class="map-placeholder">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.817267894847!2d100.2134567!3d-0.2876543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b942e2b9d2c5%3A0x5c5c5c5c5c5c5c5c!2sKoto%20Malintang%2C%20Agam%2C%20West%20Sumatra!5e0!3m2!1sen!2sid!4v1234567890123"
+                                    width="100%" 
+                                    height="200" 
+                                    style="border:0; border-radius: 15px;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                            <div class="map-actions">
+                                <a href="https://maps.google.com/?q=Nagari+Koto+Malintang+Agam" target="_blank" class="btn btn-outline-light btn-sm">
+                                    <i class="bi bi-arrow-up-right-square"></i>
+                                    Buka di Google Maps
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="footer-logo">
+                            <img src="image/logo agam.png" alt="Logo Agam" width="40" class="me-3">
+                            <div>
+                                <h6 class="mb-0">Nagari Koto Malintang</h6>
+                                <small>Kabupaten Agam, Sumatera Barat</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="social-links">
+                            <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
+                            <a href="mailto:info@kotomalintang.go.id" class="social-link"><i class="bi bi-envelope"></i></a>
+                        </div>
+                        <p class="copyright">
+                            &copy; 2026 Nagari Koto Malintang. All rights reserved.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Navbar Scroll Effect -->
+    <script>
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('mainNavbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+
+    </body>
+</html>
