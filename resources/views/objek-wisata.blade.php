@@ -154,6 +154,11 @@
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body p-4">
+                                @if ($wisataImg)
+                                    <div class="mb-3 rounded-3 overflow-hidden shadow-sm" style="max-height: 280px;">
+                                        <img src="{{ $wisataImg }}" alt="{{ $wisata->nama }}" class="w-100 h-100" style="object-fit: cover;" />
+                                    </div>
+                                @endif
                                 <h6 class="fw-bold text-dark mb-2">Deskripsi Lengkap:</h6>
                                 <p class="text-muted lh-base" style="white-space: pre-line;">{{ $wisata->deskripsi }}</p>
                             </div>

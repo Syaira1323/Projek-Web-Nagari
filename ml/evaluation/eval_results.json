@@ -1,0 +1,154 @@
+{
+    "metrics": {
+        "accuracy": 1.0,
+        "macro_precision": 1.0,
+        "macro_recall": 1.0,
+        "macro_f1": 1.0,
+        "weighted_f1": 1.0
+    },
+    "classification_report": {
+        "Model NA": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "SKU": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "SKM": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "SKBM": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "SKP": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "SKTM": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "SKD": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "accuracy": 1.0,
+        "macro avg": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 210.0
+        },
+        "weighted avg": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 210.0
+        }
+    },
+    "confusion_matrix": [
+        [
+            30,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            30,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            30,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            30,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            30,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            30,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            30
+        ]
+    ],
+    "labels": [
+        "Model NA",
+        "SKU",
+        "SKM",
+        "SKBM",
+        "SKP",
+        "SKTM",
+        "SKD"
+    ],
+    "dataset_split": {
+        "total": 2100,
+        "train": 1680,
+        "val": 210,
+        "test": 210
+    },
+    "hyperparameters": {
+        "base_model": "cahya/distilbert-base-indonesian",
+        "max_length": 64,
+        "epochs": 3,
+        "learning_rate": 3e-05,
+        "batch_size": 16,
+        "seed": 42
+    }
+}

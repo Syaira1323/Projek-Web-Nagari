@@ -139,7 +139,10 @@
                                             <i class="bi bi-eye me-1"></i> Detail
                                         </a>
                                         @if ($isDisetujui)
-                                            <a href="{{ route('warga.surat.print', $surat->id) }}" target="_blank" class="btn btn-sm btn-success rounded-pill px-3 ms-1 shadow-sm">
+                                            <a href="{{ route('warga.surat.download-pdf', $surat->id) }}" class="btn btn-sm btn-danger rounded-pill px-3 ms-1 shadow-sm">
+                                                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                                            </a>
+                                            <a href="{{ route('warga.surat.print', $surat->id) }}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3 ms-1 shadow-sm">
                                                 <i class="bi bi-printer me-1"></i> Cetak
                                             </a>
                                         @endif

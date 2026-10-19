@@ -25,3 +25,22 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+ # Python environment and cache
+ml/.venv/
+ml/**/__pycache__/
+ml/**/*.pyc
+ml/.pytest_cache/
+ml/.mypy_cache/
+
+# DistilBERT training checkpoints
+ml/training_checkpoints/
+
+# Temporary test files
+scratch/
+
+# Large DistilBERT model weights (store separately)
+ml/models/**/model.safetensors
+
+# Keep training datasets local for public repository safety
+ml/dataset/
+ml/models/**/training_args.bin

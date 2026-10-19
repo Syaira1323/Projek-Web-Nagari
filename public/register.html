@@ -214,7 +214,7 @@
     <!-- NAVBAR (Match user frontend navbar) -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-success px-3" id="mainNavbar">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="index.html">
                 <img src="image/logo agam.png" alt="Logo Agam" width="40" class="me-2" />
                 NAGARI KOTO MALINTANG
             </a>
@@ -227,7 +227,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item">
-                        <a class="nav-link " href="/">
+                        <a class="nav-link " href="index.html">
                             Beranda
                         </a>
                     </li>
@@ -238,26 +238,26 @@
                             Profil Nagari
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item " href="/profil-nagari">Profil Nagari</a></li>
-                            <li><a class="dropdown-item " href="/sejarah">Sejarah Nagari</a></li>
-                            <li><a class="dropdown-item " href="/struktur-nagari">Struktur Nagari</a></li>
-                            <li><a class="dropdown-item " href="/visi-misi">Visi Misi</a></li>
-                            <li><a class="dropdown-item " href="/perangkat-nagari">Perangkat Nagari</a></li>
-                            <li><a class="dropdown-item " href="/umkm">UMKM Nagari</a></li>
+                            <li><a class="dropdown-item " href="profil-nagari.html">Profil Nagari</a></li>
+                            <li><a class="dropdown-item " href="sejarah.html">Sejarah Nagari</a></li>
+                            <li><a class="dropdown-item " href="struktur-nagari.html">Struktur Nagari</a></li>
+                            <li><a class="dropdown-item " href="visi-misi.html">Visi Misi</a></li>
+                            <li><a class="dropdown-item " href="perangkat-nagari.html">Perangkat Nagari</a></li>
+                            <li><a class="dropdown-item " href="umkm.html">UMKM Nagari</a></li>
                         </ul>
                     </li>
 
                     <!-- Menu Lainnya -->
                     <li class="nav-item">
-                        <a class="nav-link " href="/layanan-surat">
+                        <a class="nav-link " href="layanan-surat.html">
                             <i class="bi bi-file-earmark-text me-1"></i> Layanan Surat
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="/objek-wisata">Objek Wisata</a>
+                        <a class="nav-link " href="objek-wisata.html">Objek Wisata</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="/kaba-nagari">Kaba Nagari</a>
+                        <a class="nav-link " href="kaba-nagari.html">Kaba Nagari</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="https://ppid.agamkab.go.id/" target="_blank">PPID</a>
@@ -269,7 +269,7 @@
                                 <i class="bi bi-box-arrow-in-right me-1"></i> Masuk / Daftar
                             </a>
                         </li>
-                    
+
                     <!-- Sosial Media -->
                     <li class="nav-item social-icons d-flex align-items-center ms-lg-2 mt-2 mt-lg-0">
                         <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
@@ -358,7 +358,7 @@
 
                 <div class="text-center mt-3 pt-3 border-top">
                     <p class="small text-muted mb-0">
-                        Sudah memiliki akun? 
+                        Sudah memiliki akun?
                         <a href="login.html" class="text-success fw-bold text-decoration-none">Masuk di sini</a>
                     </p>
                 </div>
@@ -370,24 +370,56 @@
 
     <script src="Auth.js"></script>
     <script>
-        function handleRegisterSubmit(e) {
+        async function handleRegisterSubmit(e) {
             e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const address = document.getElementById('address').value.trim();
             const p1 = document.getElementById('password').value;
             const p2 = document.getElementById('password_confirmation').value;
+            const alertBox = document.getElementById('regAlert');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
 
             if (p1 !== p2) {
-                alert('Konfirmasi password tidak cocok!');
+                alertBox.className = 'alert alert-danger small';
+                alertBox.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Konfirmasi password tidak cocok!';
+                alertBox.classList.remove('d-none');
                 return;
             }
 
-            const alertBox = document.getElementById('regAlert');
-            alertBox.className = 'alert alert-success small';
-            alertBox.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Pendaftaran berhasil! Mengarahkan ke form permohonan surat...';
-            alertBox.classList.remove('d-none');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Mendaftarkan akun...';
+            }
 
-            setTimeout(() => {
-                window.location.href = 'layanan-surat.html';
-            }, 800);
+            try {
+                const res = await KotoAuth.register({
+                    name: name,
+                    username: username,
+                    phone: phone,
+                    address: address,
+                    password: p1,
+                    password_confirmation: p2
+                });
+
+                alertBox.className = 'alert alert-success small';
+                alertBox.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Pendaftaran berhasil! Silakan masuk dengan akun baru Anda...';
+                alertBox.classList.remove('d-none');
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 800);
+            } catch (err) {
+                alertBox.className = 'alert alert-danger small';
+                alertBox.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> ${err.message || 'Pendaftaran gagal. Silakan periksa kembali data Anda.'}`;
+                alertBox.classList.remove('d-none');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-person-check-fill me-1"></i> Buat Akun Sekarang';
+                }
+            }
         }
     </script>
 
@@ -473,13 +505,13 @@
                         </h4>
                         <div class="map-container">
                             <div class="map-placeholder">
-                                <iframe 
+                                <iframe
                                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.817267894847!2d100.2134567!3d-0.2876543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b942e2b9d2c5%3A0x5c5c5c5c5c5c5c5c!2sKoto%20Malintang%2C%20Agam%2C%20West%20Sumatra!5e0!3m2!1sen!2sid!4v1234567890123"
-                                    width="100%" 
-                                    height="200" 
-                                    style="border:0; border-radius: 15px;" 
-                                    allowfullscreen="" 
-                                    loading="lazy" 
+                                    width="100%"
+                                    height="200"
+                                    style="border:0; border-radius: 15px;"
+                                    allowfullscreen=""
+                                    loading="lazy"
                                     referrerpolicy="no-referrer-when-downgrade">
                                 </iframe>
                             </div>
@@ -522,7 +554,7 @@
         </div>
     </footer>
 
-    
+
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

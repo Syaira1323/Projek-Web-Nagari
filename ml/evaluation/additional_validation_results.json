@@ -1,0 +1,208 @@
+{
+    "summary": {
+        "total": 14,
+        "correct": 14,
+        "wrong": 0,
+        "accuracy": 100.0
+    },
+    "class_summary": {
+        "Model NA": {
+            "total": 2,
+            "correct": 2
+        },
+        "SKU": {
+            "total": 2,
+            "correct": 2
+        },
+        "SKM": {
+            "total": 2,
+            "correct": 2
+        },
+        "SKBM": {
+            "total": 2,
+            "correct": 2
+        },
+        "SKP": {
+            "total": 2,
+            "correct": 2
+        },
+        "SKTM": {
+            "total": 2,
+            "correct": 2
+        },
+        "SKD": {
+            "total": 2,
+            "correct": 2
+        }
+    },
+    "results": [
+        {
+            "no": 1,
+            "input": "Pak kami mau melangsungkan akad nikah dengan orang Maninjau bulan depan, mohon dibuatkan surat pengantar untuk dibawa ke kantor KUA.",
+            "expected": "Model NA",
+            "top1": "Model NA",
+            "conf1": 0.9938096404075623,
+            "top2": "SKTM",
+            "conf2": 0.0013217480154708028,
+            "top3": "SKBM",
+            "conf3": 0.0012376620434224606,
+            "is_correct": true
+        },
+        {
+            "no": 2,
+            "input": "Butuh kelengkapan berkas untuk mendaftar perkawinan anak gadis saya di KUA Tanjung Raya.",
+            "expected": "Model NA",
+            "top1": "Model NA",
+            "conf1": 0.9713332653045654,
+            "top2": "SKBM",
+            "conf2": 0.014291105791926384,
+            "top3": "SKTM",
+            "conf3": 0.004316071048378944,
+            "is_correct": true
+        },
+        {
+            "no": 3,
+            "input": "Saya mau mengajukan tambahan modal usaha bengkel motor saya ke Bank BRI, pihak bank minta surat keterangan bahwa saya benar punya usaha aktif di jorong ini.",
+            "expected": "SKU",
+            "top1": "SKU",
+            "conf1": 0.9918774366378784,
+            "top2": "SKP",
+            "conf2": 0.001932200393639505,
+            "top3": "SKD",
+            "conf3": 0.0014805957907810807,
+            "is_correct": true
+        },
+        {
+            "no": 4,
+            "input": "Minta surat keterangan usaha ternak ayam potong untuk syarat pengajuan bantuan permodalan dari dinas koperasi.",
+            "expected": "SKU",
+            "top1": "SKU",
+            "conf1": 0.9855947494506836,
+            "top2": "SKP",
+            "conf2": 0.005202989559620619,
+            "top3": "SKTM",
+            "conf3": 0.0027620091568678617,
+            "is_correct": true
+        },
+        {
+            "no": 5,
+            "input": "Mohon bantuannya untuk pembuatan surat keterangan meninggal dunia bagi orang tua kami yang wafat dua hari lalu guna pengurusan akta kematian dan taspen.",
+            "expected": "SKM",
+            "top1": "SKM",
+            "conf1": 0.9930809140205383,
+            "top2": "Model NA",
+            "conf2": 0.0016124589601531625,
+            "top3": "SKTM",
+            "conf3": 0.0012320444220677018,
+            "is_correct": true
+        },
+        {
+            "no": 6,
+            "input": "Perlu surat keterangan wafat untuk almarhum suami saya demi keperluan pengalihan rekening tabungan dan asuransi jiwa.",
+            "expected": "SKM",
+            "top1": "SKM",
+            "conf1": 0.9916967153549194,
+            "top2": "Model NA",
+            "conf2": 0.0024111424572765827,
+            "top3": "SKTM",
+            "conf3": 0.0013898116303607821,
+            "is_correct": true
+        },
+        {
+            "no": 7,
+            "input": "Saya sedang proses seleksi masuk anggota kepolisian dan diminta menyerahkan surat bukti resmi belum pernah berstatus kawin atau menikah.",
+            "expected": "SKBM",
+            "top1": "SKBM",
+            "conf1": 0.9902890920639038,
+            "top2": "Model NA",
+            "conf2": 0.0025536089669913054,
+            "top3": "SKTM",
+            "conf3": 0.0017101996345445514,
+            "is_correct": true
+        },
+        {
+            "no": 8,
+            "input": "Mohon surat pernyataan dari nagari yang menerangkan status saya masih lajang belum berkeluarga untuk berkas lamaran pegawai BUMN.",
+            "expected": "SKBM",
+            "top1": "SKBM",
+            "conf1": 0.9889211654663086,
+            "top2": "SKTM",
+            "conf2": 0.002537677064538002,
+            "top3": "Model NA",
+            "conf3": 0.0020491830073297024,
+            "is_correct": true
+        },
+        {
+            "no": 9,
+            "input": "Pihak kampus anak saya meminta surat keterangan rincian penghasilan kotor orang tua per bulan sebagai petani karena kami tidak punya slip gaji formal.",
+            "expected": "SKP",
+            "top1": "SKP",
+            "conf1": 0.9915590286254883,
+            "top2": "SKTM",
+            "conf2": 0.003264444414526224,
+            "top3": "SKU",
+            "conf3": 0.001797179807908833,
+            "is_correct": true
+        },
+        {
+            "no": 10,
+            "input": "Saya butuh surat keterangan besaran pendapatan rata-rata bulanan dari nagari untuk lampiran permohonan cicilan KPR rumah subsidi.",
+            "expected": "SKP",
+            "top1": "SKP",
+            "conf1": 0.9795743823051453,
+            "top2": "SKTM",
+            "conf2": 0.012174506671726704,
+            "top3": "SKU",
+            "conf3": 0.0033228162210434675,
+            "is_correct": true
+        },
+        {
+            "no": 11,
+            "input": "Anak saya masuk rumah sakit tapi kami dari keluarga prasejahtera dan kesulitan biaya berobat, butuh surat keterangan tidak mampu untuk keringanan dan pengurusan BPJS PBI.",
+            "expected": "SKTM",
+            "top1": "SKTM",
+            "conf1": 0.9929202198982239,
+            "top2": "SKBM",
+            "conf2": 0.0014023345429450274,
+            "top3": "SKP",
+            "conf3": 0.0012758888769894838,
+            "is_correct": true
+        },
+        {
+            "no": 12,
+            "input": "Tolong buatkan surat keterangan miskin/kurang mampu untuk syarat permohonan beasiswa Program Indonesia Pintar (PIP) anak saya di sekolah.",
+            "expected": "SKTM",
+            "top1": "SKTM",
+            "conf1": 0.992350161075592,
+            "top2": "SKP",
+            "conf2": 0.0015220025088638067,
+            "top3": "SKBM",
+            "conf3": 0.001455421093851328,
+            "is_correct": true
+        },
+        {
+            "no": 13,
+            "input": "Saya baru ngontrak rumah di Jorong Muko-Muko Nagari Koto Malintang dan butuh surat keterangan domisili tempat tinggal sementara untuk keperluan kantor pos dan lingkungan.",
+            "expected": "SKD",
+            "top1": "SKD",
+            "conf1": 0.990064799785614,
+            "top2": "SKTM",
+            "conf2": 0.002248686272650957,
+            "top3": "SKU",
+            "conf3": 0.002034172648563981,
+            "is_correct": true
+        },
+        {
+            "no": 14,
+            "input": "Minta surat keterangan bahwa saya benar-benar bertempat tinggal dan menetap di wilayah Nagari Koto Malintang untuk keperluan pembuatan rekening bank baru.",
+            "expected": "SKD",
+            "top1": "SKD",
+            "conf1": 0.989041268825531,
+            "top2": "SKBM",
+            "conf2": 0.0025128584820777178,
+            "top3": "SKU",
+            "conf3": 0.002181398682296276,
+            "is_correct": true
+        }
+    ]
+}

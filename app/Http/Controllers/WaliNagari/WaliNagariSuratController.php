@@ -8,6 +8,7 @@ use App\Models\SuratPermohonan;
 use App\Services\GoogleDriveService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class WaliNagariSuratController extends Controller
@@ -84,6 +85,19 @@ class WaliNagariSuratController extends Controller
         $surat->disetujui_wali_at = now();
         $surat->catatan_wali = $request->input('catatan_wali', 'Telah diverifikasi, disetujui, dan dibubuhi Tanda Tangan serta Stempel resmi Wali Nagari Koto Malintang.');
         $surat->save();
+
+        // Trigger Arsip PDF Final ke Google Drive (Idempotent & Aman)
+        try {
+            $this->gdriveService->archiveSuratSelesai($surat);
+        } catch (\Throwable $e) {
+            Log::error("Gagal memicu arsip Google Drive pada approval Wali Nagari web (Surat ID {$surat->id}): " . $e->getMessage(), [
+                'surat_id' => $surat->id,
+                'jenis_surat' => $surat->jenis_surat,
+                'status' => $surat->status,
+                'tahap' => 'approval_wali_nagari_web',
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()->route('wali-nagari.surat.index')
             ->with('success', "Surat {$surat->nama_jenis_surat} an. {$surat->nama_pemohon} berhasil dibubuhi Stempel & TTD Digital Resmi! Nomor: {$surat->nomor_surat}");

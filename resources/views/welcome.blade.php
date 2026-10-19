@@ -124,6 +124,9 @@
         <h1 class="hero-title-main">KOTO MALINTANG</h1>
         <p class="hero-subtitle-main">Kecamatan Tanjung Raya, Kabupaten Agam, Sumatera Barat</p>
         <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a href="{{ route('layanan-surat') }}" class="btn btn-warning btn-lg rounded-pill px-4 shadow text-dark fw-bold">
+                <i class="bi bi-file-earmark-text me-1"></i> Layanan Surat
+            </a>
             <a href="{{ route('profil-nagari') }}" class="btn btn-success btn-lg rounded-pill px-4 shadow">
                 <i class="bi bi-info-circle me-1"></i> Profil Nagari
             </a>
@@ -184,8 +187,24 @@
             @foreach ($kabaTerbaru as $kaba)
                 <div class="col-md-4">
                     <div class="news-card">
-                        <div class="news-card-img">
-                            <i class="bi bi-newspaper"></i>
+                        <div class="news-card-img" style="overflow: hidden; height: 190px;">
+                            @php
+                                $kabaImg = null;
+                                if ($kaba->gambar) {
+                                    if (file_exists(public_path($kaba->gambar))) {
+                                        $kabaImg = asset($kaba->gambar);
+                                    } elseif (file_exists(public_path('image/' . $kaba->gambar))) {
+                                        $kabaImg = asset('image/' . $kaba->gambar);
+                                    } else {
+                                        $kabaImg = asset($kaba->gambar);
+                                    }
+                                }
+                            @endphp
+                            @if ($kabaImg)
+                                <img src="{{ $kabaImg }}" alt="{{ $kaba->judul }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                            @else
+                                <i class="bi bi-newspaper"></i>
+                            @endif
                         </div>
                         <div class="news-card-body">
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -218,33 +237,57 @@
     </div>
 
     <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
-                <img src="{{ asset('image/forest1.jpg') }}" alt="Hutan & Alam" class="gallery-img" />
-                <div class="p-3 text-center">
-                    <h6 class="fw-bold text-dark mb-1">Kayu Gadang & Hutan Asri</h6>
-                    <small class="text-muted">Penerima Kalpataru Nasional</small>
+        @if (isset($wisataTerbaru) && $wisataTerbaru->count() > 0)
+            @foreach ($wisataTerbaru as $w)
+                @php
+                    $imgUrl = asset('image/forest1.jpg');
+                    if ($w->gambar) {
+                        if (file_exists(public_path($w->gambar))) {
+                            $imgUrl = asset($w->gambar);
+                        } elseif (file_exists(public_path('image/' . $w->gambar))) {
+                            $imgUrl = asset('image/' . $w->gambar);
+                        }
+                    }
+                @endphp
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                        <img src="{{ $imgUrl }}" alt="{{ $w->nama }}" class="gallery-img" />
+                        <div class="p-3 text-center">
+                            <h6 class="fw-bold text-dark mb-1">{{ $w->nama }}</h6>
+                            <small class="text-muted">{{ $w->lokasi ?: ($w->kategori ?: 'Destinasi Nagari') }}</small>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @else
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                    <img src="{{ asset('image/forest1.jpg') }}" alt="Hutan & Alam" class="gallery-img" />
+                    <div class="p-3 text-center">
+                        <h6 class="fw-bold text-dark mb-1">Kayu Gadang & Hutan Asri</h6>
+                        <small class="text-muted">Penerima Kalpataru Nasional</small>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
-                <img src="{{ asset('image/forest2.jpg') }}" alt="Panorama Maninjau" class="gallery-img" />
-                <div class="p-3 text-center">
-                    <h6 class="fw-bold text-dark mb-1">Panorama Danau Maninjau</h6>
-                    <small class="text-muted">Kecamatan Tanjung Raya, Agam</small>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                    <img src="{{ asset('image/forest2.jpg') }}" alt="Panorama Maninjau" class="gallery-img" />
+                    <div class="p-3 text-center">
+                        <h6 class="fw-bold text-dark mb-1">Panorama Danau Maninjau</h6>
+                        <small class="text-muted">Kecamatan Tanjung Raya, Agam</small>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
-                <img src="{{ asset('image/bg2.jpg') }}" alt="Koto Malintang" class="gallery-img" />
-                <div class="p-3 text-center">
-                    <h6 class="fw-bold text-dark mb-1">Taman Wisata Muko-Muko</h6>
-                    <small class="text-muted">Destinasi Favorit Keluarga</small>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                    <img src="{{ asset('image/bg2.jpg') }}" alt="Koto Malintang" class="gallery-img" />
+                    <div class="p-3 text-center">
+                        <h6 class="fw-bold text-dark mb-1">Taman Wisata Muko-Muko</h6>
+                        <small class="text-muted">Destinasi Favorit Keluarga</small>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </section>
 @endsection

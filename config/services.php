@@ -40,4 +40,18 @@ return [
         'model' => env('HUGGINGFACE_MODEL', 'Qwen/Qwen2.5-7B-Instruct'),
     ],
 
+    'fastapi' => [
+        'url' => env('FASTAPI_URL', 'http://127.0.0.1:8000'),
+        'timeout' => (int) env('FASTAPI_TIMEOUT', 10),
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID', env('GOOGLE_DRIVE_CLIENT_ID', '')),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET', env('GOOGLE_DRIVE_CLIENT_SECRET', '')),
+        'redirect_uri' => env('GOOGLE_REDIRECT_URI', env('APP_URL', 'http://localhost') . '/admin/gdrive/callback'),
+        'refresh_token' => env('GOOGLE_DRIVE_REFRESH_TOKEN', null),
+    ],
+
+    'gdrive_arsip_url' => env('GOOGLE_DRIVE_ARSIP_URL', 'https://drive.google.com/'),
+
 ];

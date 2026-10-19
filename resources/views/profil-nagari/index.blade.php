@@ -194,9 +194,9 @@
                         <div class="col-md-8 profil-content">
                             <h5>PROFIL NAGARI</h5>
                             <h2>{{ $profil->nama_nagari ?? 'Nagari Koto Malintang' }}</h2>
-                            
+
                             <div class="uraian-text mb-4">
-                                {{ $adatBudaya->uraian ?? ($profil->deskripsi ?? 'Nagari Koto Malintang terletak di Kecamatan Tanjung Raya, Kabupaten Agam, Sumatera Barat.') }}
+                                {{ !empty($profil->deskripsi) ? $profil->deskripsi : ($adatBudaya->uraian ?? 'Nagari Koto Malintang terletak di Kecamatan Tanjung Raya, Kabupaten Agam, Sumatera Barat.') }}
                             </div>
 
                             <div class="pt-3 border-top border-secondary">
@@ -289,8 +289,8 @@
             <div class="col-md-8">
                 <h5 class="text-success fw-bold mb-3"><i class="bi bi-calendar-event me-2"></i>Tradisi & Kegiatan Sepanjang Adat:</h5>
                 @php
-                    $kegiatan = is_array($adatBudaya->kegiatan_adat) 
-                        ? $adatBudaya->kegiatan_adat 
+                    $kegiatan = is_array($adatBudaya->kegiatan_adat)
+                        ? $adatBudaya->kegiatan_adat
                         : json_decode($adatBudaya->kegiatan_adat, true);
                 @endphp
                 @if ($kegiatan && count($kegiatan) > 0)

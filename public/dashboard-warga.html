@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Layanan Warga - Nagari Koto Malintang</title>
+    <link rel="icon" href="image/logo agam.png" type="image/png" />
+
+    <!-- Bootstrap 5 & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
+    <link href="footer-styles.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --hijau-tua: #0f1d10;
+            --hijau-primer: #1e3a20;
+            --hijau-aksen: #198754;
+            --hijau-terang: #22c55e;
+            --bg-body: #f8fafc;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: #1e293b;
+            padding-top: 75px;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar-warga {
+            background-color: #1e3a20 !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1050;
+        }
+        .nav-link-warga {
+            color: rgba(255,255,255,0.85) !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 8px 14px !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-link-warga:hover, .nav-link-warga.active {
+            color: #ffffff !important;
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* NOTIFIKASI DROPDOWN */
+        .notif-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.68rem;
+            padding: 2px 6px;
+            border-radius: 50rem;
+            font-weight: 800;
+        }
+
+        /* CARDS & PANELS */
+        .card-custom {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.2s ease;
+        }
+        .card-stat {
+            cursor: pointer;
+            border-radius: 16px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+        .card-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(25,135,84,0.12);
+            border-color: #198754;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        /* 7 JENIS SURAT GRID */
+        .surat-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            text-align: center;
+            height: 100%;
+            user-select: none;
+        }
+        .surat-card:hover {
+            border-color: #198754 !important;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(25,135,84,0.15);
+        }
+        .surat-card.selected {
+            border-color: #198754 !important;
+            background: #f0fdf4 !important;
+            box-shadow: 0 0 0 3px rgba(25,135,84,0.2) !important;
+        }
+        .surat-icon {
+            font-size: 1.8rem;
+            color: #198754;
+            margin-bottom: 6px;
+        }
+
+        /* AI CHATBOT WIDGET */
+        .ai-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #d1fae5;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+        .ai-header {
+            background: linear-gradient(135deg, #198754 0%, #15803d 100%);
+            color: white;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ai-chat-body {
+            min-height: 220px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding: 14px;
+            background: #fdfdfd;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ai-bubble {
+            background: #e8f5e9;
+            color: #14532d;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border-bottom-left-radius: 2px;
+            font-size: 0.86rem;
+            line-height: 1.5;
+            border: 1px solid #c8e6c9;
+            max-width: 90%;
+        }
+        .user-bubble {
+            background: #198754;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border-bottom-right-radius: 2px;
+            font-size: 0.86rem;
+            align-self: flex-end;
+            max-width: 85%;
+        }
+        .ai-input-area {
+            padding: 10px 14px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 8px;
+        }
+
+        /* TIMELINE PROGRESS STEPPER */
+        .timeline-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 20px 0;
+        }
+        .timeline-steps::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 20px;
+            right: 20px;
+            height: 3px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+        .step-item {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 25%;
+        }
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #cbd5e1;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin: 0 auto 6px;
+            transition: all 0.2s;
+        }
+        .step-item.active .step-circle {
+            border-color: #198754;
+            background: #198754;
+            color: white;
+        }
+        .step-item.complete .step-circle {
+            border-color: #198754;
+            background: #dcfce7;
+            color: #15803d;
+        }
+        .step-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .step-item.active .step-label {
+            color: #198754;
+            font-weight: 700;
+        }
+
+        /* TAB SECTIONS */
+        .warga-tab-content {
+            display: none;
+        }
+        .warga-tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR WARGA -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-warga fixed-top px-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center fw-bold text-white" href="index.html">
+                <img src="image/logo agam.png" alt="Logo" width="36" class="me-2" />
+                <span>NAGARI KOTO MALINTANG</span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#wargaNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="wargaNavbar">
+                <ul class="navbar-nav me-auto ms-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link-warga active" onclick="switchTab('dashboard')">
+                            <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-warga" onclick="switchTab('ajukan')">
+                            <i class="bi bi-file-earmark-plus-fill me-1"></i> Ajukan Surat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-warga" onclick="switchTab('status')">
+                            <i class="bi bi-clock-history me-1"></i> Status Surat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-warga" onclick="switchTab('umkm')">
+                            <i class="bi bi-shop me-1"></i> UMKM Saya
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Tombol Notifikasi Bell -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light btn-sm rounded-circle position-relative p-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifikasi Surat">
+                            <i class="bi bi-bell-fill"></i>
+                            <span class="notif-badge" id="navNotifBadge">0</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 p-2" style="width:330px;max-height:400px;overflow-y:auto;" id="notifDropdownList">
+                            <li class="p-2 border-bottom d-flex justify-content-between align-items-center">
+                                <strong class="small text-dark">Pemberitahuan Surat</strong>
+                                <a href="javascript:void(0)" class="small text-success text-decoration-none" onclick="markAllRead()">Tandai Semua Dibaca</a>
+                            </li>
+                            <li class="p-3 text-center text-muted small" id="notifLoading">
+                                <span class="spinner-border spinner-border-sm me-1"></span> Memuat pemberitahuan...
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- User Profile Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-warning btn-sm rounded-pill px-3 fw-bold text-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i> <span id="navUserName">Warga</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3">
+                            <li><a class="dropdown-item small py-2" onclick="switchTab('profil')"><i class="bi bi-person me-2"></i>Profil Saya</a></li>
+                            <li><a class="dropdown-item small py-2" onclick="switchTab('password')"><i class="bi bi-key me-2"></i>Ubah Password</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item small text-danger py-2" onclick="doLogout()"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="container my-4">
+
+        <!-- ============================================================= -->
+        <!-- 1. TAB: DASHBOARD HUB -->
+        <!-- ============================================================= -->
+        <div class="warga-tab-content active" id="tab-dashboard">
+
+            <!-- Hero Welcome Card -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4 text-white" style="background: linear-gradient(135deg, #0f1d10 0%, #1e3a20 50%, #2c5530 100%);">
+                <div class="card-body p-4 p-md-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-1"><i class="bi bi-shield-check me-1"></i>PORTAL WARGA</span>
+                                <span class="badge bg-white bg-opacity-20 text-white px-2 py-1"><i class="bi bi-clock me-1"></i>Layanan 24 Jam</span>
+                            </div>
+                            <h2 class="fw-bold mb-2">Selamat Datang, <span id="welcomeUserName">Warga</span> 👋</h2>
+                            <p class="text-white-50 mb-3" style="max-width:620px;">
+                                Kelola pengajuan surat administrasi resmi, pantau status verifikasi, kembangkan UMKM, dan dapatkan asistensi cerdas AI dalam satu portal terpadu Nagari Koto Malintang.
+                            </p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-success fw-bold px-4 rounded-pill" onclick="switchTab('ajukan')">
+                                    <i class="bi bi-file-earmark-plus me-1"></i> Ajukan Surat Baru
+                                </button>
+                                <button class="btn btn-outline-light px-3 rounded-pill" onclick="switchTab('status')">
+                                    <i class="bi bi-search me-1"></i> Lacak Status Surat
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 text-center text-lg-end d-none d-lg-block">
+                            <img src="image/logo agam.png" alt="Logo" width="110" style="filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 Quick Action & Stat Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="card-stat" onclick="switchTab('ajukan')">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Ajukan Surat</h6>
+                                <small class="text-muted" style="font-size:0.75rem;">7 Layanan Online</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card-stat" onclick="switchTab('status')">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                <i class="bi bi-hourglass-split"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Status Surat</h6>
+                                <small class="text-muted" style="font-size:0.75rem;"><span id="statMenungguCount">0</span> Sedang Diproses</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card-stat" onclick="switchTab('notifikasi')">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-bell"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Notifikasi</h6>
+                                <small class="text-muted" style="font-size:0.75rem;"><span id="statNotifCount">0</span> Pemberitahuan</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card-stat" onclick="switchTab('umkm')">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="stat-icon bg-info bg-opacity-10 text-info">
+                                <i class="bi bi-shop"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">UMKM Saya</h6>
+                                <small class="text-muted" style="font-size:0.75rem;"><span id="statUmkmCount">0</span> Usaha Terdaftar</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pengajuan Surat Terbaru -->
+            <div class="card-custom p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-1">Pengajuan Surat Terbaru</h5>
+                        <p class="small text-muted mb-0">Riwayat status permohonan surat Anda dari database resmi</p>
+                    </div>
+                    <button class="btn btn-outline-success btn-sm rounded-pill px-3" onclick="switchTab('status')">
+                        Lihat Semua <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr class="small text-muted">
+                                <th>No. Referensi / Surat</th>
+                                <th>Jenis Surat</th>
+                                <th>Keperluan</th>
+                                <th>Tanggal</th>
+                                <th>Status Terkini</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashSuratTbody">
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted small">
+                                    <span class="spinner-border spinner-border-sm me-1"></span> Mengambil data riwayat surat Anda dari server...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 2. TAB: FORM PENGAJUAN SURAT (7 JENIS & AI ASISTEN) -->
+        <!-- ============================================================= -->
+        <div class="warga-tab-content" id="tab-ajukan">
+            <div class="row g-4">
+
+                <!-- KOLOM KIRI: PILIHAN SURAT & AI -->
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-sm rounded-4 mb-3" style="background: linear-gradient(135deg, #1e3a20, #0f1d10); color: white;">
+                        <div class="card-body p-4">
+                            <span class="badge bg-warning text-dark px-2 py-1 fw-bold mb-2"><i class="bi bi-check2-circle me-1"></i>LANGKAH 1</span>
+                            <h5 class="fw-bold mb-1">Pilih Jenis Surat</h5>
+                            <p class="small text-white-50 mb-0">Pilih salah satu dari 7 layanan surat resmi online berikut:</p>
+                        </div>
+                    </div>
+
+                    <!-- 7 Kartu Jenis Surat Grid -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="surat-card selected" id="card_suket_usaha" onclick="selectSuratType('suket_usaha')">
+                                <div class="surat-icon"><i class="bi bi-shop"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKU</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Keterangan Usaha</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_suket_domisili" onclick="selectSuratType('suket_domisili')">
+                                <div class="surat-icon"><i class="bi bi-geo-alt"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKD</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Keterangan Domisili</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_suket_tidak_mampu" onclick="selectSuratType('suket_tidak_mampu')">
+                                <div class="surat-icon"><i class="bi bi-people"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKTM</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Tidak Mampu</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_surat_nikah_na" onclick="selectSuratType('surat_nikah_na')">
+                                <div class="surat-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">Model NA</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Pengantar Nikah</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_sket_penghasilan" onclick="selectSuratType('sket_penghasilan')">
+                                <div class="surat-icon"><i class="bi bi-cash-coin"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKP</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Penghasilan</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="surat-card" id="card_suket_meninggal" onclick="selectSuratType('suket_meninggal')">
+                                <div class="surat-icon"><i class="bi bi-file-earmark-medical"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKM</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Kematian / Meninggal</small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="surat-card" id="card_suket_belum_menikah" onclick="selectSuratType('suket_belum_menikah')">
+                                <div class="surat-icon"><i class="bi bi-person-check"></i></div>
+                                <h6 class="fw-bold text-dark small mb-0">SKBM (Belum Menikah)</h6>
+                                <small class="text-muted" style="font-size:0.72rem;">Syarat Kerja / Kedinasan</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI REKOMENDASI SURAT WIDGET -->
+                    <div class="ai-card mb-4">
+                        <div class="ai-header">
+                            <i class="bi bi-robot fs-5"></i>
+                            <div>
+                                <h6 class="mb-0 fw-bold" style="font-size:0.88rem;">AI Rekomendasi Surat Nagari</h6>
+                                <small class="text-white-50" style="font-size:0.72rem;">Didukung Model Klasifikasi DistilBERT</small>
+                            </div>
+                            <span class="badge bg-success bg-opacity-25 text-white ms-auto border border-white border-opacity-25" style="font-size:0.68rem;">
+                                <i class="bi bi-circle-fill text-warning me-1" style="font-size:0.45rem;"></i>Online
+                            </span>
+                        </div>
+                        <div class="ai-chat-body" id="aiChatBox">
+                            <div class="ai-bubble">
+                                <strong>🤖 Rekomendasi Surat:</strong><br/>
+                                Halo dunsanak! Tuliskan keperluan atau kondisi Anda di bawah ini, AI akan menganalisis dan merekomendasikan 3 jenis surat yang paling tepat.
+                            </div>
+                        </div>
+                        <form class="ai-input-area" onsubmit="handleAiChat(event)">
+                            <input type="text" id="aiChatInput" class="form-control form-control-sm rounded-pill" placeholder="Cth: Butuh surat untuk beasiswa kuliah kurang mampu..." required />
+                            <button type="submit" class="btn btn-success btn-sm rounded-circle px-2" title="Analisis Rekomendasi"><i class="bi bi-send-fill"></i></button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- KOLOM KANAN: FORMULIR ISIAN -->
+                <div class="col-lg-7">
+                    <div class="card-custom p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <div>
+                                <span class="badge bg-success rounded-pill px-3 py-1 mb-1" id="formSelectedBadge">Surat Keterangan Usaha (SKU)</span>
+                                <h4 class="fw-bold text-dark mb-0">Formulir Permohonan Surat</h4>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25"><i class="bi bi-shield-lock-fill me-1"></i> Data Resmi</span>
+                        </div>
+
+                        <form id="formPengajuanWarga" onsubmit="submitFormSurat(event)">
+                            <input type="hidden" id="in_jenis_surat" value="suket_usaha" />
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Nama Lengkap Pemohon <span class="text-danger">*</span></label>
+                                    <input type="text" id="in_nama" class="form-control form-control-sm" placeholder="Sesuai KTP" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">NIK KTP (16 Digit) <span class="text-danger">*</span></label>
+                                    <input type="text" id="in_nik" class="form-control form-control-sm font-monospace" placeholder="1306xxxxxxxxxxxx" maxlength="16" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Tempat Lahir <span class="text-danger">*</span></label>
+                                    <input type="text" id="in_tempat_lahir" class="form-control form-control-sm" placeholder="Tempat lahir" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Tanggal Lahir <span class="text-danger">*</span></label>
+                                    <input type="date" id="in_tanggal_lahir" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Jenis Kelamin <span class="text-danger">*</span></label>
+                                    <select id="in_jk" class="form-select form-select-sm" required>
+                                        <option value="Laki-laki">Laki-laki</option>
+                                        <option value="Perempuan">Perempuan</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Pekerjaan <span class="text-danger">*</span></label>
+                                    <input type="text" id="in_pekerjaan" class="form-control form-control-sm" placeholder="Pekerjaan saat ini" required />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold">Alamat / Jorong Tempat Tinggal <span class="text-danger">*</span></label>
+                                    <input type="text" id="in_alamat" class="form-control form-control-sm" placeholder="Jorong asal di Nagari Koto Malintang" required />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold">Maksud & Keperluan Permohonan <span class="text-danger">*</span></label>
+                                    <textarea id="in_keperluan" class="form-control form-control-sm" rows="2" placeholder="Contoh: Untuk persyaratan pengajuan KUR Bank BRI" required></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Bidang Khusus Tambahan Berdasarkan Jenis Surat -->
+                            <div class="p-3 bg-light rounded-3 border mb-3" id="boxExtraFields">
+                                <h6 class="fw-bold text-dark small mb-2"><i class="bi bi-card-checklist me-1 text-success"></i>Keterangan Khusus:</h6>
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold" id="labelExtra1">Nama Usaha</label>
+                                        <input type="text" id="in_extra1" class="form-control form-control-sm" placeholder="Contoh: Toko Kelontong Berkah" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold" id="labelExtra2">Bidang Usaha</label>
+                                        <input type="text" id="in_extra2" class="form-control form-control-sm" placeholder="Contoh: Perdagangan Sembako" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tabel Anggota Keluarga / Tanggungan (Khusus SKTM) -->
+                            <div class="p-3 bg-light rounded-3 border mb-3 d-none" id="boxTanggunganKeluarga">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold text-dark small mb-0"><i class="bi bi-people-fill me-1 text-success"></i>Data Anggota Keluarga / Tanggungan (Khusus SKTM):</h6>
+                                    <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fw-bold" style="font-size:0.75rem;" onclick="addTanggunganRow()">
+                                        <i class="bi bi-plus-circle me-1"></i> Tambah Baris
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block mb-2" style="font-size:0.75rem;">Tambahkan rincian anggota keluarga yang menjadi tanggungan pemohon untuk dicantumkan pada tabel resmi SKTM.</small>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered bg-white align-middle mb-2" style="font-size:0.8rem;">
+                                        <thead class="table-light text-center">
+                                            <tr>
+                                                <th style="width:40px;">No</th>
+                                                <th>Nama Lengkap <span class="text-danger">*</span></th>
+                                                <th style="width:140px;">Jenis Kelamin <span class="text-danger">*</span></th>
+                                                <th style="width:110px;">Umur <span class="text-danger">*</span></th>
+                                                <th style="width:150px;">Hubungan dg KK <span class="text-danger">*</span></th>
+                                                <th style="width:50px;">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tanggunganTbody">
+                                            <!-- Dynamic Rows Added by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Upload Berkas Persyaratan -->
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-dark small mb-2"><i class="bi bi-file-earmark-arrow-up text-success me-1"></i>Upload Dokumen Persyaratan:</h6>
+                                <div class="row g-2" id="boxDokumenSyarat">
+                                    <!-- Dynamic Uploads rendered by JS -->
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="showPreviewModal()">
+                                    <i class="bi bi-eye me-1"></i> Pratinjau Naskah
+                                </button>
+                                <button type="submit" class="btn btn-success fw-bold px-4" id="btnSubmitSurat">
+                                    <i class="bi bi-send-fill me-1"></i> Ajukan Permohonan Surat
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 3. TAB: STATUS & RIWAYAT SURAT -->
+        <!-- ============================================================= -->
+        <div class="warga-tab-content" id="tab-status">
+            <div class="card-custom p-4 mb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                    <div>
+                        <h4 class="fw-bold mb-1">Status & Riwayat Pengajuan Surat</h4>
+                        <p class="small text-muted mb-0">Pantau proses verifikasi administrasi surat Anda secara real-time</p>
+                    </div>
+
+                    <!-- Filter Status -->
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-success active" onclick="filterStatusTab('semua', this)">Semua</button>
+                        <button class="btn btn-outline-success" onclick="filterStatusTab('menunggu_admin', this)">Menunggu</button>
+                        <button class="btn btn-outline-success" onclick="filterStatusTab('perlu_revisi_warga', this)">Perlu Perbaikan</button>
+                        <button class="btn btn-outline-success" onclick="filterStatusTab('menunggu_wali_nagari', this)">Diproses</button>
+                        <button class="btn btn-outline-success" onclick="filterStatusTab('disetujui', this)">Selesai</button>
+                        <button class="btn btn-outline-success" onclick="filterStatusTab('ditolak', this)">Ditolak</button>
+                    </div>
+                </div>
+
+                <!-- Daftar Surat Timeline Cards -->
+                <div id="statusCardsContainer" class="d-flex flex-column gap-3">
+                    <div class="p-4 text-center text-muted">
+                        <span class="spinner-border spinner-border-sm me-1"></span> Mengambil data status surat Anda...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 4. TAB: NOTIFIKASI SURAT -->
+        <!-- ============================================================= -->
+        <div class="warga-tab-content" id="tab-notifikasi">
+            <div class="card-custom p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-bell text-success me-2"></i>Pemberitahuan Surat</h4>
+                        <p class="small text-muted mb-0">Notifikasi pembaruan status dan tindak lanjut permohonan surat Anda</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="markAllRead()">
+                        <i class="bi bi-check2-all me-1"></i> Tandai Semua Dibaca
+                    </button>
+                </div>
+
+                <div id="fullNotifikasiList" class="d-flex flex-column gap-2">
+                    <div class="p-4 text-center text-muted small">
+                        <span class="spinner-border spinner-border-sm me-1"></span> Memuat daftar notifikasi...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 5. TAB: UMKM SAYA (TAMBAH & KELOLA) -->
+        <!-- ============================================================= -->
+        <div class="warga-tab-content" id="tab-umkm">
+            <div class="card-custom p-4 mb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-shop text-success me-2"></i>UMKM Saya</h4>
+                        <p class="small text-muted mb-0">Daftarkan dan kelola produk usaha Anda di direktori resmi Nagari Koto Malintang</p>
+                    </div>
+                    <button class="btn btn-success fw-bold rounded-pill px-3" onclick="openModalTambahUmkm()">
+                        <i class="bi bi-plus-circle-fill me-1"></i> + Tambah UMKM
+                    </button>
+                </div>
+
+                <div class="row g-3" id="myUmkmGridContainer">
+                    <div class="col-12 text-center py-4 text-muted small">
+                        <span class="spinner-border spinner-border-sm me-1"></span> Memuat data UMKM Anda...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 6. TAB: UBAH PASSWORD -->
+        <!-- ============================================================= -->
+        <div class="warga-tab-content" id="tab-password">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card-custom p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <div class="stat-icon bg-warning bg-opacity-10 text-warning mx-auto mb-2">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            <h4 class="fw-bold">Ubah Kata Sandi</h4>
+                            <p class="small text-muted">Amankan akun warga Anda dengan memperbarui kata sandi secara berkala</p>
+                        </div>
+
+                        <div id="alertPassword" class="alert d-none small mb-3"></div>
+
+                        <form onsubmit="handleUpdatePassword(event)">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Kata Sandi Saat Ini <span class="text-danger">*</span></label>
+                                <input type="password" id="pwdCurrent" class="form-control" placeholder="Masukkan kata sandi lama" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Kata Sandi Baru <span class="text-danger">*</span></label>
+                                <input type="password" id="pwdNew" class="form-control" placeholder="Minimal 6 karakter" minlength="6" required />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold">Konfirmasi Kata Sandi Baru <span class="text-danger">*</span></label>
+                                <input type="password" id="pwdConfirm" class="form-control" placeholder="Ketik ulang kata sandi baru" minlength="6" required />
+                            </div>
+                            <button type="submit" class="btn btn-success fw-bold w-100 py-2" id="btnSubmitPwd">
+                                <i class="bi bi-check-circle-fill me-1"></i> Perbarui Kata Sandi
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- 7. TAB: PROFIL SAYA -->
+        <!-- ============================================================= -->
+        <div class="warga-tab-content" id="tab-profil">
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="card-custom p-4 p-md-5">
+                        <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                            <div class="stat-icon bg-success text-white">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <div>
+                                <h4 class="fw-bold mb-0" id="profTitleName">Ahmad Fauzi</h4>
+                                <span class="badge bg-success bg-opacity-10 text-success">Akun Warga Terverifikasi</span>
+                            </div>
+                        </div>
+
+                        <div id="alertProfil" class="alert d-none small mb-3"></div>
+
+                        <form onsubmit="handleUpdateProfil(event)">
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Nama Lengkap</label>
+                                    <input type="text" id="profName" class="form-control" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">NIK KTP</label>
+                                    <input type="text" id="profNik" class="form-control font-monospace" maxlength="16" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Nomor WhatsApp / HP</label>
+                                    <input type="text" id="profPhone" class="form-control" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Username</label>
+                                    <input type="text" id="profUsername" class="form-control bg-light" readonly />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold">Alamat / Jorong</label>
+                                    <input type="text" id="profAddress" class="form-control" required />
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success fw-bold px-4" id="btnSubmitProfil">
+                                <i class="bi bi-save me-1"></i> Simpan Perubahan Profil
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================= -->
+    <!-- MODALS -->
+    <!-- ============================================================= -->
+
+    <!-- Modal Detail Surat & Timeline -->
+    <div class="modal fade" id="modalDetailSurat" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold" id="dt_judulSurat">Detail Permohonan Surat</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="font-monospace text-primary fw-bold fs-6" id="dt_nomorRef">#KM-0001</span>
+                        <span class="badge" id="dt_badgeStatus">Status</span>
+                    </div>
+
+                    <!-- Timeline Stepper -->
+                    <div class="timeline-steps my-4" id="dt_timelineStepper">
+                        <div class="step-item active" id="dt_step1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Diajukan</div>
+                        </div>
+                        <div class="step-item" id="dt_step2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Diverifikasi Admin</div>
+                        </div>
+                        <div class="step-item" id="dt_step3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">TTD Wali Nagari</div>
+                        </div>
+                        <div class="step-item" id="dt_step4">
+                            <div class="step-circle">✓</div>
+                            <div class="step-label">Selesai</div>
+                        </div>
+                    </div>
+
+                    <div id="dt_alasanTolakBox" class="alert alert-danger d-none small">
+                        <strong><i class="bi bi-exclamation-triangle-fill me-1"></i> Catatan Penolakan / Perbaikan:</strong>
+                        <div id="dt_alasanTolakText" class="mt-1"></div>
+                    </div>
+
+                    <div class="row g-3 small mb-3">
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">Nama Pemohon:</span>
+                            <strong id="dt_namaPemohon">-</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">NIK Pemohon:</span>
+                            <strong id="dt_nikPemohon">-</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">Tanggal Pengajuan:</span>
+                            <strong id="dt_tanggal">-</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">Keperluan:</span>
+                            <strong id="dt_keperluan">-</strong>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <h6 class="fw-bold text-dark small mb-2">Isi Keterangan Naskah:</h6>
+                        <pre id="dt_isiSurat" class="small mb-0 text-muted" style="white-space:pre-wrap;font-family:inherit;"></pre>
+                    </div>
+
+                    <div id="dt_berkasBox" class="mb-3">
+                        <h6 class="fw-bold text-dark small mb-2">Dokumen Terlampir:</h6>
+                        <div id="dt_berkasList" class="d-flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-warning text-dark btn-sm fw-bold d-none" id="dt_btnPerbaikiRevisi">
+                        <i class="bi bi-pencil-square me-1"></i> Perbaiki Pengajuan
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm fw-bold d-none" id="dt_btnDownloadPdf" onclick="downloadSuratFinalPdf()">
+                        <i class="bi bi-file-earmark-pdf-fill me-1"></i> Download PDF
+                    </button>
+                    <button type="button" class="btn btn-outline-success btn-sm fw-bold d-none" id="dt_btnPrintSurat" onclick="printSuratFromDetail()">
+                        <i class="bi bi-printer-fill me-1"></i> Cetak Dokumen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah / Edit UMKM -->
+    <div class="modal fade" id="modalFormUmkm" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold" id="umkmModalTitle">+ Tambah Data UMKM Baru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form onsubmit="submitFormUmkm(event)">
+                    <div class="modal-body p-4">
+                        <input type="hidden" id="umkmEditId" value="" />
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nama Usaha / Merk UMKM <span class="text-danger">*</span></label>
+                                <input type="text" id="um_nama" class="form-control" placeholder="Contoh: Kopi Robusta Maninjau" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nama Pemilik <span class="text-danger">*</span></label>
+                                <input type="text" id="um_pemilik" class="form-control" placeholder="Nama pemilik usaha" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Kategori Produk <span class="text-danger">*</span></label>
+                                <select id="um_kategori" class="form-select" required>
+                                    <option value="Kuliner">Kuliner & Minuman</option>
+                                    <option value="Kerajinan">Kerajinan & Seni</option>
+                                    <option value="Pertanian">Pertanian & Perkebunan</option>
+                                    <option value="Jasa">Jasa & Bengkel</option>
+                                    <option value="Fashion">Fashion & Konveksi</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">No. WhatsApp Pemesanan <span class="text-danger">*</span></label>
+                                <input type="text" id="um_wa" class="form-control" placeholder="08xxxxxxxxxx" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Tahun Berdiri</label>
+                                <input type="number" id="um_tahun" class="form-control" placeholder="Contoh: 2023" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Jam Operasional</label>
+                                <input type="text" id="um_jam" class="form-control" placeholder="08:00 - 17:00 WIB" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Instagram (Opsional)</label>
+                                <input type="text" id="um_ig" class="form-control" placeholder="@nama_usaha" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Alamat / Jorong Usaha <span class="text-danger">*</span></label>
+                                <input type="text" id="um_alamat" class="form-control" placeholder="Jorong Koto Gadang" required />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Deskripsi Produk / Usaha <span class="text-danger">*</span></label>
+                                <textarea id="um_deskripsi" class="form-control" rows="3" placeholder="Jelaskan keunggulan dan produk utama UMKM Anda..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Foto Produk / Tempat Usaha (Opsional)</label>
+                                <input type="file" id="um_foto" class="form-control" accept="image/*" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success fw-bold px-4" id="btnSubmitUmkm">
+                            <i class="bi bi-check-circle-fill me-1"></i> Simpan UMKM
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pratinjau Naskah -->
+    <div class="modal fade" id="modalPreviewSurat" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title fw-bold">Pratinjau Format Naskah Surat</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4" id="pvContentBody">
+                    <!-- Preview content rendered dynamically -->
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS & Auth API Client -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="Auth.js"></script>
+
+    <script>
+    // =========================================================================
+    // STATE & KONFIGURASI SURAT
+    // =========================================================================
+    const SURAT_CONF = {
+        'suket_usaha': {
+            nama: 'Surat Keterangan Usaha (SKU)',
+            extra1: 'Nama Usaha', extra2: 'Bidang Usaha',
+            hExtra1: 'Contoh: Bengkel Bubut Maju Jaya', hExtra2: 'Contoh: Jasa Perbengkelan',
+            syarat: [
+                { label: 'Foto / Scan KTP Pemohon', wajib: true, folder: 'uploads/ktp', key: 'ktp' },
+                { label: 'Foto / Scan Kartu Keluarga (KK)', wajib: true, folder: 'uploads/kk', key: 'kk' },
+                { label: 'Foto Tempat / Aktivitas Usaha', wajib: true, folder: 'uploads/foto_usaha', key: 'foto_usaha' }
+            ]
+        },
+        'suket_domisili': {
+            nama: 'Surat Keterangan Domisili (SKD)',
+            extra1: 'Lama Domisili', extra2: 'Status Tempat Tinggal',
+            hExtra1: 'Contoh: Sejak Tahun 2018', hExtra2: 'Contoh: Rumah Sendiri / Sewa',
+            syarat: [
+                { label: 'Foto / Scan KTP Pemohon', wajib: true, folder: 'uploads/ktp', key: 'ktp' },
+                { label: 'Foto / Scan Kartu Keluarga (KK)', wajib: true, folder: 'uploads/kk', key: 'kk' },
+                { label: 'Surat Pengantar Kepala Jorong', wajib: true, folder: 'uploads/surat_pengantar', key: 'surat_pengantar' }
+            ]
+        },
+        'suket_tidak_mampu': {
+            nama: 'Surat Keterangan Tidak Mampu (SKTM)',
+            extra1: 'Estimasi Penghasilan Keluarga', extra2: 'Kondisi Ekonomi',
+            hExtra1: 'Contoh: Rp 800.000 / Bulan', hExtra2: 'Contoh: Buruh Harian / Pra-Sejahtera',
+            syarat: [
+                { label: 'Foto / Scan KTP Pemohon', wajib: true, folder: 'uploads/ktp', key: 'ktp' },
+                { label: 'Foto / Scan Kartu Keluarga (KK)', wajib: true, folder: 'uploads/kk', key: 'kk' },
+                { label: 'Foto Kondisi Rumah / Tempat Tinggal', wajib: true, folder: 'uploads/foto_rumah', key: 'foto_rumah' },
+                { label: 'Surat Keterangan Kurang Mampu dari Kepala Jorong', wajib: true, folder: 'uploads/surat_pengantar', key: 'surat_pengantar' }
+            ]
+        },
+        'surat_nikah_na': {
+            nama: 'Surat Pengantar Nikah (Model NA)',
+            extra1: 'Nama Calon Pasangan', extra2: 'Bin / Binti Pasangan',
+            hExtra1: 'Contoh: Siti Rahmawati', hExtra2: 'Contoh: H. Abdullah',
+            syarat: [
+                { label: 'Foto / Scan KTP Pemohon', wajib: true, folder: 'uploads/ktp', key: 'ktp' },
+                { label: 'Foto / Scan Kartu Keluarga (KK)', wajib: true, folder: 'uploads/kk', key: 'kk' },
+                { label: 'Foto / Scan KTP Calon Pasangan', wajib: true, folder: 'uploads/ktp_pasangan', key: 'ktp_pasangan' },
+                { label: 'Surat Pengantar Nikah dari Kepala Jorong', wajib: true, folder: 'uploads/surat_pengantar', key: 'surat_pengantar' }
+            ]
+        },
+        'sket_penghasilan': {
+            nama: 'Surat Keterangan Penghasilan (SKP)',
+            extra1: 'Rata-rata Penghasilan (Rp)', extra2: 'Sumber Penghasilan',
+            hExtra1: 'Contoh: 1500000', hExtra2: 'Contoh: Petani / Pekebun',
+            syarat: [
+                { label: 'Foto / Scan KTP Pemohon', wajib: true, folder: 'uploads/ktp', key: 'ktp' },
+                { label: 'Foto / Scan Kartu Keluarga (KK)', wajib: true, folder: 'uploads/kk', key: 'kk' },
+                { label: 'Surat Pernyataan / Slip Gaji', wajib: true, folder: 'uploads/slip_penghasilan', key: 'slip_penghasilan' }
+            ]
+        },
+        'suket_meninggal': {
+            nama: 'Surat Keterangan Meninggal (SKM)',
+            extra1: 'Nama Almarhum / Almarhumah', extra2: 'Tanggal & Tempat Wafat',
+            hExtra1: 'Contoh: H. Rusli Dt. Maruhum', hExtra2: 'Contoh: 14-08-2026 di Rumah Duka',
+            syarat: [
+                { label: 'Foto / Scan KTP Pelapor (Ahli Waris)', wajib: true, folder: 'uploads/ktp', key: 'ktp' },
+                { label: 'Foto / Scan KK Almarhum / Almarhumah', wajib: true, folder: 'uploads/kk', key: 'kk' },
+                { label: 'Surat Kematian RS/Bidan/Jorong', wajib: true, folder: 'uploads/surat_kematian_rs', key: 'surat_kematian_rs' }
+            ]
+        },
+        'suket_belum_menikah': {
+            nama: 'Surat Keterangan Belum Menikah (SKBM)',
+            extra1: 'Status Perkawinan', extra2: 'Keperluan Khusus',
+            hExtra1: 'Belum Pernah Menikah (Lajang)', hExtra2: 'Pendaftaran CPNS / TNI-Polri',
+            syarat: [
+                { label: 'Foto / Scan KTP Pemohon', wajib: true, folder: 'uploads/ktp', key: 'ktp' },
+                { label: 'Foto / Scan Kartu Keluarga (KK)', wajib: true, folder: 'uploads/kk', key: 'kk' }
+            ]
+        }
+    };
+
+    let currentUser = null;
+    let currentSuratList = [];
+    let modeRevisi = false;
+    let revisiSuratId = null;
+    let currentRevisiBerkas = [];
+
+    // =========================================================================
+    // NAVIGASI TAB
+    // =========================================================================
+    function switchTab(tabId) {
+        document.querySelectorAll('.warga-tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-link-warga').forEach(el => el.classList.remove('active'));
+
+        const target = document.getElementById('tab-' + tabId);
+        if (target) target.classList.add('active');
+
+        document.querySelectorAll('.nav-link-warga').forEach(link => {
+            if (link.getAttribute('onclick')?.includes(tabId)) {
+                link.classList.add('active');
+            }
+        });
+
+        // Trigger load data sesuai tab
+        if (tabId === 'dashboard') loadDashboardData();
+        if (tabId === 'status') loadStatusSurat();
+        if (tabId === 'notifikasi') loadFullNotifikasi();
+        if (tabId === 'umkm') loadMyUmkm();
+        if (tabId === 'profil') loadProfilForm();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // =========================================================================
+    // 1. DASHBOARD LOAD DATA
+    // =========================================================================
+    async function loadDashboardData() {
+        try {
+            const res = await KotoAuth.getDashboardWarga();
+            if (res && res.success) {
+                currentUser = res.user;
+                document.getElementById('navUserName').innerText = res.user.name.split(' ')[0] || 'Warga';
+                document.getElementById('welcomeUserName').innerText = res.user.name || 'Warga';
+
+                document.getElementById('statMenungguCount').innerText = res.stats.menunggu || 0;
+                document.getElementById('statNotifCount').innerText = res.stats.unread_notif || 0;
+                document.getElementById('statUmkmCount').innerText = res.stats.total_umkm || 0;
+                document.getElementById('navNotifBadge').innerText = res.stats.unread_notif || 0;
+
+                renderDashSuratTable(res.surat_terbaru || []);
+            }
+        } catch (e) {
+            console.warn('Load dashboard error:', e.message);
+        }
+    }
+
+    function renderDashSuratTable(list) {
+        const tbody = document.getElementById('dashSuratTbody');
+        if (!tbody) return;
+
+        if (list.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted small">Belum ada pengajuan surat. Klik <strong>Ajukan Surat Baru</strong> untuk memulai permohonan.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = list.map(s => `
+            <tr>
+                <td><strong class="font-monospace text-primary">${s.nomor_surat || '#KM-00' + s.id}</strong></td>
+                <td><strong>${s.nama_jenis_surat || s.jenis_surat}</strong></td>
+                <td class="small text-muted text-truncate" style="max-width:200px;">${s.keperluan || '-'}</td>
+                <td class="small">${s.tanggal_format || '-'}</td>
+                <td><span class="badge bg-${s.status_badge_color || (s.status === 'perlu_revisi_warga' ? 'warning text-dark' : 'secondary')}">${s.status_label || (s.status === 'perlu_revisi_warga' ? 'Perlu Perbaikan Berkas' : s.status)}</span></td>
+                <td>
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="openDetailSuratModal(${s.id})">
+                            <i class="bi bi-eye-fill me-1"></i> Detail
+                        </button>
+                        ${s.status === 'perlu_revisi_warga' ? `
+                            <button class="btn btn-sm btn-warning text-dark rounded-pill px-2 fw-bold" onclick="bukaFormRevisi(${s.id})" title="Perbaiki Berkas Pengajuan">
+                                <i class="bi bi-pencil-square me-1"></i> Revisi
+                            </button>
+                        ` : ''}
+                        ${s.status === 'disetujui' ? `
+                            <button class="btn btn-sm btn-danger rounded-pill px-3 fw-bold" onclick="downloadSuratFinalPdf(${s.id})" title="Download PDF Resmi">
+                                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+                            </button>
+                        ` : ''}
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // =========================================================================
+    // 2. FORM PENGAJUAN SURAT & DOKUMEN PERSYARATAN
+    // =========================================================================
+    function selectSuratType(key) {
+        if (!SURAT_CONF[key]) key = 'suket_usaha';
+
+        document.querySelectorAll('.surat-card').forEach(c => c.classList.remove('selected'));
+        const activeCard = document.getElementById('card_' + key);
+        if (activeCard) activeCard.classList.add('selected');
+
+        const conf = SURAT_CONF[key];
+        document.getElementById('in_jenis_surat').value = key;
+        document.getElementById('formSelectedBadge').innerText = conf.nama;
+
+        // Update Labels Extra Fields
+        document.getElementById('labelExtra1').innerText = conf.extra1;
+        document.getElementById('labelExtra2').innerText = conf.extra2;
+        document.getElementById('in_extra1').placeholder = conf.hExtra1;
+        document.getElementById('in_extra2').placeholder = conf.hExtra2;
+
+        // Tampilkan / Sembunyikan Box Tanggungan Khusus SKTM
+        const boxTanggungan = document.getElementById('boxTanggunganKeluarga');
+        if (boxTanggungan) {
+            if (key === 'suket_tidak_mampu') {
+                boxTanggungan.classList.remove('d-none');
+                const tbody = document.getElementById('tanggunganTbody');
+                if (tbody && tbody.children.length === 0 && !modeRevisi) {
+                    addTanggunganRow('', 'Perempuan', '', 'Istri');
+                    addTanggunganRow('', 'Laki-laki', '', 'Anak');
+                }
+            } else {
+                boxTanggungan.classList.add('d-none');
+            }
+        }
+
+        // Render Upload Inputs
+        if (modeRevisi) {
+            renderDokumenRevisi(key, currentRevisiBerkas);
+        } else {
+            const boxDok = document.getElementById('boxDokumenSyarat');
+            boxDok.innerHTML = conf.syarat.map((dok, idx) => `
+                <div class="col-md-6 mb-2">
+                    <label class="form-label small fw-bold d-flex justify-content-between mb-1" style="font-size:0.78rem;">
+                        <span><i class="bi bi-file-earmark-check text-success me-1"></i>${dok.label}</span>
+                        <span class="badge bg-danger bg-opacity-10 text-danger" style="font-size:0.65rem;">Wajib</span>
+                    </label>
+                    <input type="file" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.pdf" data-key="${dok.key || (dok.folder || '').replace('uploads/', '')}" data-folder="${dok.folder}" required />
+                    <small class="text-muted" style="font-size:0.7rem;">Format JPG, PNG, PDF (Maks 5MB)</small>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Helper Tanggungan Keluarga Dinamis (Khusus SKTM)
+    function addTanggunganRow(nama = '', jk = 'Laki-laki', umur = '', hubungan = 'Anak') {
+        const tbody = document.getElementById('tanggunganTbody');
+        if (!tbody) return;
+        const tr = document.createElement('tr');
+        tr.className = 'tanggungan-row';
+        tr.innerHTML = `
+            <td class="text-center fw-bold row-no"></td>
+            <td><input type="text" class="form-control form-control-sm tg-nama" placeholder="Nama lengkap" value="${nama}" required /></td>
+            <td>
+                <select class="form-select form-select-sm tg-jk" required>
+                    <option value="Laki-laki" ${jk === 'Laki-laki' ? 'selected' : ''}>Laki-laki</option>
+                    <option value="Perempuan" ${jk === 'Perempuan' ? 'selected' : ''}>Perempuan</option>
+                </select>
+            </td>
+            <td><input type="text" class="form-control form-control-sm tg-umur" placeholder="Cth: 17 atau 17 Thn" value="${umur}" required /></td>
+            <td>
+                <select class="form-select form-select-sm tg-hubungan" required>
+                    <option value="Orang Tua" ${hubungan === 'Orang Tua' ? 'selected' : ''}>Orang Tua</option>
+                    <option value="Ayah" ${hubungan === 'Ayah' ? 'selected' : ''}>Ayah</option>
+                    <option value="Ibu" ${hubungan === 'Ibu' ? 'selected' : ''}>Ibu</option>
+                    <option value="Anak" ${hubungan === 'Anak' ? 'selected' : ''}>Anak</option>
+                    <option value="Kakak" ${hubungan === 'Kakak' ? 'selected' : ''}>Kakak</option>
+                    <option value="Adik" ${hubungan === 'Adik' ? 'selected' : ''}>Adik</option>
+                    <option value="Suami" ${hubungan === 'Suami' ? 'selected' : ''}>Suami</option>
+                    <option value="Istri" ${hubungan === 'Istri' ? 'selected' : ''}>Istri</option>
+                    <option value="Kakek" ${hubungan === 'Kakek' ? 'selected' : ''}>Kakek</option>
+                    <option value="Nenek" ${hubungan === 'Nenek' ? 'selected' : ''}>Nenek</option>
+                    <option value="Cucu" ${hubungan === 'Cucu' ? 'selected' : ''}>Cucu</option>
+                    <option value="Famili Lain" ${hubungan === 'Famili Lain' ? 'selected' : ''}>Famili Lain</option>
+                </select>
+            </td>
+            <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="removeTanggunganRow(this)" title="Hapus baris">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+        reindexTanggunganRows();
+    }
+
+    function removeTanggunganRow(btn) {
+        const tbody = document.getElementById('tanggunganTbody');
+        if (!tbody) return;
+        if (tbody.querySelectorAll('.tanggungan-row').length <= 1) {
+            alert('Minimal 1 anggota keluarga tanggungan harus diisi untuk pengajuan SKTM.');
+            return;
+        }
+        const tr = btn.closest('tr');
+        if (tr) tr.remove();
+        reindexTanggunganRows();
+    }
+
+    function reindexTanggunganRows() {
+        const rows = document.querySelectorAll('#tanggunganTbody .tanggungan-row');
+        rows.forEach((r, i) => {
+            const noCell = r.querySelector('.row-no');
+            if (noCell) noCell.textContent = i + 1;
+        });
+    }
+
+    function getTanggunganKeluargaData() {
+        const rows = document.querySelectorAll('#tanggunganTbody .tanggungan-row');
+        const list = [];
+        rows.forEach(r => {
+            const nama = r.querySelector('.tg-nama')?.value.trim() || '';
+            const jk = r.querySelector('.tg-jk')?.value || 'Laki-laki';
+            const umur = r.querySelector('.tg-umur')?.value.trim() || '';
+            const hubungan = r.querySelector('.tg-hubungan')?.value || 'Anak';
+            if (nama) {
+                list.push({
+                    nama: nama,
+                    jenis_kelamin: jk,
+                    umur: umur,
+                    hubungan: hubungan
+                });
+            }
+        });
+        return list;
+    }
+
+    async function submitFormSurat(e) {
+        e.preventDefault();
+        const jenis = document.getElementById('in_jenis_surat').value;
+        const conf = SURAT_CONF[jenis] || SURAT_CONF['suket_usaha'];
+
+        const btn = document.getElementById('btnSubmitSurat');
+        btn.disabled = true;
+        btn.innerHTML = modeRevisi
+            ? '<span class="spinner-border spinner-border-sm me-1"></span> Mengirim perbaikan...'
+            : '<span class="spinner-border spinner-border-sm me-1"></span> Mengirim permohonan ke database...';
+
+        const formData = new FormData();
+        formData.append('jenis_surat', jenis);
+        formData.append('nama_pemohon', document.getElementById('in_nama').value.trim());
+        formData.append('nik_pemohon', document.getElementById('in_nik').value.trim());
+        formData.append('tempat_lahir', document.getElementById('in_tempat_lahir').value.trim());
+        formData.append('tanggal_lahir', document.getElementById('in_tanggal_lahir').value);
+        formData.append('jenis_kelamin', document.getElementById('in_jk').value);
+        formData.append('agama', 'Islam');
+        formData.append('pekerjaan', document.getElementById('in_pekerjaan').value.trim());
+        formData.append('alamat', document.getElementById('in_alamat').value.trim());
+        formData.append('keperluan', document.getElementById('in_keperluan').value.trim());
+
+        // Extra data spesifik
+        const extra1 = document.getElementById('in_extra1').value.trim();
+        const extra2 = document.getElementById('in_extra2').value.trim();
+        if (jenis === 'suket_usaha') {
+            formData.append('nama_usaha', extra1);
+            formData.append('bidang_usaha', extra2);
+        } else if (jenis === 'suket_meninggal') {
+            formData.append('nama_almarhum', extra1);
+            formData.append('sebab_meninggal', extra2);
+        } else if (jenis === 'surat_nikah_na') {
+            formData.append('nama_calon_pasangan', extra1);
+            formData.append('bin_binti_pasangan', extra2);
+        } else if (jenis === 'sket_penghasilan') {
+            formData.append('nominal_penghasilan', extra1);
+            formData.append('sumber_penghasilan', extra2);
+        } else if (jenis === 'suket_tidak_mampu') {
+            formData.append('nominal_penghasilan', extra1);
+            formData.append('kondisi_ekonomi', extra2);
+            formData.append('estimasi_penghasilan', extra1);
+
+            // Serialisasi data tanggungan keluarga
+            const tanggunganList = getTanggunganKeluargaData();
+            if (tanggunganList.length > 0) {
+                formData.append('tanggungan_keluarga', JSON.stringify(tanggunganList));
+            }
+        }
+
+        // Upload files (only append if file selected)
+        const fileInputs = document.querySelectorAll('#boxDokumenSyarat input[type="file"]');
+        fileInputs.forEach((input, idx) => {
+            if (input.files && input.files[0]) {
+                const fileKey = input.getAttribute('data-key') || (input.getAttribute('data-folder') || '').replace('uploads/', '') || `dokumen_${idx+1}`;
+                formData.append('berkas_' + fileKey, input.files[0]);
+                formData.append(fileKey, input.files[0]);
+                formData.append('files[]', input.files[0]);
+            }
+        });
+
+        try {
+            if (modeRevisi && revisiSuratId) {
+                await (window.KotoAuth || KotoAuth).submitRevisiSurat(revisiSuratId, formData);
+                alert('✅ Perbaikan pengajuan berhasil dikirim!\n\nPengajuan surat Anda akan diperiksa kembali oleh Admin Nagari.');
+                batalRevisi();
+                switchTab('status');
+            } else {
+                await (window.KotoAuth || KotoAuth).submitSurat(formData);
+                alert(`✅ Permohonan Berhasil Dikirim!\n\nPermohonan ${conf.nama} Anda telah tersimpan di database resmi Nagari Koto Malintang.\nSurat kini masuk antrean verifikasi Admin.`);
+                e.target.reset();
+                const tb = document.getElementById('tanggunganTbody');
+                if (tb) tb.innerHTML = '';
+                selectSuratType('suket_usaha');
+                switchTab('status');
+            }
+        } catch (err) {
+            let errMsg = err.message || 'Gagal memproses permohonan surat.';
+            if (errMsg.includes('401') || errMsg.toLowerCase().includes('unauthenticated')) {
+                errMsg = 'Sesi login sudah berakhir. Silakan login kembali.';
+            } else if (errMsg.includes('403')) {
+                errMsg = 'Pengajuan ini tidak dapat diperbaiki pada status saat ini.';
+            } else if (errMsg.includes('422')) {
+                errMsg = 'Periksa kembali data dan dokumen yang Anda masukkan.';
+            }
+            alert('⚠️ ' + errMsg);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = modeRevisi
+                ? '<i class="bi bi-send-check-fill me-1"></i> Kirim Perbaikan Pengajuan'
+                : '<i class="bi bi-send-fill me-1"></i> Ajukan Permohonan Surat';
+        }
+    }
+
+    function renderDokumenRevisi(key, berkasList) {
+        const conf = SURAT_CONF[key] || SURAT_CONF['suket_usaha'];
+        const boxDok = document.getElementById('boxDokumenSyarat');
+        if (!boxDok) return;
+
+        boxDok.innerHTML = conf.syarat.map((dok, idx) => {
+            const fileKey = dok.key || (dok.folder || '').replace('uploads/', '') || `dokumen_${idx+1}`;
+            const existingBerkas = (berkasList || []).find(b => (
+                b.jenis_berkas === fileKey ||
+                b.jenis_berkas === dok.key ||
+                (b.path_file && b.path_file.includes(fileKey))
+            ));
+
+            let existingHtml = '';
+            if (existingBerkas) {
+                const namaFile = existingBerkas.nama_file_asli || 'Dokumen telah terunggah';
+                existingHtml = '<div class="mb-1 text-success small fw-semibold" style="font-size:0.72rem;">' +
+                    '<i class="bi bi-check-circle-fill me-1"></i>Sudah tersedia: <span class="text-dark">' + namaFile + '</span>' +
+                '</div>';
+            }
+
+            return '<div class="col-md-6 mb-2">' +
+                '<label class="form-label small fw-bold d-flex justify-content-between mb-1" style="font-size:0.78rem;">' +
+                    '<span><i class="bi bi-file-earmark-check text-success me-1"></i>' + dok.label + '</span>' +
+                    (existingBerkas ? '<span class="badge bg-success bg-opacity-10 text-success" style="font-size:0.65rem;">Tersimpan</span>' : '<span class="badge bg-danger bg-opacity-10 text-danger" style="font-size:0.65rem;">Wajib</span>') +
+                '</label>' +
+                existingHtml +
+                '<input type="file" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.pdf" data-key="' + fileKey + '" data-folder="' + dok.folder + '" ' + (existingBerkas ? '' : 'required') + ' />' +
+                '<small class="text-muted" style="font-size:0.7rem;">' + (existingBerkas ? 'Pilih file baru jika ingin mengganti dokumen' : 'Format JPG, PNG, PDF (Maks 5MB)') + '</small>' +
+            '</div>';
+        }).join('');
+    }
+
+    function renderRevisiBanner(s) {
+        let banner = document.getElementById('revisiBanner');
+        if (!banner) {
+            banner = document.createElement('div');
+            banner.id = 'revisiBanner';
+            const formEl = document.getElementById('formPengajuanWarga');
+            if (formEl && formEl.parentNode) {
+                formEl.parentNode.insertBefore(banner, formEl);
+            }
+        }
+        if (banner) {
+            const noRef = s.nomor_surat || ('#KM-00' + s.id);
+            const namaJenis = s.nama_jenis_surat || s.jenis_surat || '-';
+            banner.className = 'alert alert-warning border-warning shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3';
+            banner.innerHTML = '<div>' +
+                '<strong class="text-dark"><i class="bi bi-arrow-repeat me-1"></i> Mode Perbaikan Pengajuan: ' + noRef + ' (' + namaJenis + ')</strong>' +
+                '<div class="text-dark small mt-1"><strong>Catatan Admin:</strong> ' + (s.catatan_admin || 'Silakan periksa dan perbaiki data atau dokumen persyaratan Anda.') + '</div>' +
+            '</div>' +
+            '<button type="button" class="btn btn-sm btn-outline-dark fw-semibold" onclick="batalRevisi()">' +
+                '<i class="bi bi-x-lg me-1"></i> Batal Perbaikan' +
+            '</button>';
+            banner.classList.remove('d-none');
+        }
+    }
+
+    function batalRevisi() {
+        modeRevisi = false;
+        revisiSuratId = null;
+        currentRevisiBerkas = [];
+        const banner = document.getElementById('revisiBanner');
+        if (banner) banner.classList.add('d-none');
+
+        const formEl = document.getElementById('formPengajuanWarga');
+        if (formEl) formEl.reset();
+
+        const btnSubmit = document.getElementById('btnSubmitSurat');
+        if (btnSubmit) {
+            btnSubmit.className = 'btn btn-success fw-bold px-4';
+            btnSubmit.innerHTML = '<i class="bi bi-send-fill me-1"></i> Ajukan Permohonan Surat';
+        }
+
+        selectSuratType('suket_usaha');
+    }
+
+    async function bukaFormRevisi(id) {
+        try {
+            const modalEl = document.getElementById('modalDetailSurat');
+            if (modalEl) {
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) modalInstance.hide();
+            }
+
+            const res = await (window.KotoAuth || KotoAuth).getSuratDetail(id);
+            if (!res || !res.success || !res.data) {
+                alert('Gagal mengambil data pengajuan untuk perbaikan.');
+                return;
+            }
+
+            const s = res.data;
+            if (s.status !== 'perlu_revisi_warga') {
+                alert('Pengajuan ini tidak dalam status perlu perbaikan berkas.');
+                return;
+            }
+
+            modeRevisi = true;
+            revisiSuratId = s.id;
+            currentRevisiBerkas = s.berkas || s.berkas_persyaratans || [];
+
+            switchTab('ajukan');
+
+            const jenisKey = s.jenis_surat || 'suket_usaha';
+            selectSuratType(jenisKey);
+
+            const setVal = (idEl, val) => { const el = document.getElementById(idEl); if (el) el.value = val || ''; };
+            setVal('in_nama', s.nama_pemohon);
+            setVal('in_nik', s.nik_pemohon);
+            setVal('in_tempat_lahir', s.tempat_lahir);
+            setVal('in_tanggal_lahir', s.tanggal_lahir ? s.tanggal_lahir.substring(0, 10) : '');
+            setVal('in_jk', s.jenis_kelamin || 'Laki-laki');
+            setVal('in_pekerjaan', s.pekerjaan);
+            setVal('in_alamat', s.alamat);
+            setVal('in_keperluan', s.keperluan);
+
+            const ds = s.data_spesifik || {};
+            if (jenisKey === 'suket_usaha') {
+                setVal('in_extra1', ds.nama_usaha || s.nama_usaha);
+                setVal('in_extra2', ds.bidang_usaha || s.bidang_usaha);
+            } else if (jenisKey === 'suket_meninggal') {
+                setVal('in_extra1', ds.nama_almarhum || s.nama_almarhum);
+                setVal('in_extra2', ds.sebab_meninggal || s.sebab_meninggal);
+            } else if (jenisKey === 'surat_nikah_na') {
+                setVal('in_extra1', ds.nama_calon_pasangan || s.nama_calon_pasangan);
+                setVal('in_extra2', ds.bin_binti_pasangan || s.bin_binti_pasangan);
+            } else if (jenisKey === 'sket_penghasilan') {
+                setVal('in_extra1', ds.nominal_penghasilan || s.nominal_penghasilan);
+                setVal('in_extra2', ds.sumber_penghasilan || s.sumber_penghasilan);
+            } else if (jenisKey === 'suket_tidak_mampu') {
+                setVal('in_extra1', ds.estimasi_penghasilan || s.estimasi_penghasilan);
+                setVal('in_extra2', ds.kondisi_ekonomi || s.kondisi_ekonomi);
+
+                const listTg = ds.tanggungan_keluarga || [];
+                const tbodyTg = document.getElementById('tanggunganTbody');
+                if (tbodyTg) {
+                    tbodyTg.innerHTML = '';
+                    if (Array.isArray(listTg) && listTg.length > 0) {
+                        listTg.forEach(tg => {
+                            addTanggunganRow(tg.nama || '', tg.jenis_kelamin || 'Laki-laki', tg.umur || '', tg.hubungan || 'Anak');
+                        });
+                    } else {
+                        addTanggunganRow();
+                    }
+                }
+            }
+
+            renderDokumenRevisi(jenisKey, currentRevisiBerkas);
+            renderRevisiBanner(s);
+
+            const btnSubmit = document.getElementById('btnSubmitSurat');
+            if (btnSubmit) {
+                btnSubmit.className = 'btn btn-warning text-dark fw-bold px-4';
+                btnSubmit.innerHTML = '<i class="bi bi-send-check-fill me-1"></i> Kirim Perbaikan Pengajuan';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (err) {
+            alert('Gagal membuka form perbaikan: ' + err.message);
+        }
+    }
+
+    // =========================================================================
+    // 3. AI REKOMENDASI SURAT (TOP 3 DISTILBERT)
+    // =========================================================================
+    async function handleAiChat(e) {
+        e.preventDefault();
+        const input = document.getElementById('aiChatInput');
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        const chatBox = document.getElementById('aiChatBox');
+
+        // User bubble
+        const uBubble = document.createElement('div');
+        uBubble.className = 'user-bubble';
+        uBubble.innerText = msg;
+        chatBox.appendChild(uBubble);
+        input.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Loading bubble
+        const lBubble = document.createElement('div');
+        lBubble.className = 'ai-bubble';
+        lBubble.innerHTML = '<span class="spinner-border spinner-border-sm me-1 text-success"></span> <em>Sedang menganalisis kebutuhan Anda...</em>';
+        chatBox.appendChild(lBubble);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const res = await KotoAuth.getRekomendasiSurat(msg);
+            const topRecs = res.data?.top_recommendations || res.top_recommendations || res.data?.recommendations || res.recommendations || [];
+
+            if (Array.isArray(topRecs) && topRecs.length > 0) {
+                const medals = ['🥇', '🥈', '🥉'];
+                const defaultReasons = {
+                    'suket_tidak_mampu': 'Cocok untuk keperluan bantuan pendidikan/beasiswa, jaminan kesehatan, atau kondisi ekonomi keluarga kurang mampu.',
+                    'suket_usaha': 'Cocok untuk keperluan legalitas usaha, pengajuan pinjaman/KUR, atau perizinan dagang warga.',
+                    'suket_domisili': 'Digunakan untuk menerangkan status tempat tinggal atau domisili pemohon.',
+                    'surat_nikah_na': 'Digunakan sebagai pengantar syarat pendaftaran pernikahan ke KUA.',
+                    'sket_penghasilan': 'Digunakan untuk keterangan penghasilan pemohon atau keluarga.',
+                    'suket_meninggal': 'Digunakan untuk pelaporan dan pencatatan surat keterangan kematian warga.',
+                    'suket_belum_menikah': 'Digunakan untuk persyaratan pendaftaran CPNS, TNI-Polri, kedinasan, atau pekerjaan.'
+                };
+
+                let recsHtml = `
+                    <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom border-success-subtle">
+                        <strong class="text-success" style="font-size:0.88rem;"><i class="bi bi-robot me-1"></i> Rekomendasi Surat</strong>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size:0.68rem;">Top 3 Model AI</span>
+                    </div>
+                    <div class="d-flex flex-column gap-2 mt-1">
+                `;
+
+                topRecs.forEach((item, idx) => {
+                    const medal = medals[idx] || `Peringkat ${idx + 1}`;
+                    const rankNum = item.rank || (idx + 1);
+                    const jenisCode = item.jenis_surat || item.code || '';
+                    const conf = SURAT_CONF[jenisCode];
+                    const nama = item.nama_surat || item.label || conf?.nama || jenisCode;
+
+                    let prob = item.probability_percent;
+                    if (!prob) {
+                        const val = item.probability !== undefined ? item.probability : item.confidence;
+                        prob = val !== undefined ? (val * 100).toFixed(1) + '%' : '-';
+                    }
+
+                    const alasan = item.alasan || defaultReasons[jenisCode] || 'Sesuai dengan analisis kebutuhan surat Anda.';
+                    const isTop = idx === 0;
+
+                    recsHtml += `
+                        <div class="p-2 rounded-3 bg-white border ${isTop ? 'border-success shadow-sm' : 'border-light-subtle'}" style="font-size:0.82rem;">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold ${isTop ? 'text-success' : 'text-secondary'}">${medal} Rekomendasi ${rankNum}</span>
+                                <span class="badge ${isTop ? 'bg-success' : 'bg-secondary'} bg-opacity-15 ${isTop ? 'text-success' : 'text-secondary'} fw-bold" style="font-size:0.72rem;">${prob}</span>
+                            </div>
+                            <div class="fw-bold text-dark" style="font-size:0.84rem;">${nama}</div>
+                            <div class="text-muted small mt-1" style="font-size:0.74rem; line-height: 1.35;">${alasan}</div>
+                            <div class="mt-2 text-end">
+                                <button type="button" class="btn btn-sm ${isTop ? 'btn-success' : 'btn-outline-success'} py-1 px-2 fw-semibold" style="font-size:0.74rem;" onclick="pilihRekomendasiSurat('${jenisCode}')">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Pilih Surat Ini
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                recsHtml += `</div>`;
+                lBubble.innerHTML = recsHtml;
+            } else {
+                lBubble.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-circle me-1"></i> Maaf, rekomendasi surat belum dapat diproses. Silakan coba lagi.</span>';
+            }
+        } catch (err) {
+            console.error('Error rekomendasi AI:', err);
+            lBubble.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-circle me-1"></i> Maaf, rekomendasi surat belum dapat diproses. Silakan coba lagi.</span>';
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function pilihRekomendasiSurat(jenisCode) {
+        if (typeof selectSuratType === 'function') {
+            selectSuratType(jenisCode);
+        }
+        const formEl = document.getElementById('formPengajuanWarga');
+        if (formEl) {
+            formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    // =========================================================================
+    // 4. STATUS & RIWAYAT SURAT DENGAN TIMELINE STEPPER
+    // =========================================================================
+    async function loadStatusSurat(filter = 'semua') {
+        const box = document.getElementById('statusCardsContainer');
+        box.innerHTML = `<div class="p-4 text-center text-muted small"><span class="spinner-border spinner-border-sm me-1"></span> Mengambil status surat terbaru dari database...</div>`;
+
+        try {
+            const res = await KotoAuth.getSuratList(filter);
+            currentSuratList = res.data || [];
+            renderStatusCards(currentSuratList);
+        } catch (e) {
+            box.innerHTML = `<div class="alert alert-warning small"><i class="bi bi-exclamation-circle me-1"></i> Tidak dapat memuat status surat. Pastikan backend terhubung.</div>`;
+        }
+    }
+
+    function filterStatusTab(status, btn) {
+        document.querySelectorAll('#tab-status .btn-group button').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        loadStatusSurat(status);
+    }
+
+    function renderStatusCards(list) {
+        const box = document.getElementById('statusCardsContainer');
+        if (!list || list.length === 0) {
+            box.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="stat-icon bg-light text-muted mx-auto mb-2"><i class="bi bi-inbox fs-3"></i></div>
+                    <h6 class="fw-bold text-dark">Belum Ada Pengajuan Surat</h6>
+                    <p class="small text-muted mb-3">Anda belum memiliki pengajuan surat pada kategori ini.</p>
+                    <button class="btn btn-success btn-sm rounded-pill px-3" onclick="switchTab('ajukan')">
+                        <i class="bi bi-file-earmark-plus me-1"></i> Ajukan Surat Sekarang
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        box.innerHTML = list.map(s => {
+            const step = s.timeline_step || 1;
+            const isApproved = (s.status === 'disetujui');
+            const isRejected = (s.status === 'ditolak');
+            const isRevision = (s.status === 'perlu_revisi_warga');
+
+            const step1Cls = (step >= 1 ? 'complete' : '') + (step === 1 ? ' active' : '');
+            const step2Cls = (step >= 2 ? 'complete' : '') + (step === 2 ? ' active' : '');
+            const step3Cls = (step >= 3 ? 'complete' : '') + (step === 3 ? ' active' : '');
+            const step4Cls = isApproved ? 'complete active' : (isRejected ? 'active' : '');
+
+            const circle4Cls = isRejected ? 'bg-danger text-white border-danger' : '';
+            const circle4Icon = isRejected ? 'bi-x-lg' : 'bi-check-lg';
+            const label4Cls = isRejected ? 'text-danger' : '';
+            const label4Text = isRejected ? 'Ditolak' : 'Selesai';
+
+            const alasanHtml = (isRejected && s.catatan_admin) ?
+                `<div class="alert alert-danger small py-2 mb-3"><strong><i class="bi bi-exclamation-triangle-fill me-1"></i> Catatan Penolakan:</strong> ${s.catatan_admin}</div>` : '';
+
+            const catatanRevisiHtml = (isRevision && s.catatan_admin) ?
+                `<div class="alert alert-warning small py-2 mb-3 border-warning"><strong><i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i> Catatan Perbaikan Berkas:</strong> ${s.catatan_admin}</div>` : '';
+
+            const revisiBtnHtml = isRevision ?
+                `<button class="btn btn-warning text-dark btn-sm rounded-pill px-3 fw-bold" onclick="bukaFormRevisi(${s.id})"><i class="bi bi-pencil-square me-1"></i> Perbaiki Pengajuan</button>` : '';
+
+            const printBtnHtml = isApproved ?
+                `<button class="btn btn-danger btn-sm rounded-pill px-3 fw-bold me-1" onclick="downloadSuratFinalPdf(${s.id})"><i class="bi bi-file-earmark-pdf-fill me-1"></i> Download PDF</button>
+                 <button class="btn btn-outline-success btn-sm rounded-pill px-3 fw-bold" onclick="printDirectSurat(${s.id})"><i class="bi bi-printer-fill me-1"></i> Cetak</button>` : '';
+
+            return `
+                <div class="card-custom p-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+                        <div>
+                            <span class="badge bg-light text-primary border font-monospace mb-1">${s.nomor_surat || '-'}</span>
+                            <h5 class="fw-bold mb-0 text-dark">${s.nama_jenis_surat || s.jenis_surat || '-'}</h5>
+                            <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Diajukan pada: ${s.tanggal_format || '-'}</small>
+                        </div>
+                        <span class="badge bg-${s.status_badge_color || (isRevision ? 'warning text-dark' : 'secondary')} fs-6 px-3 py-2">
+                            ${s.status_label || (isRevision ? 'Perlu Perbaikan Berkas' : (s.status || '-'))}
+                        </span>
+                    </div>
+
+                    <!-- Timeline Progress Stepper -->
+                    <div class="timeline-steps mb-3">
+                        <div class="step-item ${step1Cls}">
+                            <div class="step-circle"><i class="bi bi-file-earmark-check"></i></div>
+                            <div class="step-label">Diajukan</div>
+                        </div>
+                        <div class="step-item ${step2Cls}">
+                            <div class="step-circle"><i class="bi bi-person-check"></i></div>
+                            <div class="step-label">Verifikasi Admin</div>
+                        </div>
+                        <div class="step-item ${step3Cls}">
+                            <div class="step-circle"><i class="bi bi-pen"></i></div>
+                            <div class="step-label">TTD Wali Nagari</div>
+                        </div>
+                        <div class="step-item ${step4Cls}">
+                            <div class="step-circle ${circle4Cls}">
+                                <i class="bi ${circle4Icon}"></i>
+                            </div>
+                            <div class="step-label ${label4Cls}">
+                                ${label4Text}
+                            </div>
+                        </div>
+                    </div>
+
+                    ${alasanHtml}
+                    ${catatanRevisiHtml}
+
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="small text-muted">Keperluan: <em>${s.keperluan || '-'}</em></span>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="openDetailSuratModal(${s.id})">
+                                <i class="bi bi-eye-fill me-1"></i> Lihat Detail
+                            </button>
+                            ${revisiBtnHtml}
+                            ${printBtnHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // =========================================================================
+    // 5. DETAIL SURAT MODAL & DOWNLOAD PDF
+    // =========================================================================
+    let activeDetailSurat = null;
+
+    async function openDetailSuratModal(id) {
+        try {
+            const res = await KotoAuth.getSuratDetail(id);
+            if (res && res.success) {
+                const s = res.data;
+                activeDetailSurat = s;
+
+                document.getElementById('dt_judulSurat').innerText = s.nama_jenis_surat || 'Surat Keterangan';
+                document.getElementById('dt_nomorRef').innerText = s.nomor_surat || ('#KM-00' + s.id);
+                document.getElementById('dt_badgeStatus').className = `badge bg-${s.status_badge_color || (s.status === 'perlu_revisi_warga' ? 'warning text-dark' : 'secondary')}`;
+                document.getElementById('dt_badgeStatus').innerText = s.status_label || (s.status === 'perlu_revisi_warga' ? 'Perlu Perbaikan Berkas' : s.status);
+
+                document.getElementById('dt_namaPemohon').innerText = s.nama_pemohon || '-';
+                document.getElementById('dt_nikPemohon').innerText = s.nik_pemohon || '-';
+                document.getElementById('dt_tanggal').innerText = s.tanggal_format || '-';
+                document.getElementById('dt_keperluan').innerText = s.keperluan || '-';
+                document.getElementById('dt_isiSurat').innerText = s.isi_surat || 'Naskah dalam penyusunan dinas.';
+
+                // Stepper update
+                const step = s.timeline_step || 1;
+                document.getElementById('dt_step1').className = `step-item ${step >= 1 ? 'complete active' : ''}`;
+                document.getElementById('dt_step2').className = `step-item ${step >= 2 ? 'complete active' : ''}`;
+                document.getElementById('dt_step3').className = `step-item ${step >= 3 ? 'complete active' : ''}`;
+                document.getElementById('dt_step4').className = `step-item ${s.status === 'disetujui' ? 'complete active' : ''}`;
+
+                // Alasan Tolak / Catatan Revisi
+                const tolakBox = document.getElementById('dt_alasanTolakBox');
+                if (tolakBox) {
+                    if (s.status === 'perlu_revisi_warga' && s.catatan_admin) {
+                        tolakBox.className = 'alert alert-warning small border-warning';
+                        tolakBox.innerHTML = `<strong><i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i> Catatan Perbaikan Berkas:</strong><div id="dt_alasanTolakText" class="mt-1">${s.catatan_admin}</div>`;
+                        tolakBox.classList.remove('d-none');
+                    } else if (s.status === 'ditolak' && (s.catatan_admin || s.catatan_wali)) {
+                        tolakBox.className = 'alert alert-danger small';
+                        tolakBox.innerHTML = `<strong><i class="bi bi-exclamation-triangle-fill me-1"></i> Catatan Penolakan:</strong><div id="dt_alasanTolakText" class="mt-1">${s.catatan_admin || s.catatan_wali}</div>`;
+                        tolakBox.classList.remove('d-none');
+                    } else {
+                        tolakBox.classList.add('d-none');
+                    }
+                }
+
+                // Berkas
+                const bList = document.getElementById('dt_berkasList');
+                if (bList) {
+                    if (s.berkas && s.berkas.length > 0) {
+                        bList.innerHTML = s.berkas.map(b => `
+                            <span class="badge bg-light text-dark border p-2">
+                                <i class="bi bi-file-earmark-check text-success me-1"></i> ${b.label_jenis || 'Dokumen'} (${b.nama_file_asli || 'berkas'})
+                            </span>
+                        `).join('');
+                    } else {
+                        bList.innerHTML = `<span class="text-muted small">Berkas terlampir pada sistem arsip digital.</span>`;
+                    }
+                }
+
+                // Tombol Perbaiki Pengajuan di Modal Detail
+                const btnRevisiModal = document.getElementById('dt_btnPerbaikiRevisi');
+                if (btnRevisiModal) {
+                    if (s.status === 'perlu_revisi_warga') {
+                        btnRevisiModal.classList.remove('d-none');
+                        btnRevisiModal.onclick = () => bukaFormRevisi(s.id);
+                    } else {
+                        btnRevisiModal.classList.add('d-none');
+                    }
+                }
+
+                // Download PDF button & Print button
+                const btnPrint = document.getElementById('dt_btnPrintSurat');
+                const btnPdf = document.getElementById('dt_btnDownloadPdf');
+                if (s.status === 'disetujui') {
+                    if (btnPrint) btnPrint.classList.remove('d-none');
+                    if (btnPdf) btnPdf.classList.remove('d-none');
+                } else {
+                    if (btnPrint) btnPrint.classList.add('d-none');
+                    if (btnPdf) btnPdf.classList.add('d-none');
+                }
+
+                const modal = new bootstrap.Modal(document.getElementById('modalDetailSurat'));
+                modal.show();
+            }
+        } catch (err) {
+            alert('Gagal memuat detail surat: ' + err.message);
+        }
+    }
+
+    async function downloadSuratFinalPdf(id) {
+        const suratId = id || (activeDetailSurat ? activeDetailSurat.id : null);
+        if (!suratId) {
+            alert('ID surat tidak valid.');
+            return;
+        }
+
+        const btnModal = document.getElementById('dt_btnDownloadPdf');
+        const originalText = btnModal ? btnModal.innerHTML : '';
+
+        try {
+            if (btnModal && !id) {
+                btnModal.disabled = true;
+                btnModal.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Mengunduh...';
+            }
+
+            await KotoAuth.downloadSuratPdf(suratId);
+        } catch (err) {
+            alert(err.message || 'Surat belum dapat diunduh. Silakan coba kembali.');
+        } finally {
+            if (btnModal && !id) {
+                btnModal.disabled = false;
+                btnModal.innerHTML = originalText || '<i class="bi bi-file-earmark-pdf-fill me-1"></i> Download PDF';
+            }
+        }
+    }
+
+    function printDirectSurat(id) {
+        openDetailSuratModal(id).then(() => {
+            printSuratFromDetail();
+        });
+    }
+
+    function printSuratFromDetail() {
+        if (!activeDetailSurat) return;
+        const s = activeDetailSurat;
+
+        const printWin = window.open('', '_blank');
+        const tglSurat = s.disetujui_pada ? s.disetujui_pada.split(',')[0] : '27 Agustus 2026';
+        const docOpen = '<' + '!DOCTYPE html><' + 'html><' + 'head><' + 'title>Surat Resmi - ' + s.nama_jenis_surat + '<' + '/title>'
+            + '<' + 'link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>'
+            + '<' + 'style>'
+            + 'body { font-family: "Times New Roman", serif; padding: 40px 60px; color: #000; line-height: 1.8; }'
+            + '.kop { text-align: center; border-bottom: 3px double #000; padding-bottom: 12px; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 20px; }'
+            + '.kop img { width: 70px; } .kop h4 { margin: 2px 0; font-size: 1.15rem; text-transform: uppercase; }'
+            + '.kop h3 { margin: 2px 0; font-size: 1.35rem; font-weight: 800; text-transform: uppercase; }'
+            + '.kop p { margin: 2px 0; font-size: 0.85rem; font-style: italic; }'
+            + '.judul { text-align: center; margin: 24px 0 20px; } .judul h5 { text-decoration: underline; font-size: 1.15rem; text-transform: uppercase; margin: 0; }'
+            + '.isi { text-align: justify; white-space: pre-line; font-size: 1rem; margin-bottom: 35px; }'
+            + '.ttd-box { float: right; width: 280px; text-align: center; position: relative; }'
+            + '.stempel-img { position: absolute; left: 10px; top: 25px; width: 90px; opacity: 0.85; transform: rotate(-8deg); }'
+            + '.ttd-nama { font-family: "Pacifico", cursive; font-size: 1.5rem; color: #1e3a8a; position: absolute; right: 25px; top: 40px; transform: rotate(-5deg); }'
+            + '<' + '/style><' + '/head><' + 'body>';
+
+        const docBody = `
+            <div class="kop"><img src="image/logo agam.png" alt="Logo"/><div><h4>PEMERINTAH KABUPATEN AGAM</h4><h4>KECAMATAN TANJUNG RAYA</h4><h3>PEMERINTAH NAGARI KOTO MALINTANG</h3><p>Alamat: Jl. Raya Maninjau - Lubuk Basung, Kode Pos: 26454</p></div></div>
+            <div class="judul"><h5>${s.nama_jenis_surat.toUpperCase()}</h5><div>Nomor: ${s.nomor_surat}</div></div>
+            <div class="isi">${s.isi_surat}</div>
+            <div class="ttd-box"><div>Koto Malintang, ${tglSurat}</div><div style="font-weight:bold;">WALI NAGARI KOTO MALINTANG</div>
+            <div style="height:100px;position:relative;"><img src="image/stempel_resmi.svg" class="stempel-img" onerror="this.style.display='none'"/><div class="ttd-nama">Nazaruddin</div></div>
+            <div style="font-weight:bold;text-decoration:underline;">NAZARUDDIN, S.Pd.I</div><small>Datuak Bandaro</small></div>
+        `;
+
+        const docClose = '<' + '/body><' + '/html>';
+        const content = docOpen + docBody + docClose;
+
+        printWin.document.open();
+        printWin.document.write(content);
+        printWin.document.close();
+        printWin.focus();
+        setTimeout(() => { try { printWin.print(); } catch(e){} }, 500);
+    }
+
+    // =========================================================================
+    // 6. NOTIFIKASI SURAT
+    // =========================================================================
+    async function loadFullNotifikasi() {
+        const box = document.getElementById('fullNotifikasiList');
+        box.innerHTML = `<div class="p-4 text-center text-muted small"><span class="spinner-border spinner-border-sm me-1"></span> Mengambil notifikasi...</div>`;
+
+        try {
+            const res = await KotoAuth.getNotifikasi();
+            const list = res.data || [];
+            document.getElementById('navNotifBadge').innerText = res.unread_count || 0;
+            document.getElementById('statNotifCount').innerText = res.unread_count || 0;
+
+            // Render ke Dropdown Navbar
+            const drop = document.getElementById('notifDropdownList');
+            if (list.length === 0) {
+                drop.innerHTML = `<li class="p-3 text-center text-muted small">Belum ada notifikasi baru.</li>`;
+                box.innerHTML = `<div class="text-center py-5 text-muted"><i class="bi bi-bell-slash fs-2 mb-2 d-block"></i><h6>Tidak Ada Notifikasi</h6><small>Belum ada pemberitahuan baru terkait surat Anda.</small></div>`;
+                return;
+            }
+
+            drop.innerHTML = `
+                <li class="p-2 border-bottom d-flex justify-content-between align-items-center">
+                    <strong class="small text-dark">Pemberitahuan Surat</strong>
+                    <a href="javascript:void(0)" class="small text-success text-decoration-none" onclick="markAllRead()">Tandai Semua Dibaca</a>
+                </li>
+                ${list.slice(0, 5).map(n => `
+                    <li class="p-2 border-bottom">
+                        <a href="javascript:void(0)" class="text-decoration-none text-dark d-flex gap-2" onclick="openDetailSuratModal(${n.surat_id})">
+                            <i class="bi ${n.icon} fs-5 mt-1"></i>
+                            <div>
+                                <strong class="small d-block">${n.title}</strong>
+                                <small class="text-muted d-block" style="font-size:0.75rem;">${n.message.substring(0, 70)}...</small>
+                                <span class="text-muted" style="font-size:0.68rem;">${n.time}</span>
+                            </div>
+                        </a>
+                    </li>
+                `).join('')}
+            `;
+
+            // Render ke Full Tab
+            box.innerHTML = list.map(n => `
+                <div class="p-3 rounded-3 border bg-white d-flex align-items-start gap-3 shadow-sm">
+                    <div class="p-2 rounded-circle bg-light"><i class="bi ${n.icon} fs-4"></i></div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong class="text-dark">${n.title}</strong>
+                            <small class="text-muted">${n.time}</small>
+                        </div>
+                        <p class="small text-muted mb-2">${n.message}</p>
+                        <button class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="openDetailSuratModal(${n.surat_id})">
+                            <i class="bi bi-search me-1"></i> Lihat Status Surat
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) {
+            box.innerHTML = `<div class="alert alert-warning small">Gagal memuat notifikasi.</div>`;
+        }
+    }
+
+    async function markAllRead() {
+        await KotoAuth.markAllNotifikasiRead();
+        document.getElementById('navNotifBadge').innerText = '0';
+        document.getElementById('statNotifCount').innerText = '0';
+        loadFullNotifikasi();
+    }
+
+    // =========================================================================
+    // 7. UMKM SAYA (TAMBAH, EDIT, HAPUS)
+    // =========================================================================
+    async function loadMyUmkm() {
+        const box = document.getElementById('myUmkmGridContainer');
+        box.innerHTML = `<div class="col-12 text-center py-4 text-muted small"><span class="spinner-border spinner-border-sm me-1"></span> Mengambil data UMKM Anda...</div>`;
+
+        try {
+            const res = await KotoAuth.getMyUmkm();
+            const list = res.data || [];
+            document.getElementById('statUmkmCount').innerText = list.length;
+
+            if (list.length === 0) {
+                box.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <div class="stat-icon bg-light text-muted mx-auto mb-2"><i class="bi bi-shop fs-3"></i></div>
+                        <h6 class="fw-bold text-dark">Belum Ada UMKM Terdaftar</h6>
+                        <p class="small text-muted mb-3">Tambahkan data usaha Anda agar dapat dipromosikan melalui direktori UMKM Nagari.</p>
+                        <button class="btn btn-success btn-sm rounded-pill px-3" onclick="openModalTambahUmkm()">
+                            <i class="bi bi-plus-circle-fill me-1"></i> Tambah UMKM Sekarang
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            box.innerHTML = list.map(u => `
+                <div class="col-md-6">
+                    <div class="card-custom p-3 h-100 d-flex flex-column" style="border: 2px solid #10b981;">
+                        <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="stat-icon bg-success bg-opacity-10 text-success" style="width:40px;height:40px;">
+                                    <i class="bi bi-shop fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0">${u.nama_usaha || u.nama}</h6>
+                                    <span class="badge bg-success text-white" style="font-size:0.7rem;">${u.kategori}</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-muted border" style="font-size:0.7rem;">Est. ${u.tahun_berdiri || '-'}</span>
+                        </div>
+                        <p class="small text-muted mb-3 flex-grow-1" style="line-height:1.5;">${u.deskripsi}</p>
+                        <div class="p-2 bg-light rounded-3 small mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Pemilik:</span>
+                                <strong>${u.pemilik}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">WhatsApp:</span>
+                                <strong class="text-success">${u.whatsapp || u.wa}</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-auto">
+                            <a href="https://wa.me/${(u.whatsapp || u.wa || '').replace(/[^0-9]/g, '')}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                                <i class="bi bi-whatsapp me-1"></i> Hubungi
+                            </a>
+                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="hapusUmkm(${u.id})">
+                                <i class="bi bi-trash me-1"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) {
+            box.innerHTML = `<div class="col-12 alert alert-warning small">Gagal memuat UMKM.</div>`;
+        }
+    }
+
+    function openModalTambahUmkm() {
+        document.getElementById('umkmEditId').value = '';
+        document.getElementById('um_nama').value = '';
+        document.getElementById('um_pemilik').value = currentUser?.name || '';
+        document.getElementById('um_wa').value = currentUser?.phone || '';
+        document.getElementById('um_alamat').value = currentUser?.address || 'Nagari Koto Malintang';
+        document.getElementById('um_deskripsi').value = '';
+        document.getElementById('um_tahun').value = new Date().getFullYear();
+        document.getElementById('umkmModalTitle').innerText = '+ Tambah Data UMKM Baru';
+
+        const modal = new bootstrap.Modal(document.getElementById('modalFormUmkm'));
+        modal.show();
+    }
+
+    async function submitFormUmkm(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnSubmitUmkm');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...';
+
+        const formData = new FormData();
+        formData.append('nama_usaha', document.getElementById('um_nama').value.trim());
+        formData.append('pemilik', document.getElementById('um_pemilik').value.trim());
+        formData.append('kategori', document.getElementById('um_kategori').value);
+        formData.append('whatsapp', document.getElementById('um_wa').value.trim());
+        formData.append('tahun_berdiri', document.getElementById('um_tahun').value);
+        formData.append('jam_operasional', document.getElementById('um_jam').value.trim() || '08:00 - 17:00 WIB');
+        formData.append('instagram', document.getElementById('um_ig').value.trim());
+        formData.append('alamat', document.getElementById('um_alamat').value.trim());
+        formData.append('deskripsi', document.getElementById('um_deskripsi').value.trim());
+
+        const fotoIn = document.getElementById('um_foto');
+        if (fotoIn.files && fotoIn.files[0]) {
+            formData.append('foto', fotoIn.files[0]);
+        }
+
+        try {
+            await KotoAuth.tambahUmkm(formData);
+            bootstrap.Modal.getInstance(document.getElementById('modalFormUmkm')).hide();
+            alert('✅ UMKM Berhasil Ditambahkan ke Database Nagari!');
+            loadMyUmkm();
+        } catch (err) {
+            alert('Gagal menyimpan UMKM: ' + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Simpan UMKM';
+        }
+    }
+
+    async function hapusUmkm(id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus data UMKM ini?')) return;
+        try {
+            await KotoAuth.deleteUmkm(id);
+            alert('Data UMKM berhasil dihapus.');
+            loadMyUmkm();
+        } catch (e) {
+            alert('Gagal menghapus: ' + e.message);
+        }
+    }
+
+    // =========================================================================
+    // 8. UBAH PASSWORD
+    // =========================================================================
+    async function handleUpdatePassword(e) {
+        e.preventDefault();
+        const pCur = document.getElementById('pwdCurrent').value;
+        const pNew = document.getElementById('pwdNew').value;
+        const pConf = document.getElementById('pwdConfirm').value;
+        const alertBox = document.getElementById('alertPassword');
+        const btn = document.getElementById('btnSubmitPwd');
+
+        if (pNew !== pConf) {
+            alertBox.className = 'alert alert-danger small';
+            alertBox.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i> Konfirmasi password baru tidak cocok!';
+            alertBox.classList.remove('d-none');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Memproses di server...';
+
+        try {
+            const res = await KotoAuth.updatePassword(pCur, pNew, pConf);
+            alertBox.className = 'alert alert-success small';
+            alertBox.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${res.message || 'Kata sandi berhasil diperbarui!'}`;
+            alertBox.classList.remove('d-none');
+            e.target.reset();
+        } catch (err) {
+            alertBox.className = 'alert alert-danger small';
+            alertBox.innerHTML = `<i class="bi bi-exclamation-circle me-1"></i> ${err.message || 'Gagal mengubah password. Periksa password lama Anda.'}`;
+            alertBox.classList.remove('d-none');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Perbarui Kata Sandi';
+        }
+    }
+
+    // =========================================================================
+    // 9. PROFIL SAYA
+    // =========================================================================
+    function loadProfilForm() {
+        if (!currentUser) return;
+        document.getElementById('profTitleName').innerText = currentUser.name;
+        document.getElementById('profName').value = currentUser.name || '';
+        document.getElementById('profNik').value = currentUser.nik || '';
+        document.getElementById('profPhone').value = currentUser.phone || '';
+        document.getElementById('profUsername').value = currentUser.username || '';
+        document.getElementById('profAddress').value = currentUser.address || '';
+    }
+
+    async function handleUpdateProfil(e) {
+        e.preventDefault();
+        const alertBox = document.getElementById('alertProfil');
+        const btn = document.getElementById('btnSubmitProfil');
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...';
+
+        try {
+            const res = await KotoAuth.apiRequest('/warga/profil', {
+                method: 'PUT',
+                body: {
+                    name: document.getElementById('profName').value.trim(),
+                    nik: document.getElementById('profNik').value.trim(),
+                    phone: document.getElementById('profPhone').value.trim(),
+                    address: document.getElementById('profAddress').value.trim(),
+                }
+            });
+
+            currentUser = res.user;
+            KotoAuth.setSession(res.user);
+            document.getElementById('navUserName').innerText = res.user.name.split(' ')[0];
+            document.getElementById('profTitleName').innerText = res.user.name;
+
+            alertBox.className = 'alert alert-success small';
+            alertBox.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Profil berhasil diperbarui di database!';
+            alertBox.classList.remove('d-none');
+        } catch (err) {
+            alertBox.className = 'alert alert-danger small';
+            alertBox.innerHTML = `<i class="bi bi-exclamation-circle me-1"></i> ${err.message || 'Gagal memperbarui profil.'}`;
+            alertBox.classList.remove('d-none');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-save me-1"></i> Simpan Perubahan Profil';
+        }
+    }
+
+    // =========================================================================
+    // 10. MODAL PRATINJAU NASKAH SURAT
+    // =========================================================================
+    function showPreviewModal() {
+        const jenis = document.getElementById('in_jenis_surat').value;
+        const conf = SURAT_CONF[jenis] || SURAT_CONF['suket_usaha'];
+        const nama = document.getElementById('in_nama').value || '[Nama Pemohon]';
+        const nik = document.getElementById('in_nik').value || '[NIK Pemohon]';
+        const tempat = document.getElementById('in_tempat_lahir').value || '[Tempat]';
+        const tgl = document.getElementById('in_tanggal_lahir').value || '[Tanggal]';
+        const jk = document.getElementById('in_jk').value;
+        const pekerjaan = document.getElementById('in_pekerjaan').value || '[Pekerjaan]';
+        const alamat = document.getElementById('in_alamat').value || '[Alamat Jorong]';
+        const keperluan = document.getElementById('in_keperluan').value || '[Keperluan Surat]';
+        const extra1 = document.getElementById('in_extra1').value || '-';
+        const extra2 = document.getElementById('in_extra2').value || '-';
+
+        let previewBodyHtml = '';
+        if (jenis === 'suket_tidak_mampu') {
+            const listTg = getTanggunganKeluargaData();
+            let tgRowsHtml = '';
+            if (listTg.length > 0) {
+                tgRowsHtml = listTg.map((t, idx) => `
+                    <tr>
+                        <td class="text-center">${idx + 1}</td>
+                        <td><strong>${t.nama}</strong></td>
+                        <td class="text-center">${t.jenis_kelamin}</td>
+                        <td class="text-center">${t.umur}</td>
+                        <td>${t.hubungan}</td>
+                    </tr>
+                `).join('');
+            } else {
+                tgRowsHtml = '<tr><td colspan="5" class="text-center text-muted">- Belum ada data tanggungan diisi -</td></tr>';
+            }
+
+            previewBodyHtml = `
+                <div class="text-center pb-2 mb-3 border-bottom">
+                    <h6 class="fw-bold mb-0 text-success" style="font-size:0.95rem;">PEMERINTAH KABUPATEN AGAM - KECAMATAN TANJUNG RAYA</h6>
+                    <h5 class="fw-bold mb-0 text-dark">NAGARI KOTO MALINTANG</h5>
+                    <small class="text-muted" style="font-size:0.75rem;">Balairong Adat – Jorong Ambacang | Nagarikotomalintang.agamkab.go.id</small>
+                </div>
+                <div class="text-center mb-3">
+                    <h6 class="fw-bold mb-0 text-decoration-underline" style="font-size:1.05rem;">SURAT KETERANGAN KURANG MAMPU</h6>
+                    <small class="text-muted">Nomor: 401 / [Nomor Dinas] / WN-KM / 2026</small>
+                </div>
+                <p class="small mb-2">Yang bertanda tangan di bawah ini, Wali Nagari Koto Malintang, Kecamatan Tanjung Raya, Kabupaten Agam menerangkan dengan sebenarnya, bahwa :</p>
+                <table class="table table-sm table-borderless small mb-2">
+                    <tr><td style="width:160px;">Nama</td><td>: <strong>${nama}</strong></td></tr>
+                    <tr><td>NIK</td><td>: ${nik}</td></tr>
+                    <tr><td>Tempat/Tgl Lahir</td><td>: ${tempat}, ${tgl}</td></tr>
+                    <tr><td>Jenis Kelamin</td><td>: ${jk}</td></tr>
+                    <tr><td>Pekerjaan</td><td>: ${pekerjaan}</td></tr>
+                    <tr><td>Alamat</td><td>: ${alamat}</td></tr>
+                </table>
+                <p class="small mb-2">Berdasarkan surat keterangan Kurang Mampu/Miskin dari Kepala Jorong Nagari Koto Malintang, Kecamatan Tanjung Raya, Kabupaten Agam dimana nama tersebut di atas tergolong keluarga miskin/mempunyai ekonomi lemah dengan tanggungan sebagai berikut :</p>
+                <div class="table-responsive mb-2">
+                    <table class="table table-sm table-bordered small mb-0" style="font-size:0.78rem;">
+                        <thead class="table-light text-center fw-bold">
+                            <tr><th style="width:35px;">No</th><th>Nama</th><th style="width:120px;">Jenis Kelamin</th><th style="width:80px;">Umur</th><th>Hubungan Dengan KK</th></tr>
+                        </thead>
+                        <tbody>
+                            ${tgRowsHtml}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="small mb-0">Demikianlah surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>
+            `;
+        } else {
+            previewBodyHtml = `
+                <div class="text-center pb-2 mb-3 border-bottom">
+                    <h6 class="fw-bold mb-0 text-success" style="font-size:0.95rem;">PEMERINTAH KABUPATEN AGAM - KECAMATAN TANJUNG RAYA</h6>
+                    <h5 class="fw-bold mb-0 text-dark">NAGARI KOTO MALINTANG</h5>
+                    <small class="text-muted" style="font-size:0.75rem;">Balairong Adat – Jorong Ambacang | Nagarikotomalintang.agamkab.go.id</small>
+                </div>
+                <div class="text-center mb-3">
+                    <h6 class="fw-bold mb-0 text-decoration-underline" style="font-size:1.05rem;">${conf.nama.toUpperCase()}</h6>
+                    <small class="text-muted">Nomor: 470 / [Nomor Dinas] / WN-KM / 2026</small>
+                </div>
+                <p class="small mb-2">Yang bertanda tangan di bawah ini, Wali Nagari Koto Malintang, Kecamatan Tanjung Raya, Kabupaten Agam menerangkan bahwa :</p>
+                <table class="table table-sm table-borderless small mb-3">
+                    <tr><td style="width:160px;">Nama Lengkap</td><td>: <strong>${nama}</strong></td></tr>
+                    <tr><td>NIK KTP</td><td>: ${nik}</td></tr>
+                    <tr><td>Tempat / Tgl Lahir</td><td>: ${tempat}, ${tgl}</td></tr>
+                    <tr><td>Jenis Kelamin</td><td>: ${jk}</td></tr>
+                    <tr><td>Pekerjaan</td><td>: ${pekerjaan}</td></tr>
+                    <tr><td>Alamat Domisili</td><td>: ${alamat}</td></tr>
+                    <tr><td>${conf.extra1}</td><td>: <strong>${extra1}</strong></td></tr>
+                    <tr><td>${conf.extra2}</td><td>: ${extra2}</td></tr>
+                </table>
+                <p class="small mb-2">Adalah benar warga Nagari Koto Malintang dan surat ini diberikan atas permohonan yang bersangkutan untuk keperluan: <strong>${keperluan}</strong>.</p>
+                <p class="small mb-0">Demikian surat keterangan ini kami buat dengan sebenarnya agar dapat dipergunakan sebagaimana mestinya.</p>
+            `;
+        }
+
+        document.getElementById('pvContentBody').innerHTML = previewBodyHtml;
+        const modal = new bootstrap.Modal(document.getElementById('modalPreviewSurat'));
+        modal.show();
+    }
+
+    // =========================================================================
+    // 11. LOGOUT
+    // =========================================================================
+    async function doLogout() {
+        if (confirm('Keluar dari Portal Warga?')) {
+            await KotoAuth.logout();
+            window.location.href = 'login.html';
+        }
+    }
+
+    // =========================================================================
+    // 12. INITIALIZATION
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+        selectSuratType('suket_usaha');
+        loadDashboardData();
+        loadFullNotifikasi();
+    });
+    </script>
+</body>
+</html>

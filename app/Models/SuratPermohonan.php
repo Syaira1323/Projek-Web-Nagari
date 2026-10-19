@@ -168,7 +168,9 @@ class SuratPermohonan extends Model
     {
         return match ($this->status) {
             'menunggu_admin' => 'Menunggu Verifikasi Admin',
-            'menunggu_wali_nagari' => 'Menunggu Stempel Wali Nagari',
+            'perlu_revisi_warga' => 'Perlu Perbaikan Berkas',
+            'menunggu_wali_nagari' => 'Menunggu TTD & Stempel Wali Nagari',
+            'dikembalikan_ke_admin' => 'Dikembalikan Wali Nagari',
             'disetujui' => 'Selesai / Disetujui',
             'ditolak' => 'Ditolak',
             default => $this->status,
@@ -179,7 +181,9 @@ class SuratPermohonan extends Model
     {
         return match ($this->status) {
             'menunggu_admin' => 'warning text-dark',
+            'perlu_revisi_warga' => 'danger text-white',
             'menunggu_wali_nagari' => 'info text-dark',
+            'dikembalikan_ke_admin' => 'primary text-white',
             'disetujui' => 'success text-white',
             'ditolak' => 'danger text-white',
             default => 'secondary',

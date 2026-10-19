@@ -88,8 +88,16 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="org-box {{ $isWali ? 'walinagari' : ($isSekretaris ? 'sekretaris' : '') }}">
                         @if (!empty($item->foto_bagan))
+                            @php
+                                $bImg = asset($item->foto_bagan);
+                                if (file_exists(public_path($item->foto_bagan))) {
+                                    $bImg = asset($item->foto_bagan);
+                                } elseif (file_exists(public_path('image/' . $item->foto_bagan))) {
+                                    $bImg = asset('image/' . $item->foto_bagan);
+                                }
+                            @endphp
                             <div class="mb-3">
-                                <img src="{{ asset($item->foto_bagan) }}" alt="{{ $item->nama }}" class="img-fluid rounded-3" style="max-height: 140px; object-fit: cover;" />
+                                <img src="{{ $bImg }}" alt="{{ $item->nama }}" class="img-fluid rounded-3" style="max-height: 140px; object-fit: cover;" />
                             </div>
                         @else
                             <div class="org-icon">

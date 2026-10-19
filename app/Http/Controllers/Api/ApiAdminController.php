@@ -37,9 +37,38 @@ class ApiAdminController extends Controller
                 'surat_ditolak' => SuratPermohonan::where('status', 'ditolak')->count(),
                 'total_surat' => SuratPermohonan::count(),
                 'total_warga' => User::where('role', 'warga')->count(),
+                'total_kaba' => \App\Models\KabaNagari::count(),
+                'total_umkm' => \App\Models\UMKM::count(),
+                'total_wisata' => \App\Models\ObjekWisata::count(),
+                'total_perangkat' => \App\Models\PerangkatNagari::count(),
                 'gdrive_status' => $this->gdriveService->isConnected(),
             ],
             'surat_terbaru' => SuratPermohonan::with('user')->latest()->take(6)->get(),
+        ]);
+    }
+
+    /**
+     * GET /api/admin/arsip
+     */
+    public function arsipList(Request $request): JsonResponse
+    {
+        $query = SuratPermohonan::whereIn('status', ['disetujui', 'ditolak'])->with(['user', 'berkasPersyaratans'])->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->query('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_pemohon', 'like', "%{$search}%")
+                  ->orWhere('nik_pemohon', 'like', "%{$search}%")
+                  ->orWhere('nomor_surat', 'like', "%{$search}%");
+            });
+        }
+
+        $list = $query->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $list,
+            'total' => $list->count(),
         ]);
     }
 
@@ -95,7 +124,7 @@ class ApiAdminController extends Controller
                     'label_jenis' => $b->label_jenis,
                     'nama_file_asli' => $b->nama_file_asli,
                     'formatted_size' => $b->formatted_size,
-                    'is_stored_in_gdrive' => $b->is_stored_in_gdrive,
+                    'is_stored_in_gdrive' => !empty($b->gdrive_file_id),
                     'download_url' => route('warga.berkas.download', $b->id),
                 ];
             }),
@@ -110,6 +139,13 @@ class ApiAdminController extends Controller
         $surat = SuratPermohonan::find($id);
         if (!$surat) {
             return response()->json(['success' => false, 'message' => 'Surat tidak ditemukan.'], 404);
+        }
+
+        if (!in_array($surat->status, ['menunggu_admin', 'dikembalikan_ke_admin'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Surat dengan status ini tidak dapat diverifikasi/diteruskan ke Meja Wali Nagari.'
+            ], 422);
         }
 
         $validated = $request->validate([
@@ -132,6 +168,42 @@ class ApiAdminController extends Controller
     }
 
     /**
+     * POST /api/admin/surat/{id}/minta-revisi
+     */
+    public function mintaRevisi(Request $request, int $id): JsonResponse
+    {
+        $surat = SuratPermohonan::find($id);
+        if (!$surat) {
+            return response()->json(['success' => false, 'message' => 'Surat tidak ditemukan.'], 404);
+        }
+
+        if (!in_array($surat->status, ['menunggu_admin', 'dikembalikan_ke_admin'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Permintaan revisi hanya dapat dilakukan untuk surat yang berstatus menunggu verifikasi Admin atau dikembalikan oleh Wali Nagari.'
+            ], 422);
+        }
+
+        $validated = $request->validate([
+            'catatan_admin' => 'required|string|min:5|max:1000',
+        ], [
+            'catatan_admin.required' => 'Catatan revisi untuk warga wajib diisi.',
+            'catatan_admin.min' => 'Catatan revisi minimal 5 karakter.',
+            'catatan_admin.max' => 'Catatan revisi maksimal 1000 karakter.',
+        ]);
+
+        $surat->status = 'perlu_revisi_warga';
+        $surat->catatan_admin = $validated['catatan_admin'];
+        $surat->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Permintaan perbaikan berkas/data berhasil dikirim ke warga.',
+            'data' => $surat,
+        ]);
+    }
+
+    /**
      * POST /api/admin/surat/{id}/reject
      */
     public function rejectSurat(Request $request, int $id): JsonResponse
@@ -139,6 +211,13 @@ class ApiAdminController extends Controller
         $surat = SuratPermohonan::find($id);
         if (!$surat) {
             return response()->json(['success' => false, 'message' => 'Surat tidak ditemukan.'], 404);
+        }
+
+        if (!in_array($surat->status, ['menunggu_admin', 'dikembalikan_ke_admin'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Surat dengan status ini tidak dapat ditolak oleh Admin.'
+            ], 422);
         }
 
         $validated = $request->validate([
@@ -206,11 +285,18 @@ class ApiAdminController extends Controller
      */
     public function gdriveStatus(): JsonResponse
     {
+        $redirectUri = route('admin.gdrive.callback');
+        $isConnected = $this->gdriveService->isConnected();
+        $authUrl = !$isConnected ? $this->gdriveService->getAuthUrl($redirectUri) : null;
+
         return response()->json([
             'success' => true,
-            'is_connected' => $this->gdriveService->isConnected(),
-            'client_id' => Pengaturan::get('gdrive_client_id', ''),
-            'redirect_uri' => route('admin.gdrive.callback'),
+            'is_connected' => $isConnected,
+            'auth_url' => $authUrl,
+            'client_id' => Pengaturan::get('gdrive_client_id', '') ?: config('services.google.client_id', env('GOOGLE_CLIENT_ID', '')),
+            'email' => Pengaturan::get('gdrive_account_email', ''),
+            'folder_url' => config('services.google.gdrive_arsip_url', 'https://drive.google.com/'),
+            'redirect_uri' => $redirectUri,
             'total_berkas_cloud' => BerkasPersyaratan::whereNotNull('gdrive_file_id')->count(),
             'total_berkas_lokal' => BerkasPersyaratan::whereNull('gdrive_file_id')->count(),
         ]);
@@ -221,8 +307,7 @@ class ApiAdminController extends Controller
      */
     public function gdriveDisconnect(): JsonResponse
     {
-        Pengaturan::set('gdrive_access_token', '', 'gdrive');
-        Pengaturan::set('gdrive_refresh_token', '', 'gdrive');
+        $this->gdriveService->disconnect();
 
         return response()->json([
             'success' => true,
@@ -244,7 +329,11 @@ class ApiAdminController extends Controller
                 'email_kantor' => Pengaturan::get('email_kantor', 'layanan@nagari-kotomalintang.desa.id'),
                 'jam_layanan' => Pengaturan::get('jam_layanan', 'Senin - Kamis: 08.00 - 16.00 WIB | Jumat: 08.00 - 11.30 WIB'),
                 'nama_wali' => Pengaturan::get('nama_wali_nagari', 'NAZARUDDIN, S.Pd.I'),
+                'nama_wali_nagari' => Pengaturan::get('nama_wali_nagari', 'NAZARUDDIN, S.Pd.I'),
                 'gelar_wali' => Pengaturan::get('gelar_wali_nagari', 'Datuak Bandaro'),
+                'gelar_wali_nagari' => Pengaturan::get('gelar_wali_nagari', 'Datuak Bandaro'),
+                'jabatan_wali' => Pengaturan::get('jabatan_wali_nagari', 'Wali Nagari Koto Malintang'),
+                'jabatan_wali_nagari' => Pengaturan::get('jabatan_wali_nagari', 'Wali Nagari Koto Malintang'),
             ],
         ]);
     }
@@ -256,19 +345,39 @@ class ApiAdminController extends Controller
     {
         $fields = [
             'nama_kantor', 'alamat_kantor', 'telepon_kantor', 'email_kantor',
-            'jam_layanan', 'nama_wali', 'gelar_wali',
+            'jam_layanan', 'nama_wali', 'nama_wali_nagari', 'gelar_wali', 'gelar_wali_nagari',
+            'jabatan_wali', 'jabatan_wali_nagari',
         ];
+
+        $userSyncData = [];
 
         foreach ($fields as $f) {
             if ($request->filled($f)) {
-                $dbKey = $f === 'nama_wali' ? 'nama_wali_nagari' : ($f === 'gelar_wali' ? 'gelar_wali_nagari' : $f);
-                Pengaturan::set($dbKey, trim($request->input($f)), 'umum');
+                $val = trim($request->input($f));
+                if (in_array($f, ['nama_wali', 'nama_wali_nagari'])) {
+                    $dbKey = 'nama_wali_nagari';
+                    $userSyncData['name'] = $val;
+                } elseif (in_array($f, ['gelar_wali', 'gelar_wali_nagari'])) {
+                    $dbKey = 'gelar_wali_nagari';
+                    $userSyncData['gelar'] = $val;
+                } elseif (in_array($f, ['jabatan_wali', 'jabatan_wali_nagari'])) {
+                    $dbKey = 'jabatan_wali_nagari';
+                    $userSyncData['jabatan'] = $val;
+                } else {
+                    $dbKey = $f;
+                }
+                Pengaturan::set($dbKey, $val, 'umum');
             }
+        }
+
+        // Sync with Wali Nagari user model if any identity fields were updated
+        if (!empty($userSyncData)) {
+            User::where('role', 'wali_nagari')->update($userSyncData);
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Pengaturan kantor Nagari Koto Malintang berhasil diperbarui di database.',
+            'message' => 'Pengaturan kantor dan identitas Wali Nagari berhasil diperbarui di database.',
         ]);
     }
 }

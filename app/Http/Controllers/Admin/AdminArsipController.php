@@ -3,13 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pengaturan;
 use App\Models\SuratPermohonan;
+use App\Services\GoogleDriveService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class AdminArsipController extends Controller
 {
+    protected GoogleDriveService $gdriveService;
+
+    public function __construct(GoogleDriveService $gdriveService)
+    {
+        $this->gdriveService = $gdriveService;
+    }
+
     /**
      * Tampilkan halaman utama manajemen arsip surat resmi
      */
@@ -69,6 +78,12 @@ class AdminArsipController extends Controller
             'suket_domisili' => 'Surat Keterangan Domisili (SKD)',
         ];
 
+        // Google Drive Status & Auth
+        $isConnected = $this->gdriveService->isConnected();
+        $isConfigured = $this->gdriveService->isConfigured();
+        $connectedEmail = Pengaturan::get('gdrive_account_email', '-');
+        $redirectUri = route('admin.gdrive.callback');
+        $authUrl = $isConfigured ? $this->gdriveService->getAuthUrl($redirectUri) : null;
         $gdriveFolderUrl = config('services.gdrive_arsip_url', 'https://drive.google.com/');
 
         return view('admin.arsip.index', compact(
@@ -77,6 +92,11 @@ class AdminArsipController extends Controller
             'arsipBulanIni',
             'arsipPerJenis',
             'daftarSurat',
+            'isConnected',
+            'isConfigured',
+            'connectedEmail',
+            'authUrl',
+            'redirectUri',
             'gdriveFolderUrl'
         ));
     }

@@ -102,9 +102,14 @@
                 </div>
                 <div>
                     @if ($surat->status === 'disetujui')
-                        <a href="{{ route('warga.surat.print', $surat->id) }}" target="_blank" class="btn btn-success rounded-pill px-4 fw-bold shadow">
-                            <i class="bi bi-printer-fill me-1"></i> Cetak / Unduh Surat Resmi
-                        </a>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('warga.surat.download-pdf', $surat->id) }}" class="btn btn-danger rounded-pill px-4 fw-bold shadow">
+                                <i class="bi bi-file-earmark-pdf-fill me-1"></i> Unduh PDF Resmi
+                            </a>
+                            <a href="{{ route('warga.surat.print', $surat->id) }}" target="_blank" class="btn btn-outline-success rounded-pill px-4 fw-bold shadow-sm">
+                                <i class="bi bi-printer-fill me-1"></i> Cetak Dokumen
+                            </a>
+                        </div>
                     @else
                         <a href="{{ route('warga.surat.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
                             <i class="bi bi-arrow-left me-1"></i> Kembali ke Riwayat
@@ -168,14 +173,19 @@
                     </p>
                 </div>
             @elseif ($isDisetujui)
-                <div class="alert alert-success rounded-4 p-3 mb-4 d-flex align-items-center justify-content-between">
+                <div class="alert alert-success rounded-4 p-3 mb-4 d-flex flex-wrap align-items-center justify-content-between gap-2">
                     <div>
                         <i class="bi bi-patch-check-fill text-success fs-5 me-2"></i>
                         <strong>Surat Resmi Telah Selesai Diterbitkan:</strong> Nomor Surat: <span class="badge bg-success">{{ $surat->nomor_surat }}</span>
                     </div>
-                    <a href="{{ route('warga.surat.print', $surat->id) }}" target="_blank" class="btn btn-sm btn-success rounded-pill px-3">
-                        <i class="bi bi-printer me-1"></i> Cetak Surat
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('warga.surat.download-pdf', $surat->id) }}" class="btn btn-sm btn-danger rounded-pill px-3 fw-bold">
+                            <i class="bi bi-file-earmark-pdf-fill me-1"></i> Unduh PDF
+                        </a>
+                        <a href="{{ route('warga.surat.print', $surat->id) }}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                            <i class="bi bi-printer me-1"></i> Cetak
+                        </a>
+                    </div>
                 </div>
             @endif
 

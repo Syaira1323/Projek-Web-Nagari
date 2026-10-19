@@ -1,7 +1,7 @@
 <nav
           class="navbar fixed-top navbar-expand-lg navbar-dark bg-success px-3"
         >
-          <a class="navbar-brand d-flex align-items-center" href="/">
+          <a class="navbar-brand d-flex align-items-center" href="index.html">
             <img
               src="image/logo agam.png"
               alt=""
@@ -32,27 +32,27 @@
                 >
                 <ul class="dropdown-menu">
                   <li>
-                    <a class="dropdown-item" href="/profil-nagari"
+                    <a class="dropdown-item" href="Profil Nagari.html"
                       >Profil Nagari</a
                     >
                   </li>
-                  <li><a class="dropdown-item" href="/sejarah">Sejarah Nagari</a></li>
+                  <li><a class="dropdown-item" href="Sejarah.html">Sejarah Nagari</a></li>
                   <li>
-                    <a class="dropdown-item" href="/struktur-nagari">Struktur Nagari</a>
+                    <a class="dropdown-item" href="Struktur Nagari.html">Struktur Nagari</a>
                   </li>
-                  <li><a class="dropdown-item" href="/visi-misi">Visi Misi</a></li>
+                  <li><a class="dropdown-item" href="Visi Dan Misi.html">Visi Misi</a></li>
                   <li>
-                    <a class="dropdown-item" href="/perangkat-nagari">Perangkat Nagari</a>
+                    <a class="dropdown-item" href="Perangkat Nagari.html">Perangkat Nagari</a>
                   </li>
-                  <li><a class="dropdown-item" href="/umkm">UMKM Nagari</a></li>
+                  <li><a class="dropdown-item" href="umkm.html">UMKM Nagari</a></li>
                 </ul>
               </li>
               <!-- Lainnya -->
-              <li class="nav-item"><a class="nav-link" href="/objek-wisata">Objek Wisata</a></li>
+              <li class="nav-item"><a class="nav-link" href="objek_wisata.html">Objek Wisata</a></li>
               <li class="nav-item">
-                <a class="nav-link" href="/kaba-nagari">Kaba Nagari</a>
+                <a class="nav-link" href="kabanagari.html">Kaba Nagari</a>
               </li>
-              <li class="nav-item"><a class="nav-link" href="/layanan-surat">Layanan Surat</a></li>
+              <li class="nav-item"><a class="nav-link" href="layanan-surat.html">Layanan Surat</a></li>
               <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
               <li class="nav-item">
                 <a class="nav-link" href="https://ppid.agamkab.go.id/">PPID</a>
@@ -66,3 +66,22 @@
             </ul>
           </div>
         </nav>
+        <script>
+          (function() {
+            const nav = document.querySelector('.navbar');
+            if (!nav) return;
+            const pathname = window.location.pathname || '';
+            const isSubfolder = pathname.includes('/layanan-surat/public');
+            const isHtml = pathname.endsWith('.html');
+            
+            nav.querySelectorAll('a').forEach(a => {
+              const href = a.getAttribute('href');
+              if (!href || href.startsWith('http') || href.startsWith('#')) return;
+              if (href.startsWith('/')) {
+                if (isSubfolder) {
+                  a.setAttribute('href', '/layanan-surat/public' + href);
+                }
+              }
+            });
+          })();
+        </script>

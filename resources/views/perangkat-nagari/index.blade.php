@@ -217,58 +217,73 @@
         <div class="mx-auto" style="width: 50px; height: 3px; background-color: #198754; border-radius: 2px;"></div>
     </div>
 
-    <div class="row g-4">
-        @foreach ($perangkatNagaris as $perangkat)
-            <div class="col-md-6 col-lg-6">
-                <div class="perangkat-card">
-                    <!-- Foto / Avatar -->
-                    <div class="profile-image">
-                        @php
-                            $fotoPath = null;
-                            if ($perangkat->foto) {
-                                if (file_exists(public_path($perangkat->foto))) {
-                                    $fotoPath = asset($perangkat->foto);
-                                } elseif (file_exists(public_path('image/' . $perangkat->foto))) {
-                                    $fotoPath = asset('image/' . $perangkat->foto);
+    @if ($perangkatNagaris->count() > 0)
+        <div class="row g-4">
+            @foreach ($perangkatNagaris as $perangkat)
+                <div class="col-md-6 col-lg-6">
+                    <div class="perangkat-card">
+                        <!-- Foto / Avatar -->
+                        <div class="profile-image">
+                            @php
+                                $fotoPath = null;
+                                if ($perangkat->foto) {
+                                    if (file_exists(public_path($perangkat->foto))) {
+                                        $fotoPath = asset($perangkat->foto);
+                                    } elseif (file_exists(public_path('image/' . $perangkat->foto))) {
+                                        $fotoPath = asset('image/' . $perangkat->foto);
+                                    } else {
+                                        $fotoPath = asset($perangkat->foto);
+                                    }
                                 }
-                            }
-                        @endphp
-                        @if ($fotoPath)
-                            <img src="{{ $fotoPath }}" alt="{{ $perangkat->nama }}" />
-                        @else
-                            <div class="text-success text-center p-3">
-                                <i class="bi bi-person-circle fs-1 d-block mb-1"></i>
-                                <span class="badge bg-success bg-opacity-10 text-success small">{{ $perangkat->jenis_kelamin ?? 'Aparatur' }}</span>
+                            @endphp
+                            @if ($fotoPath)
+                                <img src="{{ $fotoPath }}" alt="{{ $perangkat->nama }}" />
+                            @else
+                                <div class="text-success text-center p-3">
+                                    <i class="bi bi-person-circle fs-1 d-block mb-1"></i>
+                                    <span class="badge bg-success bg-opacity-10 text-success small">{{ $perangkat->jenis_kelamin ?? 'Aparatur' }}</span>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Konten -->
+                        <div class="card-content">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+                                <span class="position-badge">{{ $perangkat->jabatan }}</span>
                             </div>
-                        @endif
-                    </div>
+                            <h4 class="perangkat-name mt-2">{{ $perangkat->nama }}</h4>
+                            <div class="perangkat-role">{{ $perangkat->jabatan }}</div>
 
-                    <!-- Konten -->
-                    <div class="card-content">
-                        <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
-                            <span class="position-badge">{{ $perangkat->jabatan }}</span>
-                        </div>
-                        <h4 class="perangkat-name mt-2">{{ $perangkat->nama }}</h4>
-                        <div class="perangkat-role">{{ $perangkat->jabatan }}</div>
-
-                        <div class="perangkat-info">
-                            <i class="bi bi-geo-alt text-danger me-1"></i>
-                            <span>{{ $perangkat->tempat_lahir ?: '-' }}, {{ $perangkat->tanggal_lahir ? $perangkat->tanggal_lahir->format('d/m/Y') : '-' }}</span>
-                        </div>
-                        <div class="perangkat-info">
-                            <i class="bi bi-mortarboard text-primary me-1"></i>
-                            <span>Pendidikan: {{ $perangkat->pendidikan_terakhir ?: '-' }}</span>
-                        </div>
-                        @if ($perangkat->nip && $perangkat->nip != '-')
                             <div class="perangkat-info">
-                                <i class="bi bi-card-heading text-warning me-1"></i>
-                                <span>NIP: {{ $perangkat->nip }}</span>
+                                <i class="bi bi-geo-alt text-danger me-1"></i>
+                                <span>{{ $perangkat->tempat_lahir ?: '-' }}, {{ $perangkat->tanggal_lahir ? $perangkat->tanggal_lahir->format('d/m/Y') : '-' }}</span>
                             </div>
-                        @endif
+                            <div class="perangkat-info">
+                                <i class="bi bi-mortarboard text-primary me-1"></i>
+                                <span>Pendidikan: {{ $perangkat->pendidikan_terakhir ?: '-' }}</span>
+                            </div>
+                            @if ($perangkat->pangkat_gol && $perangkat->pangkat_gol != '-')
+                                <div class="perangkat-info">
+                                    <i class="bi bi-award text-success me-1"></i>
+                                    <span>Pangkat/Gol: {{ $perangkat->pangkat_gol }}</span>
+                                </div>
+                            @endif
+                            @if ($perangkat->nip && $perangkat->nip != '-')
+                                <div class="perangkat-info">
+                                    <i class="bi bi-card-heading text-warning me-1"></i>
+                                    <span>NIP: {{ $perangkat->nip }}</span>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
+            @endforeach
+        </div>
+    @else
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-person-lines-fill fs-1 d-block mb-2"></i>
+            <p>Data perangkat nagari belum tersedia.</p>
+        </div>
+    @endif
 </section>
 @endsection

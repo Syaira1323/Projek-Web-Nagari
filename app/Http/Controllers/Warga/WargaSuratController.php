@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Warga;
 
 use App\Http\Controllers\Controller;
 use App\Models\BerkasPersyaratan;
+use App\Models\Pengaturan;
 use App\Models\SuratPermohonan;
 use App\Services\AiSuratService;
 use App\Services\GoogleDriveService;
+use App\Services\WordSuratService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,11 +22,16 @@ class WargaSuratController extends Controller
 {
     protected AiSuratService $aiService;
     protected GoogleDriveService $gdriveService;
+    protected WordSuratService $wordService;
 
-    public function __construct(AiSuratService $aiService, GoogleDriveService $gdriveService)
-    {
+    public function __construct(
+        AiSuratService $aiService,
+        GoogleDriveService $gdriveService,
+        WordSuratService $wordService
+    ) {
         $this->aiService = $aiService;
         $this->gdriveService = $gdriveService;
+        $this->wordService = $wordService;
     }
 
     /**
@@ -243,11 +252,32 @@ class WargaSuratController extends Controller
     /**
      * Unduh Berkas Persyaratan secara aman (IDOR Protection)
      */
-    public function downloadBerkas(BerkasPersyaratan $berkas): Response
+    public function downloadBerkas(Request $request, BerkasPersyaratan $berkas): Response
     {
-        $surat = $berkas->suratPermohonan;
+        $user = Auth::user();
+        if (!$user) {
+            $token = $request->bearerToken() ?: $request->query('token');
+            if ($token) {
+                try {
+                    $decrypted = \Illuminate\Support\Facades\Crypt::decryptString($token);
+                    $parts = explode('|', $decrypted);
+                    if (isset($parts[0], $parts[1]) && $parts[0] === 'user_auth' && is_numeric($parts[1])) {
+                        $user = \App\Models\User::find((int)$parts[1]);
+                    }
+                } catch (\Throwable $e) {}
+            }
+        }
 
-        if ($surat->user_id !== Auth::id() && !Auth::user()->isAdmin() && !Auth::user()->isWaliNagari()) {
+        if (!$user) {
+            abort(401, 'Unauthenticated. Silakan login terlebih dahulu.');
+        }
+
+        $surat = $berkas->suratPermohonan;
+        if (!$surat) {
+            abort(404, 'Surat permohonan tidak ditemukan.');
+        }
+
+        if ($surat->user_id !== $user->id && !$user->isAdmin() && !$user->isWaliNagari()) {
             abort(403, 'Anda tidak memiliki hak akses untuk mengunduh berkas ini.');
         }
 
@@ -289,5 +319,47 @@ class WargaSuratController extends Controller
         $gelarWali = Pengaturan::get('gelar_wali_nagari', 'Datuak Bandaro');
 
         return view('warga.surat.print', compact('surat', 'ttdPath', 'stempelPath', 'namaWali', 'gelarWali'));
+    }
+
+    /**
+     * Unduh Dokumen PDF Resmi Surat (Hanya untuk Surat yang Telah Selesai/Disetujui)
+     */
+    public function downloadPdf(SuratPermohonan $surat)
+    {
+        // 1. Otorisasi Keamanan Warga (IDOR Protection)
+        if ($surat->user_id !== Auth::id() && !Auth::user()->isAdmin() && !Auth::user()->isWaliNagari()) {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengunduh dokumen surat ini.');
+        }
+
+        // 2. Pemeriksaan Status: Dokumen final hanya boleh diunduh jika surat sudah selesai disetujui & berstempel
+        if ($surat->status !== 'disetujui') {
+            abort(403, 'Dokumen PDF resmi hanya dapat diunduh setelah permohonan surat selesai diverifikasi dan ditandatangani resmi oleh Wali Nagari.');
+        }
+
+        // 3. Pemeriksaan Nomor Surat Resmi: Dokumen final wajib memiliki nomor resmi yang diisi oleh Admin
+        if (empty(trim((string) $surat->nomor_surat))) {
+            abort(403, 'Nomor surat resmi belum diisi oleh Admin. Dokumen PDF final belum dapat dibuat.');
+        }
+
+        try {
+            // 4. Generate PDF resmi dari template DOCX perantara
+            $pdfPath = $this->wordService->generatePdf($surat);
+
+            // 4. Format Nama File Download Bersih: {JENIS_SURAT}_{NAMA_PEMOHON}.pdf (Contoh: SKTM_HENDRA_KURNIAWAN.pdf)
+            $singkatan = $surat->singkatan_jenis_surat ?: 'SURAT';
+            $safeName = Str::upper(Str::slug($surat->nama_pemohon ?: 'WARGA', '_'));
+            $downloadFilename = $singkatan . '_' . $safeName . '.pdf';
+
+            // 5. Kembalikan PDF sebagai response download dan bersihkan file temp setelah dikirim
+            return response()->download($pdfPath, $downloadFilename, [
+                'Content-Type' => 'application/pdf',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            ])->deleteFileAfterSend(true);
+
+        } catch (\Throwable $e) {
+            Log::error("Gagal men-generate PDF Surat ID {$surat->id}: " . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Surat belum dapat dibuat dalam format PDF resmi. Silakan coba kembali atau hubungi petugas.');
+        }
     }
 }

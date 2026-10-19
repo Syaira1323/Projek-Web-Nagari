@@ -47,17 +47,25 @@
         </div>
 
         <div class="row g-3 mb-3">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <label class="form-label fw-bold small">Alamat Kantor Wali Nagari</label>
-                <input type="text" name="alamat" class="form-control" value="{{ old('alamat', $profil->alamat) }}" />
+                <input type="text" name="alamat" class="form-control" value="{{ old('alamat', $profil->alamat) }}" placeholder="Jl. Raya Maninjau - Lubuk Basung, Koto Malintang" />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
+                <label class="form-label fw-bold small">Kode Pos</label>
+                <input type="text" name="kode_pos" class="form-control" value="{{ old('kode_pos', $profil->kode_pos) }}" placeholder="26454" />
+            </div>
+            <div class="col-md-4">
                 <label class="form-label fw-bold small">Email Resmi</label>
-                <input type="email" name="email" class="form-control" value="{{ old('email', $profil->email) }}" />
+                <input type="email" name="email" class="form-control" value="{{ old('email', $profil->email) }}" placeholder="nagari.kotomalintang@agamkab.go.id" />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label fw-bold small">Nomor Telepon</label>
-                <input type="text" name="telepon" class="form-control" value="{{ old('telepon', $profil->telepon) }}" />
+                <input type="text" name="telepon" class="form-control" value="{{ old('telepon', $profil->telepon) }}" placeholder="08xxxxxxxxxx" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold small">Website Resmi</label>
+                <input type="text" name="website" class="form-control" value="{{ old('website', $profil->website) }}" placeholder="https://kotomalintang.desa.id" />
             </div>
         </div>
 

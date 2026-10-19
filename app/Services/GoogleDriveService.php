@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Models\Pengaturan;
+use App\Models\SuratPermohonan;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class GoogleDriveService
 {
@@ -18,9 +20,9 @@ class GoogleDriveService
 
     public function __construct()
     {
-        $this->clientId = Pengaturan::get('gdrive_client_id', env('GOOGLE_DRIVE_CLIENT_ID', ''));
-        $this->clientSecret = Pengaturan::get('gdrive_client_secret', env('GOOGLE_DRIVE_CLIENT_SECRET', ''));
-        $this->refreshToken = Pengaturan::get('gdrive_refresh_token', env('GOOGLE_DRIVE_REFRESH_TOKEN', null));
+        $this->clientId = (string) (Pengaturan::get('gdrive_client_id') ?: config('services.google.client_id', env('GOOGLE_CLIENT_ID', env('GOOGLE_DRIVE_CLIENT_ID', ''))));
+        $this->clientSecret = (string) (Pengaturan::get('gdrive_client_secret') ?: config('services.google.client_secret', env('GOOGLE_CLIENT_SECRET', env('GOOGLE_DRIVE_CLIENT_SECRET', ''))));
+        $this->refreshToken = Pengaturan::get('gdrive_refresh_token') ?: config('services.google.refresh_token', env('GOOGLE_DRIVE_REFRESH_TOKEN', null));
         $this->accessToken = Pengaturan::get('gdrive_access_token', null);
         $this->tokenExpiresAt = (int) Pengaturan::get('gdrive_token_expires_at', 0);
     }
@@ -333,13 +335,13 @@ class GoogleDriveService
     }
 
     /**
-     * Upload Surat Selesai ke Google Drive
+     * Upload Surat Selesai ke Google Drive (Format PDF)
      */
     public function uploadSuratSelesai(string $fileContent, string $fileName, int $suratId): ?array
     {
         $token = $this->getValidAccessToken();
         if (!$token) {
-            // Simpan lokal
+            // Simpan lokal jika Google Drive belum terhubung
             $localPath = "surat_selesai/" . date('Y') . "/ID_{$suratId}/{$fileName}";
             Storage::put($localPath, $fileContent);
             return [
@@ -364,7 +366,7 @@ class GoogleDriveService
                 . 'Content-Type: application/json; charset=UTF-8' . "\r\n\r\n"
                 . json_encode($metadata)
                 . $delimiter
-                . 'Content-Type: text/html' . "\r\n\r\n"
+                . 'Content-Type: application/pdf' . "\r\n\r\n"
                 . $fileContent
                 . $closeDelimiter;
 
@@ -379,11 +381,20 @@ class GoogleDriveService
                 return [
                     'storage_mode' => 'gdrive',
                     'gdrive_file_id' => $json['id'] ?? null,
-                    'file_path' => $json['webViewLink'] ?? null,
+                    'file_path' => $json['webViewLink'] ?? ("https://drive.google.com/file/d/" . ($json['id'] ?? '') . "/view"),
                 ];
+            } else {
+                Log::warning('Upload surat selesai ke GDrive gagal (HTTP ' . $response->status() . '): ' . $response->body(), [
+                    'surat_id' => $suratId,
+                    'file_name' => $fileName,
+                ]);
             }
         } catch (\Throwable $e) {
-            Log::warning('Upload surat selesai ke GDrive gagal: ' . $e->getMessage());
+            Log::warning('Upload surat selesai ke GDrive gagal: ' . $e->getMessage(), [
+                'surat_id' => $suratId,
+                'file_name' => $fileName,
+                'error' => $e->getMessage(),
+            ]);
         }
 
         $localPath = "surat_selesai/" . date('Y') . "/ID_{$suratId}/{$fileName}";
@@ -392,6 +403,116 @@ class GoogleDriveService
             'storage_mode' => 'local',
             'file_path' => $localPath,
             'gdrive_file_id' => null,
+        ];
+    }
+
+    /**
+     * Arsipkan PDF final surat yang telah disetujui ke Google Drive (Idempotent & Safe).
+     */
+    public function archiveSuratSelesai(SuratPermohonan $surat): array
+    {
+        // 1. Guard Status: Hanya surat dengan status 'disetujui' yang boleh diarsipkan
+        if ($surat->status !== 'disetujui') {
+            Log::info("Arsip surat ID {$surat->id} dilewati karena status bukan 'disetujui' (Status: {$surat->status}).");
+            return [
+                'success' => false,
+                'message' => "Surat belum disetujui (Status: {$surat->status}). Hanya surat yang disetujui yang dapat diarsipkan.",
+            ];
+        }
+
+        // 2. Guard Nomor Surat: Nomor surat resmi wajib tersedia
+        $nomorSurat = trim((string) $surat->nomor_surat);
+        if (empty($nomorSurat)) {
+            Log::warning("Arsip surat ID {$surat->id} gagal: Nomor surat resmi belum tersedia.");
+            return [
+                'success' => false,
+                'message' => 'Nomor surat resmi belum tersedia. Surat tidak dapat diarsipkan.',
+            ];
+        }
+
+        // 3. Idempotency Check: Periksa apakah sudah pernah diarsipkan
+        $dataSpesifik = is_array($surat->data_spesifik) ? $surat->data_spesifik : [];
+        if (!empty($dataSpesifik['arsip_gdrive']['gdrive_pdf_id'])) {
+            Log::info("Surat ID {$surat->id} sudah memiliki arsip Google Drive (ID: {$dataSpesifik['arsip_gdrive']['gdrive_pdf_id']}). Idempotency: upload ulang dilewati.");
+            return [
+                'success' => true,
+                'already_archived' => true,
+                'is_duplicate' => false,
+                'arsip' => $dataSpesifik['arsip_gdrive'],
+            ];
+        }
+
+        // Mode lokal: jika sudah pernah diarsipkan ke file lokal yang masih ada
+        if (!empty($dataSpesifik['arsip_gdrive']['file_path']) && ($dataSpesifik['arsip_gdrive']['storage_mode'] ?? '') === 'local' && Storage::exists($dataSpesifik['arsip_gdrive']['file_path'])) {
+            Log::info("Surat ID {$surat->id} sudah memiliki arsip lokal. Idempotency: upload ulang dilewati.");
+            return [
+                'success' => true,
+                'already_archived' => true,
+                'is_duplicate' => false,
+                'arsip' => $dataSpesifik['arsip_gdrive'],
+            ];
+        }
+
+        // 4. Generate PDF final menggunakan WordSuratService
+        $wordService = app(WordSuratService::class);
+        $pdfPath = null;
+        try {
+            $pdfPath = $wordService->generatePdf($surat);
+            if (!file_exists($pdfPath) || filesize($pdfPath) === 0) {
+                throw new \Exception("File PDF final tidak berhasil dibuat di path: {$pdfPath}");
+            }
+            $fileContent = file_get_contents($pdfPath);
+        } catch (\Throwable $e) {
+            Log::error("Gagal generate PDF final untuk arsip Surat ID {$surat->id}: " . $e->getMessage(), [
+                'surat_id' => $surat->id,
+                'jenis_surat' => $surat->jenis_surat,
+                'status' => $surat->status,
+                'tahap' => 'generate_pdf_arsip',
+                'error' => $e->getMessage(),
+            ]);
+            return [
+                'success' => false,
+                'message' => 'Gagal generate PDF final untuk arsip: ' . $e->getMessage(),
+            ];
+        } finally {
+            if ($pdfPath && file_exists($pdfPath)) {
+                @unlink($pdfPath);
+            }
+        }
+
+        // 5. Format Penamaan File: {JENIS_SURAT}_{NAMA_PEMOHON}.pdf
+        $singkatan = $surat->singkatan_jenis_surat ?: 'SURAT';
+        $safeName = Str::upper(Str::slug($surat->nama_pemohon ?: 'WARGA', '_'));
+        $fileName = "{$singkatan}_{$safeName}.pdf";
+
+        // 6. Upload ke Google Drive (atau fallback ke Local Storage)
+        $uploadResult = $this->uploadSuratSelesai($fileContent, $fileName, $surat->id);
+
+        // 7. Simpan Metadata Arsip ke data_spesifik (Merge tanpa menghapus field lain)
+        $arsipMetadata = [
+            'storage_mode' => $uploadResult['storage_mode'] ?? 'local',
+            'gdrive_pdf_id' => $uploadResult['gdrive_file_id'] ?? null,
+            'gdrive_pdf_url' => $uploadResult['file_path'] ?? ($uploadResult['gdrive_file_id'] ? "https://drive.google.com/file/d/{$uploadResult['gdrive_file_id']}/view" : null),
+            'file_path' => $uploadResult['file_path'] ?? null,
+            'file_name' => $fileName,
+            'uploaded_at' => now()->toIso8601String(),
+        ];
+
+        $dataSpesifik['arsip_gdrive'] = $arsipMetadata;
+        $surat->data_spesifik = $dataSpesifik;
+        $surat->save();
+
+        Log::info("Arsip PDF final Surat ID {$surat->id} berhasil disimpan ({$arsipMetadata['storage_mode']}).", [
+            'surat_id' => $surat->id,
+            'storage_mode' => $arsipMetadata['storage_mode'],
+            'gdrive_pdf_id' => $arsipMetadata['gdrive_pdf_id'],
+        ]);
+
+        return [
+            'success' => true,
+            'already_archived' => false,
+            'is_duplicate' => false,
+            'arsip' => $arsipMetadata,
         ];
     }
 

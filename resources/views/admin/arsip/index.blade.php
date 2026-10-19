@@ -38,39 +38,99 @@
         <div class="stat-card">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-muted small fw-bold text-uppercase">Metode Penyimpanan</span>
-                    <h5 class="fw-bold text-dark mb-0 mt-1">Hybrid Archive</h5>
-                    <small class="text-success fw-semibold"><i class="bi bi-check-circle-fill me-1"></i>Server Lokal + Backup GDrive</small>
+                    <span class="text-muted small fw-bold text-uppercase">Status Google Drive</span>
+                    <h5 class="fw-bold {{ $isConnected ? 'text-success' : 'text-warning' }} mb-0 mt-1">
+                        {{ $isConnected ? 'Terhubung' : 'Belum Terhubung' }}
+                    </h5>
+                    <small class="text-muted">{{ $isConnected ? $connectedEmail : 'Penyimpanan server lokal' }}</small>
                 </div>
-                <div class="rounded-circle bg-warning bg-opacity-10 text-warning d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.5rem;">
-                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                <div class="rounded-circle {{ $isConnected ? 'bg-success bg-opacity-10 text-success' : 'bg-warning bg-opacity-10 text-warning' }} d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi {{ $isConnected ? 'bi-cloud-check-fill' : 'bi-cloud-slash-fill' }}"></i>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ACTION & BACKUP TOOLBAR -->
+<!-- KONEKSI PENYIMPANAN GOOGLE DRIVE & TOOLBAR CADANGAN -->
 <div class="card-custom mb-4">
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <div class="p-3 bg-light rounded-3 mb-3 border">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle {{ $isConnected ? 'bg-success text-white' : 'bg-warning text-dark' }} d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.3rem;">
+                    <i class="bi {{ $isConnected ? 'bi-google' : 'bi-cloud-slash' }}"></i>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center gap-2">
+                        <h6 class="fw-bold text-dark mb-0">Penyimpanan Google Drive</h6>
+                        @if ($isConnected)
+                            <span class="badge bg-success rounded-pill px-2 py-1 small">
+                                <i class="bi bi-check-circle-fill me-1"></i> Google Drive Terhubung
+                            </span>
+                        @else
+                            <span class="badge bg-warning text-dark rounded-pill px-2 py-1 small">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i> Google Drive Belum Terhubung
+                            </span>
+                        @endif
+                    </div>
+                    <p class="small text-muted mb-0 mt-1">
+                        @if ($isConnected)
+                            Akun Aktif: <strong>{{ $connectedEmail }}</strong> — Surat selesai otomatis terarsip ke folder <code>Layanan Surat Nagari Koto Malintang / Surat Selesai / {{ date('Y') }}</code>
+                        @else
+                            Arsip surat saat ini tersimpan di server lokal. Hubungkan akun Google Drive resmi Nagari untuk sinkronisasi otomatis.
+                        @endif
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kontrol Aksi Google Drive -->
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                @if ($isConnected)
+                    <form action="{{ route('admin.gdrive.test') }}" method="POST" class="d-inline m-0">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-semibold" title="Uji Koneksi Google Drive">
+                            <i class="bi bi-lightning-charge-fill me-1"></i> Tes Koneksi
+                        </button>
+                    </form>
+                    <form action="{{ route('admin.gdrive.disconnect') }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Apakah Anda yakin ingin memutuskan koneksi Google Drive?')">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-semibold" title="Putus Koneksi Google Drive">
+                            <i class="bi bi-x-circle me-1"></i> Putuskan Koneksi
+                        </button>
+                    </form>
+                    <a href="{{ $gdriveFolderUrl }}" target="_blank" class="btn btn-sm btn-warning rounded-pill px-3 fw-semibold text-dark">
+                        <i class="bi bi-google me-1"></i> Buka Google Drive
+                    </a>
+                @else
+                    @if ($authUrl)
+                        <a href="{{ $authUrl }}" class="btn btn-sm btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                            <i class="bi bi-google me-1"></i> Hubungkan Google Drive
+                        </a>
+                    @else
+                        <button type="button" class="btn btn-sm btn-danger rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#modalOAuthCredentials">
+                            <i class="bi bi-key-fill me-1"></i> Atur Kredensial OAuth
+                        </button>
+                    @endif
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- TOOLBAR UNDUH REKAP & CADANGAN -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 pt-2">
         <div>
-            <h5 class="fw-bold text-dark mb-1"><i class="bi bi-hdd-stack-fill text-success me-2"></i>Penyimpanan & Cadangan Arsip</h5>
-            <p class="text-muted small mb-0">Kelola berkas digital di server lokal nagari dan sinkronkan cadangan ke Google Drive</p>
+            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-file-earmark-arrow-down-fill text-success me-2"></i>Ekspor & Cadangan Data</h6>
+            <small class="text-muted">Unduh rekapitulasi data surat selesai dalam format tabel Excel/CSV atau backup JSON lengkap</small>
         </div>
         <div class="d-flex flex-wrap gap-2">
             <!-- Tombol Export CSV / Excel -->
-            <a href="{{ route('admin.arsip.export-csv', request()->query()) }}" class="btn btn-outline-success rounded-pill px-3 fw-semibold">
+            <a href="{{ route('admin.arsip.export-csv', request()->query()) }}" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-semibold">
                 <i class="bi bi-file-earmark-spreadsheet me-1"></i> Unduh Rekap Excel/CSV
             </a>
 
             <!-- Tombol Backup JSON -->
-            <a href="{{ route('admin.arsip.backup-json') }}" class="btn btn-outline-primary rounded-pill px-3 fw-semibold">
+            <a href="{{ route('admin.arsip.backup-json') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">
                 <i class="bi bi-database-down me-1"></i> Unduh Backup Digital (.JSON)
-            </a>
-
-            <!-- Tombol Buka Google Drive -->
-            <a href="{{ $gdriveFolderUrl }}" target="_blank" class="btn btn-warning rounded-pill px-3 fw-semibold text-dark">
-                <i class="bi bi-google me-1"></i> Buka Google Drive Nagari
             </a>
         </div>
     </div>
@@ -140,11 +200,19 @@
                         <th>ALAMAT JORONG</th>
                         <th>TGL DISETUJUI WALI</th>
                         <th>STEMPEL DIGITAL</th>
+                        <th>STATUS GOOGLE DRIVE</th>
                         <th class="text-end">AKSI</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($arsipList as $item)
+                        @php
+                            $ds = $item->data_spesifik ?? [];
+                            if (!is_array($ds)) {
+                                $ds = json_decode((string)$ds, true) ?? [];
+                            }
+                            $arsipGdrive = $ds['arsip_gdrive'] ?? null;
+                        @endphp
                         <tr>
                             <td>
                                 <strong class="text-success d-block font-monospace">{{ $item->nomor_surat }}</strong>
@@ -158,7 +226,7 @@
                                 <small class="text-muted">NIK: {{ $item->nik_pemohon ?: '-' }}</small>
                             </td>
                             <td>
-                                <small class="text-muted">{{ Str::limit($item->alamat, 35) }}</small>
+                                <small class="text-muted">{{ Str::limit($item->alamat, 30) }}</small>
                             </td>
                             <td>
                                 <small class="text-dark fw-semibold d-block">{{ $item->disetujui_wali_at ? $item->disetujui_wali_at->translatedFormat('d M Y') : '-' }}</small>
@@ -168,6 +236,26 @@
                                 <span class="badge bg-success d-inline-flex align-items-center gap-1">
                                     <i class="bi bi-patch-check-fill"></i> Terstempel Sah
                                 </span>
+                            </td>
+                            <td>
+                                @if (!empty($arsipGdrive['gdrive_pdf_id']))
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle d-inline-flex align-items-center gap-1">
+                                        <i class="bi bi-cloud-check-fill text-success"></i> Terarsip di GDrive
+                                    </span>
+                                    @if (!empty($arsipGdrive['gdrive_pdf_url']))
+                                        <a href="{{ $arsipGdrive['gdrive_pdf_url'] }}" target="_blank" class="btn btn-sm btn-link text-success p-0 ms-1" title="Buka Dokumen di Google Drive">
+                                            <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                    @endif
+                                @elseif (($arsipGdrive['storage_mode'] ?? '') === 'local')
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border d-inline-flex align-items-center gap-1">
+                                        <i class="bi bi-hdd-fill text-secondary"></i> Tersimpan Lokal
+                                    </span>
+                                @else
+                                    <span class="badge bg-light text-muted border d-inline-flex align-items-center gap-1">
+                                        <i class="bi bi-dash-circle"></i> Belum Diarsipkan
+                                    </span>
+                                @endif
                             </td>
                             <td class="text-end">
                                 <div class="btn-group">
@@ -195,5 +283,41 @@
             <p class="small mb-0">Surat yang telah diverifikasi admin dan disetujui Wali Nagari akan otomatis masuk ke sini.</p>
         </div>
     @endif
+</div>
+
+<!-- MODAL KONFIGURASI OAUTH CREDENTIALS (OPSIONAL JIKA BELUM ADA DI ENV) -->
+<div class="modal fade" id="modalOAuthCredentials" tabindex="-1" aria-labelledby="modalOAuthCredentialsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <form action="{{ route('admin.gdrive.save-credentials') }}" method="POST">
+                @csrf
+                <div class="modal-header border-bottom p-4">
+                    <h6 class="modal-title fw-bold" id="modalOAuthCredentialsLabel">
+                        <i class="bi bi-key-fill text-warning me-2"></i>Konfigurasi OAuth Google Drive
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Google Client ID <span class="text-danger">*</span></label>
+                        <input type="text" name="client_id" class="form-control" placeholder="Contoh: 123456789-abc.apps.googleusercontent.com" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Google Client Secret <span class="text-danger">*</span></label>
+                        <input type="password" name="client_secret" class="form-control" placeholder="Masukkan Client Secret Google OAuth" required />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold text-dark">Authorized Redirect URI:</label>
+                        <input type="text" class="form-control bg-light font-monospace small" value="{{ $redirectUri }}" readonly />
+                        <small class="text-muted" style="font-size: 0.78rem;">Pastikan URI ini terdaftar di Google Cloud Console.</small>
+                    </div>
+                </div>
+                <div class="modal-footer p-3 border-top bg-light">
+                    <button type="button" class="btn btn-sm btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-hijau">Simpan Kredensial</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection

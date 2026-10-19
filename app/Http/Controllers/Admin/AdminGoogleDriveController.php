@@ -23,8 +23,8 @@ class AdminGoogleDriveController extends Controller
      */
     public function index(): View
     {
-        $clientId = Pengaturan::get('gdrive_client_id', env('GOOGLE_DRIVE_CLIENT_ID', ''));
-        $clientSecret = Pengaturan::get('gdrive_client_secret', env('GOOGLE_DRIVE_CLIENT_SECRET', ''));
+        $clientId = Pengaturan::get('gdrive_client_id') ?: config('services.google.client_id', env('GOOGLE_CLIENT_ID', ''));
+        $clientSecret = Pengaturan::get('gdrive_client_secret') ?: config('services.google.client_secret', env('GOOGLE_CLIENT_SECRET', ''));
         $isConnected = $this->gdriveService->isConnected();
         $connectedEmail = Pengaturan::get('gdrive_account_email', '-');
         $rootFolderId = Pengaturan::get('gdrive_root_folder_id', '-');
@@ -59,7 +59,7 @@ class AdminGoogleDriveController extends Controller
         Pengaturan::set('gdrive_client_id', trim($validated['client_id']), 'gdrive');
         Pengaturan::set('gdrive_client_secret', trim($validated['client_secret']), 'gdrive');
 
-        return back()->with('success', 'Kredensial Google OAuth berhasil disimpan. Silakan klik tombol "Hubungkan Akun Google Drive" di bawah.');
+        return back()->with('success', 'Kredensial Google OAuth berhasil disimpan. Silakan klik tombol "Hubungkan Akun Google Drive".');
     }
 
     /**
@@ -70,22 +70,24 @@ class AdminGoogleDriveController extends Controller
         $code = $request->query('code');
         $error = $request->query('error');
 
+        $frontendUrl = '/layanan-surat/frontend/public/Admin.html';
+
         if ($error) {
-            return redirect()->route('admin.gdrive.index')->with('warning', 'Otorisasi Google Drive dibatalkan atau ditolak: ' . $error);
+            return redirect($frontendUrl . '?gdrive_error=' . urlencode('Otorisasi Google Drive dibatalkan atau ditolak: ' . $error) . '#arsip');
         }
 
         if (!$code) {
-            return redirect()->route('admin.gdrive.index')->with('warning', 'Kode otorisasi Google tidak ditemukan.');
+            return redirect($frontendUrl . '?gdrive_error=' . urlencode('Kode otorisasi Google tidak ditemukan.') . '#arsip');
         }
 
         $redirectUri = route('admin.gdrive.callback');
         $result = $this->gdriveService->exchangeCode($code, $redirectUri);
 
         if ($result['success']) {
-            return redirect()->route('admin.gdrive.index')->with('success', 'Akun Google Drive (' . $result['email'] . ') berhasil terhubung!');
+            return redirect($frontendUrl . '?gdrive=connected#arsip');
         }
 
-        return redirect()->route('admin.gdrive.index')->with('warning', 'Gagal menghubungkan Google Drive: ' . $result['message']);
+        return redirect($frontendUrl . '?gdrive_error=' . urlencode('Gagal menghubungkan Google Drive: ' . $result['message']) . '#arsip');
     }
 
     /**

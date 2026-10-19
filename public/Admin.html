@@ -7,7 +7,7 @@
   <link rel="icon" href="image/logo agam.png" type="image/png"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --hijau-tua: #0f1d10;
@@ -36,6 +36,7 @@
       z-index: 1040;
       transition: transform 0.3s ease;
       box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+      overflow-y: auto;
     }
     .sidebar-header {
       padding: 20px;
@@ -53,6 +54,7 @@
       align-items: center;
       gap: 12px;
       background: rgba(0,0,0,0.15);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     .user-avatar {
       width: 40px; height: 40px;
@@ -62,8 +64,9 @@
       font-weight: 700;
       display: flex; align-items: center; justify-content: center;
       font-size: 1rem;
+      flex-shrink: 0;
     }
-    .sidebar-user-info span { font-weight: 600; font-size: 0.88rem; display: block; }
+    .sidebar-user-info span { font-weight: 600; font-size: 0.88rem; display: block; color: #fff; }
     .sidebar-user-info small { color: #86efac; font-size: 0.75rem; }
     .sidebar-nav {
       padding: 15px 12px;
@@ -96,7 +99,7 @@
       background: var(--hijau-aksen);
       color: white;
     }
-    .nav-item-admin i { font-size: 1.1rem; }
+    .nav-item-admin i { font-size: 1.1rem; width: 20px; text-align: center; }
     .badge-count {
       margin-left: auto;
       background: #ef4444;
@@ -109,6 +112,7 @@
     .sidebar-footer {
       padding: 14px 20px;
       border-top: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.1);
     }
     .main-area {
       margin-left: var(--sidebar-w);
@@ -116,6 +120,7 @@
       display: flex;
       flex-direction: column;
       min-width: 0;
+      min-height: 100vh;
     }
     .topbar {
       height: 65px;
@@ -138,6 +143,7 @@
       padding: 20px;
       border: 1px solid #e2e8f0;
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      height: 100%;
     }
     .stat-card .num { font-size: 1.7rem; font-weight: 800; color: #0f172a; margin: 6px 0 2px; }
     .stat-card .lbl { font-size: 0.82rem; color: #64748b; font-weight: 500; }
@@ -155,14 +161,19 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: white;
     }
-    .panel-header h6 { margin: 0; font-weight: 700; font-size: 0.95rem; }
+    .panel-header h6 { margin: 0; font-weight: 700; font-size: 0.95rem; color: #0f172a; }
     .panel-body { padding: 20px; }
-    .admin-table { width: 100%; border-collapse: collapse; }
+    .admin-table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
     .admin-table th { background: #f8fafc; padding: 12px 16px; font-size: 0.78rem; text-transform: uppercase; color: #64748b; font-weight: 700; border-bottom: 1px solid #e2e8f0; }
-    .admin-table td { padding: 14px 16px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    .btn-hijau { background: var(--hijau-aksen); color: white; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .admin-table td { padding: 14px 16px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; color: #1e293b; }
+    .btn-hijau { background: var(--hijau-aksen); color: white; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; transition: all 0.2s; }
     .btn-hijau:hover { background: #146c43; color: white; }
+    .btn-outline-hijau { background: transparent; color: var(--hijau-aksen); border: 1px solid var(--hijau-aksen); border-radius: 8px; padding: 8px 16px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; transition: all 0.2s; }
+    .btn-outline-hijau:hover { background: var(--hijau-aksen); color: white; }
+    .form-control, .form-select { border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.88rem; padding: 8px 14px; }
+    .form-control:focus, .form-select:focus { border-color: #198754; box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15); }
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1060; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.open { display: flex; }
     .modal-box { background: white; border-radius: 16px; max-width: 750px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
@@ -172,14 +183,19 @@
     .modal-foot { padding: 14px 22px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 8px; background: #fafafa; }
     .toast-admin { position: fixed; bottom: 25px; right: 25px; background: #064e3b; color: white; padding: 12px 20px; border-radius: 10px; z-index: 1090; display: none; font-size: 0.88rem; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     .toast-admin.show { display: flex; align-items: center; gap: 8px; }
+    .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1030; }
     @media (max-width: 991px) {
       .sidebar { transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); }
+      .sidebar-backdrop.show { display: block; }
       .main-area { margin-left: 0; }
     }
   </style>
 </head>
 <body>
+
+<!-- SIDEBAR BACKDROP FOR MOBILE -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
@@ -204,39 +220,56 @@
     <a class="nav-item-admin active" onclick="showPage('dashboard')">
       <i class="bi bi-speedometer2"></i> Dashboard
     </a>
-
-    <div class="nav-section-label">Konten Publik</div>
-    <a class="nav-item-admin" onclick="showPage('berita')">
-      <i class="bi bi-newspaper"></i> Berita Nagari
-    </a>
-    <a class="nav-item-admin" onclick="showPage('pengumuman')">
-      <i class="bi bi-megaphone-fill"></i> Pengumuman
-    </a>
-    <a class="nav-item-admin" onclick="showPage('galeri')">
-      <i class="bi bi-images"></i> Galeri Foto
-    </a>
-    <a class="nav-item-admin" onclick="showPage('profil')">
-      <i class="bi bi-info-circle-fill"></i> Profil Nagari
-    </a>
-
-    <div class="nav-section-label">Pelayanan Surat</div>
     <a class="nav-item-admin" onclick="showPage('surat')">
-      <i class="bi bi-envelope-check-fill"></i> Verifikasi & Nomor Surat
+      <i class="bi bi-envelope-check-fill"></i> Verifikasi Surat
       <span class="badge-count" id="badgeSurat">0</span>
     </a>
     <a class="nav-item-admin" onclick="showPage('arsip')">
       <i class="bi bi-archive-fill"></i> Berkas Arsip Surat
     </a>
-
-    <div class="nav-section-label">Sistem</div>
     <a class="nav-item-admin" onclick="showPage('users')">
       <i class="bi bi-people-fill"></i> Data Pengguna
+    </a>
+    <a class="nav-item-admin" onclick="showPage('pengaturan')">
+      <i class="bi bi-gear-fill"></i> Pengaturan Kantor & Wali Nagari
+    </a>
+
+    <div class="nav-section-label">Konten Publik (CMS)</div>
+    <a class="nav-item-admin" onclick="showPage('profil')">
+      <i class="bi bi-info-circle-fill"></i> 1. Profil Nagari
+    </a>
+    <a class="nav-item-admin" onclick="showPage('adat')">
+      <i class="bi bi-feather"></i> 2. Adat & Budaya
+    </a>
+    <a class="nav-item-admin" onclick="showPage('visi-misi')">
+      <i class="bi bi-eye-fill"></i> 3. Visi & Misi
+    </a>
+    <a class="nav-item-admin" onclick="showPage('sejarah')">
+      <i class="bi bi-hourglass-split"></i> 4. Sejarah Nagari
+    </a>
+    <a class="nav-item-admin" onclick="showPage('perangkat')">
+      <i class="bi bi-person-workspace"></i> 5. Perangkat Nagari
+    </a>
+    <a class="nav-item-admin" onclick="showPage('struktur')">
+      <i class="bi bi-diagram-3-fill"></i> 6. Struktur Organisasi
+    </a>
+    <a class="nav-item-admin" onclick="showPage('wisata')">
+      <i class="bi bi-compass-fill"></i> 7. Objek Wisata
+    </a>
+    <a class="nav-item-admin" onclick="showPage('umkm')">
+      <i class="bi bi-shop"></i> 8. UMKM Nagari
+    </a>
+    <a class="nav-item-admin" onclick="showPage('berita')">
+      <i class="bi bi-newspaper"></i> 9. Kaba Nagari (Berita)
+    </a>
+    <a class="nav-item-admin" onclick="showPage('galeri')">
+      <i class="bi bi-images"></i> 10. Galeri & Media
     </a>
   </nav>
 
   <div class="sidebar-footer">
-    <a class="nav-item-admin text-white" href="/layanan-surat" target="_blank">
-      <i class="bi bi-globe"></i> Portal Warga
+    <a class="nav-item-admin text-white mb-2" href="index.html" target="_blank">
+      <i class="bi bi-globe"></i> Website Publik
     </a>
     <a class="nav-item-admin text-danger" onclick="doLogout()">
       <i class="bi bi-box-arrow-right text-danger"></i> Keluar
@@ -249,16 +282,16 @@
   <!-- TOPBAR -->
   <div class="topbar">
     <div class="d-flex align-items-center gap-3">
-      <button class="btn btn-sm btn-outline-secondary d-lg-none" onclick="document.getElementById('sidebar').classList.toggle('open')">
+      <button class="btn btn-sm btn-outline-secondary d-lg-none" onclick="toggleSidebar()">
         <i class="bi bi-list fs-5"></i>
       </button>
       <h5 class="mb-0 fw-bold" id="pageTitle">Dashboard Administrator</h5>
     </div>
     <div class="d-flex align-items-center gap-3">
-      <a href="/" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3">
+      <a href="index.html" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3">
         <i class="bi bi-globe me-1"></i> Website Publik
       </a>
-      <div class="user-avatar" style="width:36px;height:36px;font-size:0.9rem;">A</div>
+      <div class="user-avatar" id="topbarAvatar" style="width:36px;height:36px;font-size:0.9rem;">A</div>
     </div>
   </div>
 
@@ -291,9 +324,9 @@
         </div>
         <div class="col-6 col-xl-3">
           <div class="stat-card">
-            <div class="d-flex justify-content-between text-purple"><i class="bi bi-newspaper fs-4" style="color:#7c3aed;"></i></div>
+            <div class="d-flex justify-content-between" style="color:#7c3aed;"><i class="bi bi-newspaper fs-4" style="color:#7c3aed;"></i></div>
             <div class="num" id="statBerita" style="color:#7c3aed;">0</div>
-            <div class="lbl">Total Berita Publik</div>
+            <div class="lbl">Total Kaba (Berita)</div>
           </div>
         </div>
       </div>
@@ -305,56 +338,9 @@
         </div>
         <div class="p-0 table-responsive">
           <table class="admin-table">
-            <thead><tr><th>Pemohon</th><th>Jenis Surat</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead>
-            <tbody id="dashSuratList"><tr><td colspan="5" class="text-center py-4 text-muted">Belum ada surat masuk</td></tr></tbody>
+            <thead><tr><th>Pemohon / NIK</th><th>Jenis Surat</th><th>Tanggal</th><th>Status</th><th class="text-end">Aksi</th></tr></thead>
+            <tbody id="dashSuratList"><tr><td colspan="5" class="text-center py-4 text-muted">Memuat data surat...</td></tr></tbody>
           </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE: BERITA -->
-    <div class="admin-page" id="page-berita">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div><h5 class="fw-bold mb-0">Manajemen Berita Publik</h5><small class="text-muted">Kelola publikasi berita Nagari Koto Malintang</small></div>
-        <button class="btn-hijau" onclick="openBeritaModal()"><i class="bi bi-plus-lg me-1"></i> Tambah Berita</button>
-      </div>
-      <div class="admin-panel">
-        <div class="p-0 table-responsive">
-          <table class="admin-table">
-            <thead><tr><th>Judul Berita</th><th>Kategori</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead>
-            <tbody id="beritaTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE: PENGUMUMAN -->
-    <div class="admin-page" id="page-pengumuman">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div><h5 class="fw-bold mb-0">Manajemen Pengumuman Publik</h5><small class="text-muted">Kelola pengumuman untuk warga</small></div>
-        <button class="btn-hijau" onclick="openPengumumanModal()"><i class="bi bi-plus-lg me-1"></i> Tambah Pengumuman</button>
-      </div>
-      <div class="admin-panel">
-        <div class="p-0 table-responsive">
-          <table class="admin-table">
-            <thead><tr><th>Judul Pengumuman</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead>
-            <tbody id="pengumumanTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE: GALERI -->
-    <div class="admin-page" id="page-galeri">
-      <div class="admin-panel">
-        <div class="panel-header"><h6><i class="bi bi-images text-success me-2"></i>Kelola Galeri Foto Publik</h6></div>
-        <div class="panel-body">
-          <div class="row g-2 mb-3">
-            <div class="col-md-6"><input id="galeriUrl" class="form-control" placeholder="URL Foto (misal: image/bg.jpg)"/></div>
-            <div class="col-md-4"><input id="galeriCaption" class="form-control" placeholder="Keterangan foto kegiatan"/></div>
-            <div class="col-md-2"><button class="btn-hijau w-100" onclick="addGaleri()"><i class="bi bi-plus-lg"></i> Tambah</button></div>
-          </div>
-          <div class="row g-3" id="galeriGrid"></div>
         </div>
       </div>
     </div>
@@ -362,16 +348,211 @@
     <!-- PAGE: PROFIL NAGARI -->
     <div class="admin-page" id="page-profil">
       <div class="admin-panel">
-        <div class="panel-header"><h6><i class="bi bi-info-circle-fill text-success me-2"></i>Edit Profil Publik Nagari</h6></div>
+        <div class="panel-header"><h6><i class="bi bi-info-circle-fill text-success me-2"></i>Edit Profil Publik & Statistik Nagari (MySQL)</h6></div>
         <div class="panel-body">
-          <div class="row g-3">
-            <div class="col-md-6"><label class="form-label small fw-bold">Nama Nagari</label><input id="pNama" class="form-control" value="Nagari Koto Malintang"/></div>
-            <div class="col-md-6"><label class="form-label small fw-bold">Wali Nagari</label><input id="pWali" class="form-control" value="Nazaruddin, S.Pd.I"/></div>
-            <div class="col-md-4"><label class="form-label small fw-bold">Kecamatan</label><input id="pKec" class="form-control" value="Tanjung Raya"/></div>
-            <div class="col-md-4"><label class="form-label small fw-bold">Kabupaten</label><input id="pKab" class="form-control" value="Agam"/></div>
-            <div class="col-md-4"><label class="form-label small fw-bold">Provinsi</label><input id="pProv" class="form-control" value="Sumatera Barat"/></div>
-            <div class="col-12"><button class="btn-hijau" onclick="saveProfilNagari()"><i class="bi bi-save me-1"></i> Simpan Perubahan Profil</button></div>
-          </div>
+          <form id="formProfil" onsubmit="saveProfilNagari(event)">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6"><label class="form-label small fw-bold">Nama Nagari <span class="text-danger">*</span></label><input id="pNama" class="form-control" required/></div>
+              <div class="col-md-6"><label class="form-label small fw-bold">Kecamatan <span class="text-danger">*</span></label><input id="pKec" class="form-control" required/></div>
+              <div class="col-md-6"><label class="form-label small fw-bold">Kabupaten <span class="text-danger">*</span></label><input id="pKab" class="form-control" required/></div>
+              <div class="col-md-6"><label class="form-label small fw-bold">Provinsi <span class="text-danger">*</span></label><input id="pProv" class="form-control" required/></div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-4"><label class="form-label small fw-bold">Jumlah Penduduk (Jiwa)</label><input id="pPenduduk" type="number" class="form-control"/></div>
+              <div class="col-md-4"><label class="form-label small fw-bold">Jumlah Jorong</label><input id="pJorong" type="number" class="form-control"/></div>
+              <div class="col-md-4"><label class="form-label small fw-bold">Luas Wilayah (km²)</label><input id="pLuas" type="number" step="0.1" class="form-control"/></div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6"><label class="form-label small fw-bold">Alamat Kantor</label><input id="pAlamat" class="form-control"/></div>
+              <div class="col-md-3"><label class="form-label small fw-bold">Kode Pos</label><input id="pKodePos" class="form-control"/></div>
+              <div class="col-md-3"><label class="form-label small fw-bold">Email Resmi</label><input id="pEmail" type="email" class="form-control"/></div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Upload Foto Utama / Banner Nagari</label>
+                <input type="file" id="pFotoUtama" class="form-control" accept="image/*"/>
+                <div id="pFotoUtamaPreview" class="mt-2"></div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Upload Logo Resmi Nagari</label>
+                <input type="file" id="pLogo" class="form-control" accept="image/*"/>
+                <div id="pLogoPreview" class="mt-2"></div>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-bold">Deskripsi Profil Nagari</label>
+              <textarea id="pDeskripsi" rows="5" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn-hijau"><i class="bi bi-save me-1"></i> Simpan Perubahan Profil ke Database</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: ADAT & BUDAYA -->
+    <div class="admin-page" id="page-adat">
+      <div class="admin-panel">
+        <div class="panel-header"><h6><i class="bi bi-feather text-success me-2"></i>Kelola Adat & Budaya Nagari (MySQL)</h6></div>
+        <div class="panel-body">
+          <form id="formAdat" onsubmit="saveAdat(event)">
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">Jumlah Suku / Kaum Adat <span class="text-danger">*</span></label>
+                <input id="adatJumlahSuku" type="number" class="form-control" required/>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label small fw-bold">Daftar Tradisi / Kegiatan Adat (1 per baris)</label>
+                <textarea id="adatKegiatanRaw" rows="4" class="form-control" placeholder="Tuliskan nama tradisi per baris..."></textarea>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Foto Dokumentasi Adat & Upacara</label>
+              <input type="file" id="adatGambar" class="form-control" accept="image/*"/>
+              <div id="adatGambarPreview" class="mt-2"></div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-bold">Uraian Falsafah Adat & Tatanan Nagari</label>
+              <textarea id="adatUraian" rows="6" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn-hijau"><i class="bi bi-save me-1"></i> Simpan Adat & Budaya</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: VISI & MISI -->
+    <div class="admin-page" id="page-visi-misi">
+      <div class="admin-panel">
+        <div class="panel-header"><h6><i class="bi bi-eye-fill text-success me-2"></i>Kelola Visi & Misi Nagari (MySQL)</h6></div>
+        <div class="panel-body">
+          <form id="formVisiMisi" onsubmit="saveVisiMisi(event)">
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Judul / Label Visi</label>
+              <input id="vmJudul" class="form-control" value="VISI" required/>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Pernyataan Visi Nagari <span class="text-danger">*</span></label>
+              <textarea id="vmIsi" rows="3" class="form-control" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Makna Kata Kunci Filosofis (Format: <code>Istilah : Penjelasan : icon</code>, 1 per baris)</label>
+              <textarea id="vmMaknaRaw" rows="4" class="form-control" placeholder="Maju : Berkembang dalam segala aspek : arrow-up&#10;Mandiri : Mampu berdikari : shield"></textarea>
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-bold">Butir-Butir Misi Pembangunan (1 per baris) <span class="text-danger">*</span></label>
+              <textarea id="vmMisiRaw" rows="5" class="form-control" required placeholder="1. Meningkatkan kualitas pelayanan...&#10;2. Mengembangkan potensi ekonomi..."></textarea>
+            </div>
+            <button type="submit" class="btn-hijau"><i class="bi bi-save me-1"></i> Simpan Visi & Misi</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: SEJARAH NAGARI -->
+    <div class="admin-page" id="page-sejarah">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h5 class="fw-bold mb-0">Manajemen Sejarah & Timeline Nagari</h5><small class="text-muted">Kelola narasi asal-usul dan lini masa sejarah nagari di database</small></div>
+        <button class="btn-hijau" onclick="openSejarahModal()"><i class="bi bi-plus-lg me-1"></i> Tambah Sejarah</button>
+      </div>
+      <div class="admin-panel">
+        <div class="p-0 table-responsive">
+          <table class="admin-table">
+            <thead><tr><th>Foto</th><th>Tipe</th><th>Judul / Periode</th><th>Uraian</th><th class="text-end">Aksi</th></tr></thead>
+            <tbody id="sejarahTableBody"><tr><td colspan="5" class="text-center py-4 text-muted">Memuat data sejarah...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: PERANGKAT NAGARI -->
+    <div class="admin-page" id="page-perangkat">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h5 class="fw-bold mb-0">Manajemen Perangkat Nagari</h5><small class="text-muted">Kelola data pejabat & staf aparatur pemerintah nagari</small></div>
+        <button class="btn-hijau" onclick="openPerangkatModal()"><i class="bi bi-plus-lg me-1"></i> Tambah Perangkat</button>
+      </div>
+      <div class="admin-panel">
+        <div class="p-0 table-responsive">
+          <table class="admin-table">
+            <thead><tr><th>Foto</th><th>Nama Lengkap</th><th>Jabatan</th><th>Kontak / Alamat</th><th class="text-end">Aksi</th></tr></thead>
+            <tbody id="perangkatTableBody"><tr><td colspan="5" class="text-center py-4 text-muted">Memuat data perangkat...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: STRUKTUR NAGARI -->
+    <div class="admin-page" id="page-struktur">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h5 class="fw-bold mb-0">Manajemen Bagan Struktur Organisasi</h5><small class="text-muted">Kelola bagan susunan organisasi pemerintahan nagari</small></div>
+        <button class="btn-hijau" onclick="openStrukturModal()"><i class="bi bi-plus-lg me-1"></i> Tambah Bagan / Bagian</button>
+      </div>
+      <div class="admin-panel">
+        <div class="p-0 table-responsive">
+          <table class="admin-table">
+            <thead><tr><th>Bagan / Foto</th><th>Nama Bagian</th><th>Keterangan</th><th class="text-end">Aksi</th></tr></thead>
+            <tbody id="strukturTableBody"><tr><td colspan="4" class="text-center py-4 text-muted">Memuat data struktur...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: OBJEK WISATA -->
+    <div class="admin-page" id="page-wisata">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h5 class="fw-bold mb-0">Manajemen Destinasi Wisata</h5><small class="text-muted">Kelola katalog objek wisata unggulan Nagari Koto Malintang</small></div>
+        <button class="btn-hijau" onclick="openWisataModal()"><i class="bi bi-plus-lg me-1"></i> Tambah Wisata</button>
+      </div>
+      <div class="admin-panel">
+        <div class="p-0 table-responsive">
+          <table class="admin-table">
+            <thead><tr><th>Foto</th><th>Nama Objek</th><th>Kategori</th><th>Lokasi / Tiket</th><th class="text-end">Aksi</th></tr></thead>
+            <tbody id="wisataTableBody"><tr><td colspan="5" class="text-center py-4 text-muted">Memuat data wisata...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: UMKM NAGARI -->
+    <div class="admin-page" id="page-umkm">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h5 class="fw-bold mb-0">Manajemen Katalog UMKM Nagari</h5><small class="text-muted">Kelola usaha mikro & produk lokal masyarakat nagari</small></div>
+        <button class="btn-hijau" onclick="openUmkmModal()"><i class="bi bi-plus-lg me-1"></i> Tambah UMKM</button>
+      </div>
+      <div class="admin-panel">
+        <div class="p-0 table-responsive">
+          <table class="admin-table">
+            <thead><tr><th>Foto</th><th>Nama Usaha / Pemilik</th><th>Kategori</th><th>Harga / Kontak</th><th class="text-end">Aksi</th></tr></thead>
+            <tbody id="umkmTableBody"><tr><td colspan="5" class="text-center py-4 text-muted">Memuat data UMKM...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: BERITA (KABA NAGARI) -->
+    <div class="admin-page" id="page-berita">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h5 class="fw-bold mb-0">Manajemen Kaba Nagari (Berita Publik)</h5><small class="text-muted">Kelola publikasi warta berita, agenda, dan pengumuman nagari</small></div>
+        <button class="btn-hijau" onclick="openBeritaModal()"><i class="bi bi-plus-lg me-1"></i> Tambah Kaba</button>
+      </div>
+      <div class="admin-panel">
+        <div class="p-0 table-responsive">
+          <table class="admin-table">
+            <thead><tr><th>Foto</th><th>Judul Kaba</th><th>Kategori</th><th>Tanggal</th><th class="text-end">Aksi</th></tr></thead>
+            <tbody id="beritaTableBody"><tr><td colspan="5" class="text-center py-4 text-muted">Memuat data berita...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: GALERI -->
+    <div class="admin-page" id="page-galeri">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h5 class="fw-bold mb-0">Manajemen Galeri & Media Publik</h5><small class="text-muted">Kelola foto dokumentasi kegiatan nagari</small></div>
+        <button class="btn-hijau" onclick="openGaleriModal()"><i class="bi bi-plus-lg me-1"></i> Upload Foto Galeri</button>
+      </div>
+      <div class="admin-panel">
+        <div class="panel-body">
+          <div class="row g-3" id="galeriGrid"></div>
         </div>
       </div>
     </div>
@@ -381,11 +562,13 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
           <h5 class="fw-bold mb-0">Verifikasi & Penomoran Surat</h5>
-          <small class="text-muted">Beri nomor dinas resmi lalu teruskan ke meja Wali Nagari, atau tolak jika berkas tidak lengkap</small>
+          <small class="text-muted">Beri nomor dinas resmi lalu teruskan ke meja Wali Nagari, atau tolak berkas yang tidak lengkap</small>
         </div>
-        <div class="d-flex gap-2">
-          <button class="btn btn-sm btn-outline-warning text-dark fw-bold" onclick="filterSurat('menunggu_admin')">⏳ Butuh Penomoran Admin</button>
-          <button class="btn btn-sm btn-outline-primary fw-bold" onclick="filterSurat('menunggu_walinagari')">🏛️ Di Meja Wali Nagari</button>
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-sm btn-outline-warning text-dark fw-bold" onclick="filterSurat('menunggu_admin')">⏳ Butuh Verifikasi</button>
+          <button class="btn btn-sm btn-outline-info text-dark fw-bold" onclick="filterSurat('dikembalikan_ke_admin')">↩️ Dikembalikan Wali</button>
+          <button class="btn btn-sm btn-outline-warning fw-bold" onclick="filterSurat('perlu_revisi_warga')">🔄 Perbaikan Warga</button>
+          <button class="btn btn-sm btn-outline-primary fw-bold" onclick="filterSurat('menunggu_wali_nagari')">🏛️ Di Meja Wali</button>
           <button class="btn btn-sm btn-outline-secondary" onclick="filterSurat('semua')">Semua</button>
         </div>
       </div>
@@ -400,50 +583,25 @@
                 <th>Nomor Surat Dinas</th>
                 <th>Tanggal Pengajuan</th>
                 <th>Status Berkas</th>
-                <th>Aksi Admin</th>
+                <th class="text-end">Aksi Admin</th>
               </tr>
             </thead>
-            <tbody id="suratTableBody"></tbody>
+            <tbody id="suratTableBody"><tr><td colspan="6" class="text-center py-4 text-muted">Memuat data permohonan surat...</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- PAGE: BERKAS ARSIP SURAT (LOCAL DISK & GOOGLE DRIVE) -->
+    <!-- PAGE: BERKAS ARSIP SURAT -->
     <div class="admin-page" id="page-arsip">
       <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
         <div>
           <h5 class="fw-bold mb-0">Berkas Arsip Surat Nagari</h5>
-          <small class="text-muted">Arsip surat digital yang terhubung ke Local Disk & Google Drive</small>
-        </div>
-        <div class="d-flex gap-2">
-          <button class="btn btn-sm btn-outline-primary" onclick="backupLocalDisk()">
-            <i class="bi bi-hdd-fill me-1"></i> Unduh / Backup ke Local Disk (JSON)
-          </button>
-          <button class="btn btn-sm btn-outline-success" onclick="openGdriveModal()">
-            <i class="bi bi-google-play me-1"></i> Hubungkan Google Drive
-          </button>
+          <small class="text-muted">Arsip surat digital yang telah disetujui atau ditolak</small>
         </div>
       </div>
-
-      <!-- GDrive Info Card -->
-      <div class="p-3 mb-3 rounded-3 border d-flex justify-content-between align-items-center" style="background:#f0fdf4;border-color:#bbf7d0 !important;">
-        <div class="d-flex align-items-center gap-3">
-          <i class="bi bi-cloud-arrow-up-fill text-success fs-3"></i>
-          <div>
-            <strong class="text-dark d-block">Penyimpanan Cloud Arsip Google Drive:</strong>
-            <a href="#" id="linkGdriveFolder" target="_blank" class="small text-decoration-none text-success fw-semibold">
-              https://drive.google.com/drive/folders/kotomalintang_arsip_2026
-            </a>
-          </div>
-        </div>
-        <button class="btn btn-sm btn-success rounded-pill px-3" onclick="openGdriveLink()">
-          <i class="bi bi-box-arrow-up-right me-1"></i> Buka Folder Drive
-        </button>
-      </div>
-
       <div class="admin-panel">
-        <div class="panel-header"><h6><i class="bi bi-folder-check text-success me-2"></i>Daftar Berkas Arsip Surat Disetujui & Ditolak</h6></div>
+        <div class="panel-header"><h6><i class="bi bi-folder-check text-success me-2"></i>Daftar Berkas Arsip Surat Selesai</h6></div>
         <div class="p-0 table-responsive">
           <table class="admin-table">
             <thead>
@@ -451,12 +609,11 @@
                 <th>Nomor Surat</th>
                 <th>Pemohon</th>
                 <th>Jenis Surat</th>
-                <th>Tanggal Disetujui / Selesai</th>
-                <th>Lokasi Penyimpanan</th>
-                <th>Aksi Arsip</th>
+                <th>Tanggal Masuk</th>
+                <th>Status Arsip</th>
               </tr>
             </thead>
-            <tbody id="arsipTableBody"></tbody>
+            <tbody id="arsipTableBody"><tr><td colspan="5" class="text-center py-4 text-muted">Memuat data arsip...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -465,20 +622,98 @@
     <!-- PAGE: USERS -->
     <div class="admin-page" id="page-users">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <div><h5 class="fw-bold mb-0">Daftar Pengguna Sistem</h5><small class="text-muted">Kelola hak akses admin, walinagari, dan akun warga</small></div>
+        <div><h5 class="fw-bold mb-0">Daftar Pengguna / Warga Terdaftar</h5><small class="text-muted">Pantau akun masyarakat pemohon surat nagari</small></div>
       </div>
       <div class="admin-panel">
         <div class="p-0 table-responsive">
           <table class="admin-table">
-            <thead><tr><th>Nama Lengkap</th><th>Username</th><th>Role</th><th>Email</th><th>Status</th></tr></thead>
-            <tbody id="usersTableBody"></tbody>
+            <thead><tr><th>Nama Lengkap</th><th>Username</th><th>NIK</th><th>Email / HP</th><th>Total Surat</th></tr></thead>
+            <tbody id="usersTableBody"><tr><td colspan="5" class="text-center py-4 text-muted">Memuat data pengguna...</td></tr></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: PENGATURAN KANTOR & WALI NAGARI -->
+    <div class="admin-page" id="page-pengaturan">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h5 class="fw-bold mb-0">Pengaturan Kantor & Identitas Wali Nagari</h5>
+          <small class="text-muted">Kelola identitas resmi Wali Nagari penandatangan naskah surat dan informasi operasional kantor</small>
+        </div>
+      </div>
+
+      <div class="admin-panel">
+        <div class="panel-header">
+          <h6><i class="bi bi-person-badge-fill text-success me-2"></i>Identitas Resmi Wali Nagari Penandatangan</h6>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info small mb-4">
+            <i class="bi bi-info-circle-fill me-1"></i>
+            Nama dan jabatan resmi Wali Nagari yang diatur di bawah ini akan tercantum secara otomatis pada naskah persuratan Nagari Koto Malintang yang baru. Akun Wali Nagari tidak dapat mengubah identitas ini secara mandiri.
+          </div>
+
+          <form onsubmit="savePengaturanKantor(event)">
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Nama Lengkap & Gelar Akademik Wali Nagari</label>
+                <input type="text" id="setNamaWali" class="form-control" placeholder="Contoh: NAZARUDDIN, S.Pd.I" required />
+                <small class="text-muted">Nama yang tercantum pada kolom tanda tangan naskah surat dinas.</small>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Gelar Adat / Sapaan Kehormatan</label>
+                <input type="text" id="setGelarWali" class="form-control" placeholder="Contoh: Datuak Bandaro" />
+                <small class="text-muted">Gelar adat yang menyertai nama Wali Nagari.</small>
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold">Jabatan Resmi Penandatangan</label>
+                <input type="text" id="setJabatanWali" class="form-control" placeholder="Contoh: WALI NAGARI KOTO MALINTANG" required />
+                <small class="text-muted">Jabatan resmi yang tertera di atas tanda tangan naskah surat dinas.</small>
+              </div>
+            </div>
+
+            <hr class="my-4 text-muted" />
+
+            <h6 class="fw-bold mb-3"><i class="bi bi-building text-primary me-2"></i>Informasi Kantor Nagari</h6>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Nama Instansi / Kantor</label>
+                <input type="text" id="setNamaKantor" class="form-control" placeholder="Kantor Wali Nagari Koto Malintang" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Jam Pelayanan Kantor</label>
+                <input type="text" id="setJamLayanan" class="form-control" placeholder="Senin - Kamis: 08.00 - 16.00 WIB | Jumat: 08.00 - 11.30 WIB" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Nomor Telepon Kantor / Hotline</label>
+                <input type="text" id="setTeleponKantor" class="form-control" placeholder="0812-3456-7890" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Email Resmi Kantor</label>
+                <input type="email" id="setEmailKantor" class="form-control" placeholder="layanan@nagari-kotomalintang.desa.id" />
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold">Alamat Lengkap Kantor</label>
+                <textarea id="setAlamatKantor" class="form-control" rows="2" placeholder="Jl. Raya Maninjau - Lubuk Basung, Koto Malintang, Kec. Tanjung Raya, Kab. Agam"></textarea>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-hijau px-4 py-2" id="btnSavePengaturan">
+                <i class="bi bi-save me-1"></i> Simpan Pengaturan Kantor & Wali Nagari
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
 
   </div>
 </div>
+
+<!-- ========================================================================= -->
+<!-- MODALS -->
+<!-- ========================================================================= -->
 
 <!-- MODAL VERIFIKASI & NOMOR SURAT -->
 <div class="modal-overlay" id="modalSurat">
@@ -503,76 +738,466 @@
       <input type="hidden" id="tolakSuratId"/>
       <div class="mb-3">
         <label class="form-label small fw-bold text-danger">Tuliskan Alasan / Catatan Penolakan untuk Warga: <span class="text-danger">*</span></label>
-        <textarea id="tolakAlasan" class="form-control" rows="4" placeholder="Contoh: Berkas persyaratan belum lengkap. Mohon lampirkan Fotokopi KK terbaru dan Surat Pengantar Wali Jorong."></textarea>
+        <textarea id="tolakAlasan" class="form-control" rows="4" placeholder="Contoh: Berkas persyaratan belum lengkap. Mohon lampirkan Fotokopi KK terbaru."></textarea>
       </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-sm btn-secondary" onclick="closeModal('modalTolak')">Batal</button>
-      <button class="btn btn-sm btn-danger fw-bold" onclick="submitTolakSurat()"><i class="bi bi-x-circle-fill me-1"></i> Tolak & Kirim ke Warga</button>
+      <button class="btn btn-sm btn-danger fw-bold" onclick="submitTolakSurat()"><i class="bi bi-x-circle-fill me-1"></i> Tolak Surat</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL GOOGLE DRIVE SETTING -->
-<div class="modal-overlay" id="modalGdrive">
+<!-- MODAL MINTA PERBAIKAN WARGA -->
+<div class="modal-overlay" id="modalMintaRevisi">
   <div class="modal-box" style="max-width:550px;">
-    <div class="modal-head"><h6 class="fw-bold"><i class="bi bi-google text-success me-2"></i>Pengaturan URL Folder Google Drive</h6><button class="btn-close" onclick="closeModal('modalGdrive')"></button></div>
+    <div class="modal-head bg-warning text-dark">
+      <h6 class="text-dark mb-0 fw-bold"><i class="bi bi-arrow-repeat me-2"></i>Minta Perbaikan Warga</h6>
+      <button class="btn-close" onclick="closeModal('modalMintaRevisi')"></button>
+    </div>
     <div class="modal-body-content">
+      <input type="hidden" id="revisiSuratId"/>
       <div class="mb-3">
-        <label class="form-label small fw-bold">Link URL Folder Google Drive Arsip Nagari:</label>
-        <input type="text" id="inputGdriveUrl" class="form-control" value="https://drive.google.com/drive/folders/kotomalintang_arsip_2026"/>
-        <small class="text-muted" style="font-size:0.75rem;">Semua berkas PDF surat resmi dapat disinkronkan langsung ke tautan folder Drive dinas ini.</small>
+        <label class="form-label small fw-bold text-dark">Jelaskan bagian yang harus diperbaiki: <span class="text-danger">*</span></label>
+        <textarea id="revisiCatatanAdmin" class="form-control" rows="4" placeholder="Contoh: Berkas Kartu Keluarga buram / tidak terbaca. Mohon unggah ulang berkas KK yang jelas dan data NIK yang sesuai."></textarea>
+        <div class="form-text text-muted small">Wajib diisi, minimal 5 karakter. Catatan ini akan ditampilkan kepada pemohon.</div>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-sm btn-secondary" onclick="closeModal('modalGdrive')">Tutup</button>
-      <button class="btn-hijau" onclick="saveGdriveUrl()"><i class="bi bi-save me-1"></i> Simpan URL Drive</button>
+      <button class="btn btn-sm btn-secondary" onclick="closeModal('modalMintaRevisi')">Batal</button>
+      <button class="btn btn-sm btn-warning text-dark fw-bold" id="btnSubmitMintaRevisi" onclick="submitMintaRevisi()"><i class="bi bi-send-fill me-1"></i> Kirim Permintaan Perbaikan</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL BERITA -->
+<!-- MODAL SEJARAH -->
+<div class="modal-overlay" id="modalSejarah">
+  <div class="modal-box">
+    <div class="modal-head"><h6 id="modalSejarahTitle">Tambah Sejarah Nagari</h6><button class="btn-close" onclick="closeModal('modalSejarah')"></button></div>
+    <form id="formSejarah" onsubmit="saveSejarah(event)">
+      <div class="modal-body-content">
+        <input type="hidden" id="sejId"/>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-bold">Tipe Konten <span class="text-danger">*</span></label>
+            <select id="sejTipe" class="form-select" required>
+              <option value="singkat">Ringkasan / Asal-Usul</option>
+              <option value="periode">Lini Masa / Periode</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-bold">Periode / Tahun</label>
+            <input id="sejPeriode" class="form-control" placeholder="Contoh: 1800 - 1900 atau Abad ke-19"/>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Judul Peristiwa / Babak <span class="text-danger">*</span></label>
+          <input id="sejJudul" class="form-control" required placeholder="Contoh: Terbentuknya Nagari Koto Malintang"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Upload Foto / Ilustrasi Sejarah</label>
+          <input type="file" id="sejGambar" class="form-control" accept="image/*"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Narasi & Uraian Sejarah <span class="text-danger">*</span></label>
+          <textarea id="sejIsi" rows="5" class="form-control" required placeholder="Tuliskan uraian peristiwa sejarah di sini..."></textarea>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="closeModal('modalSejarah')">Batal</button>
+        <button type="submit" class="btn-hijau">Simpan Sejarah</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL PERANGKAT -->
+<div class="modal-overlay" id="modalPerangkat">
+  <div class="modal-box">
+    <div class="modal-head"><h6 id="modalPerangkatTitle">Tambah Perangkat Nagari</h6><button class="btn-close" onclick="closeModal('modalPerangkat')"></button></div>
+    <form id="formPerangkat" onsubmit="savePerangkat(event)">
+      <div class="modal-body-content">
+        <input type="hidden" id="perId"/>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-bold">Nama Lengkap & Gelar <span class="text-danger">*</span></label>
+            <input id="perNama" class="form-control" required placeholder="Contoh: Nazaruddin, S.Pd.I"/>
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-bold">Jabatan Resmi <span class="text-danger">*</span></label>
+            <input id="perJabatan" class="form-control" required placeholder="Contoh: Wali Nagari"/>
+          </div>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-bold">Nomor Kontak / WA</label>
+            <input id="perKontak" class="form-control" placeholder="08xxxxxxxxxx"/>
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-bold">Periode Masa Jabatan</label>
+            <input id="perPeriode" class="form-control" placeholder="2020 - 2026"/>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Alamat Jorong / Domisili</label>
+          <input id="perAlamat" class="form-control" placeholder="Jorong Rambai, Koto Malintang"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Foto Resmi Aparatur</label>
+          <input type="file" id="perFoto" class="form-control" accept="image/*"/>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="closeModal('modalPerangkat')">Batal</button>
+        <button type="submit" class="btn-hijau">Simpan Perangkat</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL STRUKTUR -->
+<div class="modal-overlay" id="modalStruktur">
+  <div class="modal-box">
+    <div class="modal-head"><h6 id="modalStrukturTitle">Tambah Bagan Struktur Organisasi</h6><button class="btn-close" onclick="closeModal('modalStruktur')"></button></div>
+    <form id="formStruktur" onsubmit="saveStruktur(event)">
+      <div class="modal-body-content">
+        <input type="hidden" id="strId"/>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Nama Bagian / Komponen Struktur <span class="text-danger">*</span></label>
+          <input id="strNama" class="form-control" required placeholder="Contoh: Bagan Organisasi Utama Nagari"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Foto Bagan Organisasi (Gambar)</label>
+          <input type="file" id="strFotoBagan" class="form-control" accept="image/*"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Uraian / Keterangan Bagan</label>
+          <textarea id="strKeterangan" rows="4" class="form-control" placeholder="Keterangan tugas dan struktur..."></textarea>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="closeModal('modalStruktur')">Batal</button>
+        <button type="submit" class="btn-hijau">Simpan Struktur</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL WISATA -->
+<div class="modal-overlay" id="modalWisata">
+  <div class="modal-box">
+    <div class="modal-head"><h6 id="modalWisataTitle">Tambah Objek Wisata</h6><button class="btn-close" onclick="closeModal('modalWisata')"></button></div>
+    <form id="formWisata" onsubmit="saveWisata(event)">
+      <div class="modal-body-content">
+        <input type="hidden" id="wisId"/>
+        <div class="row g-2 mb-3">
+          <div class="col-8">
+            <label class="form-label small fw-bold">Nama Objek Wisata <span class="text-danger">*</span></label>
+            <input id="wisNama" class="form-control" required placeholder="Contoh: Pohon Raksasa Medang / Danau Maninjau"/>
+          </div>
+          <div class="col-4">
+            <label class="form-label small fw-bold">Kategori</label>
+            <input id="wisKategori" class="form-control" placeholder="Alam / Budaya"/>
+          </div>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-bold">Lokasi Jorong</label>
+            <input id="wisLokasi" class="form-control" placeholder="Jorong Koto Badiri"/>
+          </div>
+          <div class="col-3">
+            <label class="form-label small fw-bold">Harga Tiket</label>
+            <input id="wisHarga" class="form-control" placeholder="Gratis / Rp 5.000"/>
+          </div>
+          <div class="col-3">
+            <label class="form-label small fw-bold">Jam Buka</label>
+            <input id="wisJam" class="form-control" placeholder="08.00 - 18.00"/>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Foto Objek Wisata</label>
+          <input type="file" id="wisFoto" class="form-control" accept="image/*"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Deskripsi & Daya Tarik Wisata <span class="text-danger">*</span></label>
+          <textarea id="wisDeskripsi" rows="4" class="form-control" required></textarea>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="closeModal('modalWisata')">Batal</button>
+        <button type="submit" class="btn-hijau">Simpan Wisata</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL UMKM -->
+<div class="modal-overlay" id="modalUmkm">
+  <div class="modal-box">
+    <div class="modal-head"><h6 id="modalUmkmTitle">Tambah UMKM Nagari</h6><button class="btn-close" onclick="closeModal('modalUmkm')"></button></div>
+    <form id="formUmkm" onsubmit="saveUmkm(event)">
+      <div class="modal-body-content">
+        <input type="hidden" id="umkId"/>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-bold">Nama Usaha / Brand <span class="text-danger">*</span></label>
+            <input id="umkNama" class="form-control" required placeholder="Contoh: Rinuak Crispy Ibu Nur"/>
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-bold">Nama Pemilik <span class="text-danger">*</span></label>
+            <input id="umkPemilik" class="form-control" required placeholder="Contoh: Ibu Nur"/>
+          </div>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-4">
+            <label class="form-label small fw-bold">Kategori Produk <span class="text-danger">*</span></label>
+            <input id="umkKategori" class="form-control" required placeholder="Kuliner / Kerajinan"/>
+          </div>
+          <div class="col-4">
+            <label class="form-label small fw-bold">Harga Produk</label>
+            <input id="umkHarga" class="form-control" placeholder="Rp 15.000 - Rp 50.000"/>
+          </div>
+          <div class="col-4">
+            <label class="form-label small fw-bold">Kontak / WA Pemilik</label>
+            <input id="umkKontak" class="form-control" placeholder="08xxxxxxxxxx"/>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Alamat Usaha / Jorong</label>
+          <input id="umkAlamat" class="form-control" placeholder="Jorong Rambai, Koto Malintang"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Foto Produk / Gerai Usaha</label>
+          <input type="file" id="umkFoto" class="form-control" accept="image/*"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Deskripsi Usaha & Produk <span class="text-danger">*</span></label>
+          <textarea id="umkDeskripsi" rows="3" class="form-control" required></textarea>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="closeModal('modalUmkm')">Batal</button>
+        <button type="submit" class="btn-hijau">Simpan UMKM</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL BERITA (KABA) -->
 <div class="modal-overlay" id="modalBerita">
   <div class="modal-box">
-    <div class="modal-head"><h6>Tambah Berita</h6><button class="btn-close" onclick="closeModal('modalBerita')"></button></div>
-    <div class="modal-body-content">
-      <div class="mb-3"><label class="form-label small fw-bold">Judul Berita</label><input id="bJudul" class="form-control"/></div>
-      <div class="row g-2 mb-3">
-        <div class="col-6"><label class="form-label small fw-bold">Kategori</label><input id="bKategori" class="form-control" value="Pemerintahan"/></div>
-        <div class="col-6"><label class="form-label small fw-bold">Tanggal</label><input id="bTanggal" type="date" class="form-control"/></div>
+    <div class="modal-head"><h6 id="modalBeritaTitle">Tambah Kaba Nagari (Berita)</h6><button class="btn-close" onclick="closeModal('modalBerita')"></button></div>
+    <form id="formBerita" onsubmit="saveBerita(event)">
+      <div class="modal-body-content">
+        <input type="hidden" id="bId"/>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Judul Berita / Kaba <span class="text-danger">*</span></label>
+          <input id="bJudul" class="form-control" required/>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-bold">Kategori <span class="text-danger">*</span></label>
+            <select id="bKategori" class="form-select">
+              <option value="Pemerintahan">Pemerintahan</option>
+              <option value="Pembangunan">Pembangunan</option>
+              <option value="Sosial & Budaya">Sosial & Budaya</option>
+              <option value="Pengumuman">Pengumuman</option>
+              <option value="Ekonomi & UMKM">Ekonomi & UMKM</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-bold">Tanggal Publikasi</label>
+            <input id="bTanggal" type="date" class="form-control"/>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Foto Sampul Utama Berita</label>
+          <input type="file" id="bGambar" class="form-control" accept="image/*"/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Ringkasan Singkat</label>
+          <textarea id="bRingkasan" rows="2" class="form-control" placeholder="Ringkasan pendek 1-2 kalimat..."></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Isi Lengkap Berita <span class="text-danger">*</span></label>
+          <textarea id="bIsi" rows="6" class="form-control" required></textarea>
+        </div>
       </div>
-      <div class="mb-3"><label class="form-label small fw-bold">Isi Berita</label><textarea id="bIsi" rows="4" class="form-control"></textarea></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-sm btn-secondary" onclick="closeModal('modalBerita')">Batal</button>
-      <button class="btn-hijau" onclick="saveBerita()">Simpan Berita</button>
-    </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="closeModal('modalBerita')">Batal</button>
+        <button type="submit" class="btn-hijau">Simpan Berita</button>
+      </div>
+    </form>
   </div>
 </div>
 
-<!-- MODAL PENGUMUMAN -->
-<div class="modal-overlay" id="modalPengumuman">
-  <div class="modal-box">
-    <div class="modal-head"><h6>Tambah Pengumuman</h6><button class="btn-close" onclick="closeModal('modalPengumuman')"></button></div>
-    <div class="modal-body-content">
-      <div class="mb-3"><label class="form-label small fw-bold">Judul Pengumuman</label><input id="pJudul" class="form-control"/></div>
-      <div class="mb-3"><label class="form-label small fw-bold">Tanggal</label><input id="pTanggal" type="date" class="form-control"/></div>
-      <div class="mb-3"><label class="form-label small fw-bold">Isi Pengumuman</label><textarea id="pIsi" rows="3" class="form-control"></textarea></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-sm btn-secondary" onclick="closeModal('modalPengumuman')">Batal</button>
-      <button class="btn-hijau" onclick="savePengumuman()">Simpan Pengumuman</button>
-    </div>
+<!-- MODAL GALERI -->
+<div class="modal-overlay" id="modalGaleri">
+  <div class="modal-box" style="max-width:550px;">
+    <div class="modal-head"><h6>Upload Foto Galeri Publik</h6><button class="btn-close" onclick="closeModal('modalGaleri')"></button></div>
+    <form id="formGaleri" onsubmit="saveGaleri(event)">
+      <div class="modal-body-content">
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Pilih File Foto <span class="text-danger">*</span></label>
+          <input type="file" id="galFoto" class="form-control" accept="image/*" required/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Keterangan / Caption Foto</label>
+          <input type="text" id="galCaption" class="form-control" placeholder="Contoh: Dokumentasi Gotong Royong Jorong Rambai"/>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="closeModal('modalGaleri')">Batal</button>
+        <button type="submit" class="btn-hijau">Upload ke Galeri</button>
+      </div>
+    </form>
   </div>
 </div>
 
 <!-- TOAST -->
 <div class="toast-admin" id="toastAdmin"><i class="bi bi-check-circle-fill"></i><span id="toastMsg"></span></div>
 
-<script src="Auth.js"></script>
+<!-- ========================================================================= -->
+<!-- JAVASCRIPT AJAX & REST API INTEGRATION -->
+<!-- ========================================================================= -->
 <script>
 let currentFilter = 'semua';
 
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toastAdmin');
+  document.getElementById('toastMsg').textContent = msg;
+  if (type === 'error') {
+    t.style.background = '#991b1b';
+  } else {
+    t.style.background = '#064e3b';
+  }
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarBackdrop').classList.toggle('show');
+}
+
+// Helper Base URL Resolver Dinamis untuk Admin Panel
+const adminApiBase = (function() {
+  if (typeof window !== 'undefined' && window.API_BASE) {
+    return window.API_BASE.replace(/\/$/, '');
+  }
+  if (typeof window !== 'undefined' && window.location) {
+    const origin = window.location.origin;
+    const pathname = window.location.pathname || '';
+    const port = window.location.port || '';
+
+    if (pathname.includes('/layanan-surat/public')) {
+      return origin + '/layanan-surat/public/api';
+    }
+    if (pathname.includes('/layanan-surat')) {
+      return origin + '/layanan-surat/public/api';
+    }
+    if (pathname.includes('/frontend/public')) {
+      return 'http://localhost/layanan-surat/public/api';
+    }
+    if (port === '8000') {
+      return origin + '/api';
+    }
+    if (['5500', '5501', '5502', '3000', '5173'].includes(port) || window.location.protocol === 'file:') {
+      return 'http://localhost/layanan-surat/public/api';
+    }
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return origin + '/layanan-surat/public/api';
+    }
+    return origin + '/api';
+  }
+  return 'http://localhost/layanan-surat/public/api';
+})();
+
+// Helper Fetch dengan Error Handling
+async function apiFetch(url, options = {}) {
+  try {
+    let fullUrl = url;
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      fullUrl = url;
+    } else if (url.startsWith('/api/')) {
+      fullUrl = adminApiBase + url.substring(4);
+    } else if (url.startsWith('api/')) {
+      fullUrl = adminApiBase + url.substring(3);
+    } else {
+      fullUrl = adminApiBase + (url.startsWith('/') ? url : '/' + url);
+    }
+
+    options.headers = options.headers || {};
+    options.headers['Accept'] = 'application/json';
+    options.credentials = options.credentials || 'include';
+
+    try {
+      const sessionStr = typeof localStorage !== 'undefined' ? localStorage.getItem('km_session') : null;
+      if (sessionStr) {
+        const sessionObj = JSON.parse(sessionStr);
+        if (sessionObj && sessionObj.token && !options.headers['Authorization']) {
+          options.headers['Authorization'] = 'Bearer ' + sessionObj.token;
+        }
+      }
+    } catch (e) {}
+
+    let res = null;
+    try {
+      res = await fetch(fullUrl, options);
+    } catch (fetchErr) {
+      // Fallback jika direct fetch gagal
+      const fallbackUrl = 'http://localhost/layanan-surat/public/api' + (url.startsWith('/api/') ? url.substring(4) : (url.startsWith('/') ? url : '/' + url));
+      if (fullUrl !== fallbackUrl) {
+        try {
+          res = await fetch(fallbackUrl, options);
+          fullUrl = fallbackUrl;
+        } catch (altErr) {
+          throw new Error('Tidak dapat terhubung ke server backend API Laravel.');
+        }
+      } else {
+        throw new Error('Tidak dapat terhubung ke server backend API Laravel.');
+      }
+    }
+
+    // Jika 404 pada URL non-subfolder, coba fallback subfolder Laragon
+    if (res && res.status === 404 && !fullUrl.includes('/layanan-surat/public/api')) {
+      const fallbackUrl = 'http://localhost/layanan-surat/public/api' + (url.startsWith('/api/') ? url.substring(4) : (url.startsWith('/') ? url : '/' + url));
+      try {
+        const altRes = await fetch(fallbackUrl, options);
+        if (altRes.ok) {
+          res = altRes;
+          fullUrl = fallbackUrl;
+        }
+      } catch (e) {}
+    }
+
+    if (!res) {
+      throw new Error('Tidak ada respon dari server API');
+    }
+
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      const text = await res.text().catch(() => '');
+      console.warn('[AdminAPI] Menerima non-JSON response dari', fullUrl, text.substring(0, 150));
+      throw new Error(`Server mengembalikan respon non-JSON (${res.status} ${res.statusText})`);
+    }
+
+    const json = await res.json();
+    if (!res.ok) {
+      throw new Error(json.message || json.error || 'Terjadi kesalahan pada server');
+    }
+    return json;
+  } catch (err) {
+    console.error('API Error:', err);
+    toast(err.message, 'error');
+    throw err;
+  }
+}
+
+// Navigasi Page
 function showPage(id) {
   document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item-admin').forEach(n => n.classList.remove('active'));
@@ -582,76 +1207,731 @@ function showPage(id) {
 
   const titles = {
     dashboard: 'Dashboard Administrator',
-    berita: 'Manajemen Berita Publik',
-    pengumuman: 'Manajemen Pengumuman Publik',
-    galeri: 'Kelola Galeri Foto Publik',
-    profil: 'Profil Publik Nagari',
     surat: 'Verifikasi & Penomoran Surat',
     arsip: 'Berkas Arsip Surat Nagari',
-    users: 'Data Pengguna Sistem'
+    users: 'Data Pengguna / Warga',
+    profil: 'Profil Publik Nagari',
+    adat: 'Adat & Budaya Nagari',
+    'visi-misi': 'Visi & Misi Nagari',
+    sejarah: 'Sejarah Nagari',
+    perangkat: 'Perangkat Nagari',
+    struktur: 'Struktur Organisasi Nagari',
+    wisata: 'Objek Wisata Nagari',
+    umkm: 'Katalog UMKM Nagari',
+    berita: 'Manajemen Kaba Nagari (Berita)',
+    galeri: 'Galeri Foto & Media Publik'
   };
   if (document.getElementById('pageTitle')) document.getElementById('pageTitle').textContent = titles[id] || id;
 
   if (id === 'dashboard') loadDashboard();
-  if (id === 'berita') renderBeritaTable();
-  if (id === 'pengumuman') renderPengumumanTable();
-  if (id === 'galeri') renderGaleri();
   if (id === 'surat') renderSuratTable(currentFilter);
   if (id === 'arsip') renderArsipTable();
   if (id === 'users') renderUsersTable();
+  if (id === 'profil') renderProfil();
+  if (id === 'adat') renderAdat();
+  if (id === 'visi-misi') renderVisiMisi();
+  if (id === 'sejarah') renderSejarah();
+  if (id === 'perangkat') renderPerangkat();
+  if (id === 'struktur') renderStruktur();
+  if (id === 'wisata') renderWisata();
+  if (id === 'umkm') renderUmkm();
+  if (id === 'berita') renderBeritaTable();
+  if (id === 'galeri') renderGaleri();
 }
 
-function loadDashboard() {
-  const surat = KotoAuth.getSuratMasuk();
-  const berita = KotoAuth.getBerita();
+// 1. DASHBOARD
+async function loadDashboard() {
+  try {
+    const res = await apiFetch('/api/admin/dashboard');
+    const stats = res.stats || {};
+    document.getElementById('statSuratBaru').textContent = stats.surat_menunggu || 0;
+    document.getElementById('statSuratWali').textContent = stats.surat_wali || 0;
+    document.getElementById('statSuratArsip').textContent = stats.surat_disetujui || 0;
+    document.getElementById('statBerita').textContent = stats.total_kaba || 0;
+    document.getElementById('badgeSurat').textContent = stats.surat_menunggu || 0;
 
-  const butuhAdmin = surat.filter(s => s.status === 'menunggu_admin').length;
-  const diWali = surat.filter(s => s.status === 'menunggu_walinagari').length;
-  const arsip = surat.filter(s => s.status === 'disetujui' || s.status === 'arsip').length;
+    const list = res.surat_terbaru || [];
+    const tbody = document.getElementById('dashSuratList');
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada antrean permohonan surat baru.</td></tr>';
+    } else {
+      tbody.innerHTML = list.map(s => `
+        <tr>
+          <td><strong>${s.nama_pemohon}</strong><div class="small text-muted">NIK: ${s.nik_pemohon || '-'}</div></td>
+          <td>${s.nama_jenis_surat}</td>
+          <td>${new Date(s.created_at).toLocaleDateString('id-ID')}</td>
+          <td><span class="badge bg-warning text-dark">⏳ ${s.status}</span></td>
+          <td class="text-end"><button class="btn btn-sm btn-outline-success" onclick="openSuratDetail('${s.id}')">Periksa</button></td>
+        </tr>
+      `).join('');
+    }
+  } catch (e) {}
+}
 
-  if (document.getElementById('statSuratBaru')) document.getElementById('statSuratBaru').textContent = butuhAdmin;
-  if (document.getElementById('statSuratWali')) document.getElementById('statSuratWali').textContent = diWali;
-  if (document.getElementById('statSuratArsip')) document.getElementById('statSuratArsip').textContent = arsip;
-  if (document.getElementById('statBerita')) document.getElementById('statBerita').textContent = berita.length;
-  if (document.getElementById('badgeSurat')) document.getElementById('badgeSurat').textContent = butuhAdmin;
+// 2. PROFIL NAGARI
+async function renderProfil() {
+  try {
+    const res = await apiFetch('/api/admin/konten/profil');
+    const p = res.data || {};
+    document.getElementById('pNama').value = p.nama_nagari || '';
+    document.getElementById('pKec').value = p.kecamatan || '';
+    document.getElementById('pKab').value = p.kabupaten || '';
+    document.getElementById('pProv').value = p.provinsi || '';
+    document.getElementById('pPenduduk').value = p.jumlah_penduduk || '';
+    document.getElementById('pJorong').value = p.jumlah_jorong || '';
+    document.getElementById('pLuas').value = p.luas_wilayah || '';
+    document.getElementById('pAlamat').value = p.alamat || '';
+    document.getElementById('pKodePos').value = p.kode_pos || '';
+    document.getElementById('pEmail').value = p.email || '';
+    document.getElementById('pDeskripsi').value = p.deskripsi || '';
 
-  const tbody = document.getElementById('dashSuratList');
-  if (tbody) {
-    const list = surat.filter(s => s.status === 'menunggu_admin');
-    tbody.innerHTML = list.length === 0 ? '<tr><td colspan="5" class="text-center py-4 text-muted">Tidak ada surat yang menunggu verifikasi admin.</td></tr>' : list.slice(0, 5).map(s => `
+    if (p.foto_utama) {
+      document.getElementById('pFotoUtamaPreview').innerHTML = `<img src="/${p.foto_utama}" class="img-thumbnail" style="height:70px;"/>`;
+    }
+    if (p.logo) {
+      document.getElementById('pLogoPreview').innerHTML = `<img src="/${p.logo}" class="img-thumbnail" style="height:60px;"/>`;
+    }
+  } catch (e) {}
+}
+
+async function saveProfilNagari(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('nama_nagari', document.getElementById('pNama').value);
+  formData.append('kecamatan', document.getElementById('pKec').value);
+  formData.append('kabupaten', document.getElementById('pKab').value);
+  formData.append('provinsi', document.getElementById('pProv').value);
+  formData.append('jumlah_penduduk', document.getElementById('pPenduduk').value);
+  formData.append('jumlah_jorong', document.getElementById('pJorong').value);
+  formData.append('luas_wilayah', document.getElementById('pLuas').value);
+  formData.append('alamat', document.getElementById('pAlamat').value);
+  formData.append('kode_pos', document.getElementById('pKodePos').value);
+  formData.append('email', document.getElementById('pEmail').value);
+  formData.append('deskripsi', document.getElementById('pDeskripsi').value);
+
+  const foto = document.getElementById('pFotoUtama').files[0];
+  if (foto) formData.append('foto_utama', foto);
+  const logo = document.getElementById('pLogo').files[0];
+  if (logo) formData.append('logo', logo);
+
+  const res = await apiFetch('/api/admin/konten/profil', { method: 'POST', body: formData });
+  toast(res.message || 'Profil nagari berhasil disimpan ke database!');
+  renderProfil();
+}
+
+// 3. ADAT & BUDAYA
+async function renderAdat() {
+  try {
+    const res = await apiFetch('/api/admin/konten/adat');
+    const a = res.data || {};
+    document.getElementById('adatJumlahSuku').value = a.jumlah_suku || 7;
+    document.getElementById('adatUraian').value = a.uraian || '';
+    const kegiatan = Array.isArray(a.kegiatan_adat) ? a.kegiatan_adat.join('\n') : (a.kegiatan_adat || '');
+    document.getElementById('adatKegiatanRaw').value = kegiatan;
+    if (a.gambar) {
+      document.getElementById('adatGambarPreview').innerHTML = `<img src="/${a.gambar}" class="img-thumbnail" style="height:80px;"/>`;
+    }
+  } catch (e) {}
+}
+
+async function saveAdat(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('jumlah_suku', document.getElementById('adatJumlahSuku').value);
+  formData.append('uraian', document.getElementById('adatUraian').value);
+  formData.append('kegiatan_adat_raw', document.getElementById('adatKegiatanRaw').value);
+  const foto = document.getElementById('adatGambar').files[0];
+  if (foto) formData.append('gambar', foto);
+
+  const res = await apiFetch('/api/admin/konten/adat', { method: 'POST', body: formData });
+  toast(res.message || 'Adat & Budaya berhasil disimpan!');
+  renderAdat();
+}
+
+// 4. VISI & MISI
+async function renderVisiMisi() {
+  try {
+    const res = await apiFetch('/api/admin/konten/visi-misi');
+    const vm = res.data || {};
+    const visi = vm.visi || {};
+    document.getElementById('vmJudul').value = visi.judul || 'VISI';
+    document.getElementById('vmIsi').value = visi.isi || '';
+
+    const makna = (vm.makna_visis || []).map(m => `${m.istilah} : ${m.deskripsi} : ${m.icon || 'arrow-up'}`).join('\n');
+    document.getElementById('vmMaknaRaw').value = makna;
+
+    const misi = (vm.misi || []).map(m => m.deskripsi || m.judul || m.uraian).join('\n');
+    document.getElementById('vmMisiRaw').value = misi;
+  } catch (e) {}
+}
+
+async function saveVisiMisi(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('judul', document.getElementById('vmJudul').value);
+  formData.append('isi', document.getElementById('vmIsi').value);
+  formData.append('makna_raw', document.getElementById('vmMaknaRaw').value);
+  formData.append('misi_raw', document.getElementById('vmMisiRaw').value);
+
+  const res = await apiFetch('/api/admin/konten/visi-misi', { method: 'POST', body: formData });
+  toast(res.message || 'Visi & Misi berhasil disimpan!');
+  renderVisiMisi();
+}
+
+// 5. SEJARAH NAGARI
+let sejarahCache = [];
+async function renderSejarah() {
+  try {
+    const res = await apiFetch('/api/admin/konten/sejarah');
+    sejarahCache = res.data || [];
+    const tbody = document.getElementById('sejarahTableBody');
+    if (sejarahCache.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada data sejarah.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = sejarahCache.map(s => `
       <tr>
-        <td><strong>${s.pengirim}</strong><div class="small text-muted">NIK: ${s.nik || '-'}</div></td>
-        <td>${s.jenisSurat}</td>
-        <td>${new Date(s.tanggal).toLocaleDateString('id-ID')}</td>
-        <td><span class="badge bg-warning text-dark">⏳ Butuh Nomor</span></td>
-        <td><button class="btn btn-sm btn-outline-success" onclick="openSuratDetail('${s.id}')">Beri Nomor</button></td>
-      </tr>`).join('');
-  }
+        <td style="width:70px;">
+          ${s.gambar ? `<img src="/${s.gambar}" class="rounded" style="width:50px;height:40px;object-fit:cover;"/>` : '<i class="bi bi-clock-history text-muted fs-4"></i>'}
+        </td>
+        <td><span class="badge bg-${s.tipe === 'singkat' ? 'info text-dark' : 'success'}">${s.tipe}</span></td>
+        <td><strong>${s.judul}</strong><div class="small text-muted">${s.periode || '-'}</div></td>
+        <td><small class="text-muted">${(s.isi || '').substring(0, 70)}...</small></td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="editSejarah(${s.id})"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteSejarah(${s.id})"><i class="bi bi-trash"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {}
 }
 
-function renderSuratTable(f = 'semua') {
-  let list = KotoAuth.getSuratMasuk();
-  if (f !== 'semua') list = list.filter(s => s.status === f);
-  const tbody = document.getElementById('suratTableBody');
-  if (!tbody) return;
+function openSejarahModal() {
+  document.getElementById('sejId').value = '';
+  document.getElementById('modalSejarahTitle').textContent = 'Tambah Sejarah Nagari';
+  document.getElementById('sejTipe').value = 'singkat';
+  document.getElementById('sejPeriode').value = '';
+  document.getElementById('sejJudul').value = '';
+  document.getElementById('sejIsi').value = '';
+  document.getElementById('sejGambar').value = '';
+  openModal('modalSejarah');
+}
 
-  tbody.innerHTML = list.length === 0 ? '<tr><td colspan="6" class="text-center py-4 text-muted">Tidak ada permohonan surat.</td></tr>' : list.map(s => `
-    <tr>
-      <td><strong>${s.pengirim}</strong><div class="small text-muted">NIK: ${s.nik || '-'}</div></td>
-      <td><strong>${s.jenisSurat}</strong></td>
-      <td><span class="font-monospace fw-bold text-primary">${s.nomorSurat || '<em class="text-muted">(Belum Diisi)</em>'}</span></td>
-      <td>${new Date(s.tanggal).toLocaleDateString('id-ID')}</td>
-      <td>${labelStatus(s.status)}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-success me-1" onclick="openSuratDetail('${s.id}')" title="Periksa & Beri Nomor">
-          <i class="bi bi-pencil-square me-1"></i> Periksa
-        </button>
-        ${s.status === 'menunggu_admin' ? `
-          <button class="btn btn-sm btn-outline-danger" onclick="openTolakModal('${s.id}')" title="Tolak Berkas">
-            <i class="bi bi-x-circle"></i>
-          </button>` : ''}
-      </td>
-    </tr>`).join('');
+function editSejarah(id) {
+  const s = sejarahCache.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('sejId').value = s.id;
+  document.getElementById('modalSejarahTitle').textContent = 'Edit Sejarah Nagari';
+  document.getElementById('sejTipe').value = s.tipe || 'singkat';
+  document.getElementById('sejPeriode').value = s.periode || '';
+  document.getElementById('sejJudul').value = s.judul || '';
+  document.getElementById('sejIsi').value = s.isi || '';
+  openModal('modalSejarah');
+}
+
+async function saveSejarah(e) {
+  e.preventDefault();
+  const id = document.getElementById('sejId').value;
+  const formData = new FormData();
+  formData.append('tipe', document.getElementById('sejTipe').value);
+  formData.append('periode', document.getElementById('sejPeriode').value);
+  formData.append('judul', document.getElementById('sejJudul').value);
+  formData.append('isi', document.getElementById('sejIsi').value);
+  const foto = document.getElementById('sejGambar').files[0];
+  if (foto) formData.append('gambar', foto);
+
+  const url = id ? `/api/admin/konten/sejarah/${id}` : '/api/admin/konten/sejarah';
+  const res = await apiFetch(url, { method: 'POST', body: formData });
+  closeModal('modalSejarah');
+  toast(res.message || 'Sejarah nagari berhasil disimpan!');
+  renderSejarah();
+}
+
+async function deleteSejarah(id) {
+  if (!confirm('Hapus item sejarah ini?')) return;
+  const res = await apiFetch(`/api/admin/konten/sejarah/${id}`, { method: 'DELETE' });
+  toast(res.message || 'Data sejarah dihapus.');
+  renderSejarah();
+}
+
+// 6. PERANGKAT NAGARI
+let perangkatCache = [];
+async function renderPerangkat() {
+  try {
+    const res = await apiFetch('/api/admin/konten/perangkat');
+    perangkatCache = res.data || [];
+    const tbody = document.getElementById('perangkatTableBody');
+    if (perangkatCache.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada data perangkat nagari.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = perangkatCache.map(p => `
+      <tr>
+        <td style="width:70px;">
+          ${p.foto ? `<img src="/${p.foto}" class="rounded-circle" style="width:40px;height:40px;object-fit:cover;"/>` : '<i class="bi bi-person-circle fs-3 text-secondary"></i>'}
+        </td>
+        <td><strong>${p.nama}</strong></td>
+        <td><span class="badge bg-success bg-opacity-10 text-success fw-bold">${p.jabatan}</span></td>
+        <td><div class="small">${p.kontak || '-'}</div><small class="text-muted">${p.alamat || '-'}</small></td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="editPerangkat(${p.id})"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deletePerangkat(${p.id})"><i class="bi bi-trash"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {}
+}
+
+function openPerangkatModal() {
+  document.getElementById('perId').value = '';
+  document.getElementById('modalPerangkatTitle').textContent = 'Tambah Perangkat Nagari';
+  document.getElementById('perNama').value = '';
+  document.getElementById('perJabatan').value = '';
+  document.getElementById('perKontak').value = '';
+  document.getElementById('perPeriode').value = '';
+  document.getElementById('perAlamat').value = '';
+  document.getElementById('perFoto').value = '';
+  openModal('modalPerangkat');
+}
+
+function editPerangkat(id) {
+  const p = perangkatCache.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('perId').value = p.id;
+  document.getElementById('modalPerangkatTitle').textContent = 'Edit Perangkat Nagari';
+  document.getElementById('perNama').value = p.nama || '';
+  document.getElementById('perJabatan').value = p.jabatan || '';
+  document.getElementById('perKontak').value = p.kontak || '';
+  document.getElementById('perPeriode').value = p.periode || '';
+  document.getElementById('perAlamat').value = p.alamat || '';
+  openModal('modalPerangkat');
+}
+
+async function savePerangkat(e) {
+  e.preventDefault();
+  const id = document.getElementById('perId').value;
+  const formData = new FormData();
+  formData.append('nama', document.getElementById('perNama').value);
+  formData.append('jabatan', document.getElementById('perJabatan').value);
+  formData.append('kontak', document.getElementById('perKontak').value);
+  formData.append('periode', document.getElementById('perPeriode').value);
+  formData.append('alamat', document.getElementById('perAlamat').value);
+  const foto = document.getElementById('perFoto').files[0];
+  if (foto) formData.append('foto', foto);
+
+  const url = id ? `/api/admin/konten/perangkat/${id}` : '/api/admin/konten/perangkat';
+  const res = await apiFetch(url, { method: 'POST', body: formData });
+  closeModal('modalPerangkat');
+  toast(res.message || 'Perangkat nagari berhasil disimpan!');
+  renderPerangkat();
+}
+
+async function deletePerangkat(id) {
+  if (!confirm('Hapus perangkat nagari ini?')) return;
+  const res = await apiFetch(`/api/admin/konten/perangkat/${id}`, { method: 'DELETE' });
+  toast(res.message || 'Perangkat nagari dihapus.');
+  renderPerangkat();
+}
+
+// 7. STRUKTUR NAGARI
+let strukturCache = [];
+async function renderStruktur() {
+  try {
+    const res = await apiFetch('/api/admin/konten/struktur');
+    strukturCache = res.data || [];
+    const tbody = document.getElementById('strukturTableBody');
+    if (strukturCache.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">Belum ada bagan struktur.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = strukturCache.map(s => `
+      <tr>
+        <td style="width:80px;">
+          ${s.foto_bagan ? `<img src="/${s.foto_bagan}" class="rounded" style="width:60px;height:45px;object-fit:cover;"/>` : '<i class="bi bi-diagram-3 text-muted fs-4"></i>'}
+        </td>
+        <td><strong>${s.nama}</strong></td>
+        <td><small class="text-muted">${(s.keterangan || '-').substring(0, 80)}</small></td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="editStruktur(${s.id})"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteStruktur(${s.id})"><i class="bi bi-trash"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {}
+}
+
+function openStrukturModal() {
+  document.getElementById('strId').value = '';
+  document.getElementById('modalStrukturTitle').textContent = 'Tambah Bagan Struktur';
+  document.getElementById('strNama').value = '';
+  document.getElementById('strKeterangan').value = '';
+  document.getElementById('strFotoBagan').value = '';
+  openModal('modalStruktur');
+}
+
+function editStruktur(id) {
+  const s = strukturCache.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('strId').value = s.id;
+  document.getElementById('modalStrukturTitle').textContent = 'Edit Struktur Nagari';
+  document.getElementById('strNama').value = s.nama || '';
+  document.getElementById('strKeterangan').value = s.keterangan || '';
+  openModal('modalStruktur');
+}
+
+async function saveStruktur(e) {
+  e.preventDefault();
+  const id = document.getElementById('strId').value;
+  const formData = new FormData();
+  formData.append('nama', document.getElementById('strNama').value);
+  formData.append('keterangan', document.getElementById('strKeterangan').value);
+  const foto = document.getElementById('strFotoBagan').files[0];
+  if (foto) formData.append('foto_bagan', foto);
+
+  const url = id ? `/api/admin/konten/struktur/${id}` : '/api/admin/konten/struktur';
+  const res = await apiFetch(url, { method: 'POST', body: formData });
+  closeModal('modalStruktur');
+  toast(res.message || 'Struktur berhasil disimpan!');
+  renderStruktur();
+}
+
+async function deleteStruktur(id) {
+  if (!confirm('Hapus struktur ini?')) return;
+  const res = await apiFetch(`/api/admin/konten/struktur/${id}`, { method: 'DELETE' });
+  toast(res.message || 'Struktur dihapus.');
+  renderStruktur();
+}
+
+// 8. OBJEK WISATA
+let wisataCache = [];
+async function renderWisata() {
+  try {
+    const res = await apiFetch('/api/admin/konten/wisata');
+    wisataCache = res.data || [];
+    const tbody = document.getElementById('wisataTableBody');
+    if (wisataCache.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada data destinasi wisata.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = wisataCache.map(w => `
+      <tr>
+        <td style="width:80px;">
+          ${w.foto ? `<img src="/${w.foto}" class="rounded" style="width:60px;height:45px;object-fit:cover;"/>` : '<i class="bi bi-image text-muted fs-4"></i>'}
+        </td>
+        <td><strong>${w.nama_objek}</strong><div class="small text-muted">${(w.deskripsi || '').substring(0, 50)}...</div></td>
+        <td><span class="badge bg-success bg-opacity-10 text-success">${w.kategori || 'Wisata Alam'}</span></td>
+        <td><div class="small">${w.lokasi || '-'}</div><small class="text-muted">Tiket: ${w.harga_tiket || 'Gratis'}</small></td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="editWisata(${w.id})"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteWisata(${w.id})"><i class="bi bi-trash"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {}
+}
+
+function openWisataModal() {
+  document.getElementById('wisId').value = '';
+  document.getElementById('modalWisataTitle').textContent = 'Tambah Objek Wisata';
+  document.getElementById('wisNama').value = '';
+  document.getElementById('wisKategori').value = '';
+  document.getElementById('wisLokasi').value = '';
+  document.getElementById('wisHarga').value = '';
+  document.getElementById('wisJam').value = '';
+  document.getElementById('wisDeskripsi').value = '';
+  document.getElementById('wisFoto').value = '';
+  openModal('modalWisata');
+}
+
+function editWisata(id) {
+  const w = wisataCache.find(x => x.id === id);
+  if (!w) return;
+  document.getElementById('wisId').value = w.id;
+  document.getElementById('modalWisataTitle').textContent = 'Edit Objek Wisata';
+  document.getElementById('wisNama').value = w.nama_objek || '';
+  document.getElementById('wisKategori').value = w.kategori || '';
+  document.getElementById('wisLokasi').value = w.lokasi || '';
+  document.getElementById('wisHarga').value = w.harga_tiket || '';
+  document.getElementById('wisJam').value = w.jam_buka || '';
+  document.getElementById('wisDeskripsi').value = w.deskripsi || '';
+  openModal('modalWisata');
+}
+
+async function saveWisata(e) {
+  e.preventDefault();
+  const id = document.getElementById('wisId').value;
+  const formData = new FormData();
+  formData.append('nama_objek', document.getElementById('wisNama').value);
+  formData.append('kategori', document.getElementById('wisKategori').value);
+  formData.append('lokasi', document.getElementById('wisLokasi').value);
+  formData.append('harga_tiket', document.getElementById('wisHarga').value);
+  formData.append('jam_buka', document.getElementById('wisJam').value);
+  formData.append('deskripsi', document.getElementById('wisDeskripsi').value);
+  const foto = document.getElementById('wisFoto').files[0];
+  if (foto) formData.append('foto', foto);
+
+  const url = id ? `/api/admin/konten/wisata/${id}` : '/api/admin/konten/wisata';
+  const res = await apiFetch(url, { method: 'POST', body: formData });
+  closeModal('modalWisata');
+  toast(res.message || 'Wisata berhasil disimpan!');
+  renderWisata();
+}
+
+async function deleteWisata(id) {
+  if (!confirm('Hapus objek wisata ini?')) return;
+  const res = await apiFetch(`/api/admin/konten/wisata/${id}`, { method: 'DELETE' });
+  toast(res.message || 'Objek wisata dihapus.');
+  renderWisata();
+}
+
+// 9. UMKM NAGARI
+let umkmCache = [];
+async function renderUmkm() {
+  try {
+    const res = await apiFetch('/api/admin/konten/umkm');
+    umkmCache = res.data || [];
+    const tbody = document.getElementById('umkmTableBody');
+    if (umkmCache.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada data UMKM.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = umkmCache.map(u => `
+      <tr>
+        <td style="width:80px;">
+          ${u.foto ? `<img src="/${u.foto}" class="rounded" style="width:60px;height:45px;object-fit:cover;"/>` : '<i class="bi bi-shop text-muted fs-4"></i>'}
+        </td>
+        <td><strong>${u.nama_usaha}</strong><div class="small text-muted">Pemilik: ${u.pemilik}</div></td>
+        <td><span class="badge bg-warning text-dark">${u.kategori}</span></td>
+        <td><div class="small fw-semibold text-success">${u.harga_produk || '-'}</div><small class="text-muted">WA: ${u.kontak || '-'}</small></td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="editUmkm(${u.id})"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteUmkm(${u.id})"><i class="bi bi-trash"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {}
+}
+
+function openUmkmModal() {
+  document.getElementById('umkId').value = '';
+  document.getElementById('modalUmkmTitle').textContent = 'Tambah UMKM Nagari';
+  document.getElementById('umkNama').value = '';
+  document.getElementById('umkPemilik').value = '';
+  document.getElementById('umkKategori').value = '';
+  document.getElementById('umkHarga').value = '';
+  document.getElementById('umkKontak').value = '';
+  document.getElementById('umkAlamat').value = '';
+  document.getElementById('umkDeskripsi').value = '';
+  document.getElementById('umkFoto').value = '';
+  openModal('modalUmkm');
+}
+
+function editUmkm(id) {
+  const u = umkmCache.find(x => x.id === id);
+  if (!u) return;
+  document.getElementById('umkId').value = u.id;
+  document.getElementById('modalUmkmTitle').textContent = 'Edit UMKM Nagari';
+  document.getElementById('umkNama').value = u.nama_usaha || '';
+  document.getElementById('umkPemilik').value = u.pemilik || '';
+  document.getElementById('umkKategori').value = u.kategori || '';
+  document.getElementById('umkHarga').value = u.harga_produk || '';
+  document.getElementById('umkKontak').value = u.kontak || '';
+  document.getElementById('umkAlamat').value = u.alamat || '';
+  document.getElementById('umkDeskripsi').value = u.deskripsi || '';
+  openModal('modalUmkm');
+}
+
+async function saveUmkm(e) {
+  e.preventDefault();
+  const id = document.getElementById('umkId').value;
+  const formData = new FormData();
+  formData.append('nama_usaha', document.getElementById('umkNama').value);
+  formData.append('pemilik', document.getElementById('umkPemilik').value);
+  formData.append('kategori', document.getElementById('umkKategori').value);
+  formData.append('harga_produk', document.getElementById('umkHarga').value);
+  formData.append('kontak', document.getElementById('umkKontak').value);
+  formData.append('alamat', document.getElementById('umkAlamat').value);
+  formData.append('deskripsi', document.getElementById('umkDeskripsi').value);
+  const foto = document.getElementById('umkFoto').files[0];
+  if (foto) formData.append('foto', foto);
+
+  const url = id ? `/api/admin/konten/umkm/${id}` : '/api/admin/konten/umkm';
+  const res = await apiFetch(url, { method: 'POST', body: formData });
+  closeModal('modalUmkm');
+  toast(res.message || 'UMKM berhasil disimpan!');
+  renderUmkm();
+}
+
+async function deleteUmkm(id) {
+  if (!confirm('Hapus UMKM ini?')) return;
+  const res = await apiFetch(`/api/admin/konten/umkm/${id}`, { method: 'DELETE' });
+  toast(res.message || 'UMKM dihapus.');
+  renderUmkm();
+}
+
+// 10. KABA NAGARI (BERITA)
+let beritaCache = [];
+async function renderBeritaTable() {
+  try {
+    const res = await apiFetch('/api/admin/konten/kaba');
+    beritaCache = res.data || [];
+    const tbody = document.getElementById('beritaTableBody');
+    if (beritaCache.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada publikasi berita.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = beritaCache.map(b => `
+      <tr>
+        <td style="width:80px;">
+          ${b.gambar ? `<img src="/${b.gambar}" class="rounded" style="width:60px;height:45px;object-fit:cover;"/>` : '<i class="bi bi-newspaper text-muted fs-4"></i>'}
+        </td>
+        <td><strong>${b.judul}</strong></td>
+        <td><span class="badge bg-success bg-opacity-10 text-success">${b.kategori}</span></td>
+        <td><small class="text-muted">${b.tanggal || '-'}</small></td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="editBerita(${b.id})"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteBerita(${b.id})"><i class="bi bi-trash"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {}
+}
+
+function openBeritaModal() {
+  document.getElementById('bId').value = '';
+  document.getElementById('modalBeritaTitle').textContent = 'Tambah Kaba Nagari';
+  document.getElementById('bJudul').value = '';
+  document.getElementById('bTanggal').value = new Date().toISOString().split('T')[0];
+  document.getElementById('bRingkasan').value = '';
+  document.getElementById('bIsi').value = '';
+  document.getElementById('bGambar').value = '';
+  openModal('modalBerita');
+}
+
+function editBerita(id) {
+  const b = beritaCache.find(x => x.id === id);
+  if (!b) return;
+  document.getElementById('bId').value = b.id;
+  document.getElementById('modalBeritaTitle').textContent = 'Edit Kaba Nagari';
+  document.getElementById('bJudul').value = b.judul || '';
+  document.getElementById('bKategori').value = b.kategori || 'Pemerintahan';
+  document.getElementById('bTanggal').value = b.tanggal ? b.tanggal.split('T')[0] : '';
+  document.getElementById('bRingkasan').value = b.ringkasan || '';
+  document.getElementById('bIsi').value = b.isi || '';
+  openModal('modalBerita');
+}
+
+async function saveBerita(e) {
+  e.preventDefault();
+  const id = document.getElementById('bId').value;
+  const formData = new FormData();
+  formData.append('judul', document.getElementById('bJudul').value);
+  formData.append('kategori', document.getElementById('bKategori').value);
+  formData.append('tanggal', document.getElementById('bTanggal').value);
+  formData.append('ringkasan', document.getElementById('bRingkasan').value);
+  formData.append('isi', document.getElementById('bIsi').value);
+  const foto = document.getElementById('bGambar').files[0];
+  if (foto) formData.append('gambar', foto);
+
+  const url = id ? `/api/admin/konten/kaba/${id}` : '/api/admin/konten/kaba';
+  const res = await apiFetch(url, { method: 'POST', body: formData });
+  closeModal('modalBerita');
+  toast(res.message || 'Berita berhasil disimpan ke database!');
+  renderBeritaTable();
+}
+
+async function deleteBerita(id) {
+  if (!confirm('Hapus berita ini?')) return;
+  const res = await apiFetch(`/api/admin/konten/kaba/${id}`, { method: 'DELETE' });
+  toast(res.message || 'Berita dihapus.');
+  renderBeritaTable();
+}
+
+// 11. GALERI & MEDIA
+async function renderGaleri() {
+  try {
+    const res = await apiFetch('/api/admin/konten/galeri');
+    const list = res.data || [];
+    const grid = document.getElementById('galeriGrid');
+    if (list.length === 0) {
+      grid.innerHTML = '<div class="col-12 text-center py-5 text-muted">Belum ada foto dalam galeri.</div>';
+      return;
+    }
+    grid.innerHTML = list.map(g => `
+      <div class="col-md-4 col-sm-6">
+        <div class="border rounded overflow-hidden shadow-sm bg-white position-relative">
+          <img src="/${g.gambar}" style="width:100%;height:160px;object-fit:cover;" onerror="this.src='image/bg.jpg'"/>
+          <div class="p-3">
+            <div class="small fw-bold text-dark text-truncate">${g.caption || 'Dokumentasi Nagari'}</div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <small class="text-muted">${g.kaba_nagari ? g.kaba_nagari.judul : 'Media Nagari'}</small>
+              <button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="deleteGaleri(${g.id})"><i class="bi bi-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {}
+}
+
+function openGaleriModal() {
+  document.getElementById('galFoto').value = '';
+  document.getElementById('galCaption').value = '';
+  openModal('modalGaleri');
+}
+
+async function saveGaleri(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  const foto = document.getElementById('galFoto').files[0];
+  if (!foto) return;
+  formData.append('gambar', foto);
+  formData.append('caption', document.getElementById('galCaption').value);
+
+  const res = await apiFetch('/api/admin/konten/galeri', { method: 'POST', body: formData });
+  closeModal('modalGaleri');
+  toast(res.message || 'Foto galeri berhasil diunggah!');
+  renderGaleri();
+}
+
+async function deleteGaleri(id) {
+  if (!confirm('Hapus foto galeri ini?')) return;
+  const res = await apiFetch(`/api/admin/konten/galeri/${id}`, { method: 'DELETE' });
+  toast(res.message || 'Foto galeri dihapus.');
+  renderGaleri();
+}
+
+// 12. SURAT & ARSIP & USERS
+let suratCache = [];
+async function renderSuratTable(f = 'semua') {
+  try {
+    const url = f !== 'semua' ? `/api/admin/surat?status=${f}` : '/api/admin/surat';
+    const res = await apiFetch(url);
+    suratCache = res.data || [];
+    const tbody = document.getElementById('suratTableBody');
+    if (suratCache.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Tidak ada permohonan surat dalam status ini.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = suratCache.map(s => `
+      <tr>
+        <td><strong>${s.nama_pemohon}</strong><div class="small text-muted">NIK: ${s.nik_pemohon || '-'}</div></td>
+        <td><strong>${s.nama_jenis_surat}</strong></td>
+        <td><span class="font-monospace fw-bold text-primary">${s.nomor_surat || '<em class="text-muted">(Belum Terbit)</em>'}</span></td>
+        <td>${new Date(s.created_at).toLocaleDateString('id-ID')}</td>
+        <td><span class="badge bg-${s.status === 'disetujui' ? 'success' : (s.status === 'ditolak' ? 'danger' : 'warning text-dark')}">${s.status}</span></td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-success me-1" onclick="openSuratDetail('${s.id}')" title="Periksa & Beri Nomor">
+            <i class="bi bi-pencil-square me-1"></i> Periksa
+          </button>
+          ${s.status === 'menunggu_admin' ? `
+            <button class="btn btn-sm btn-outline-danger" onclick="openTolakModal('${s.id}')" title="Tolak Berkas">
+              <i class="bi bi-x-circle"></i>
+            </button>` : ''}
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {}
 }
 
 function filterSurat(f) {
@@ -659,105 +1939,85 @@ function filterSurat(f) {
   renderSuratTable(f);
 }
 
-function openSuratDetail(id) {
-  const list = KotoAuth.getSuratMasuk();
-  const s = list.find(x => x.id === id);
-  if (!s) return;
+async function openSuratDetail(id) {
+  try {
+    const res = await apiFetch(`/api/admin/surat/${id}`);
+    const s = res.data || {};
+    const berkas = res.berkas || [];
+    const defaultNo = s.nomor_surat || `470 / 0${Math.floor(Math.random()*80 + 10)} / WN-KM / VIII / 2026`;
 
-  const defaultNo = s.nomorSurat || `470 / 0${Math.floor(Math.random()*80 + 10)} / WN-KM / VIII / 2026`;
-
-    // Render daftar lampiran per folder
-  let lampiranHtml = '';
-  if (s.berkasLampiran && s.berkasLampiran.length > 0) {
-    lampiranHtml = `
-      <div class="mb-3 p-3 rounded" style="background:#f8fafc;border:1px solid #cbd5e1;">
-        <h6 class="fw-bold text-dark mb-2" style="font-size:0.85rem;"><i class="bi bi-folder2-open text-primary me-1"></i>Berkas Lampiran Persyaratan (Tersimpan per Folder):</h6>
-        <div class="row g-2">
-          ${s.berkasLampiran.map(b => `
-            <div class="col-md-6">
-              <div class="p-2 rounded bg-white border d-flex align-items-center justify-content-between">
-                <div>
-                  <span class="badge bg-secondary bg-opacity-10 text-dark font-monospace" style="font-size:0.7rem;">📁 ${b.folder}/</span>
-                  <div class="small fw-semibold text-dark text-truncate" style="max-width:180px;">${b.namaFile || b.label}</div>
-                  <small class="text-muted" style="font-size:0.68rem;">${b.label}</small>
+    let berkasHtml = '';
+    if (berkas.length > 0) {
+      berkasHtml = `
+        <div class="mb-3 p-3 rounded" style="background:#f8fafc;border:1px solid #cbd5e1;">
+          <h6 class="fw-bold text-dark mb-2" style="font-size:0.85rem;"><i class="bi bi-paperclip text-primary me-1"></i>Berkas Lampiran Persyaratan:</h6>
+          <div class="row g-2">
+            ${berkas.map(b => `
+              <div class="col-md-6">
+                <div class="p-2 rounded bg-white border d-flex align-items-center justify-content-between">
+                  <div class="text-truncate me-2">
+                    <strong class="d-block small text-dark">${b.label_jenis}</strong>
+                    <small class="text-muted" style="font-size:0.72rem;">${b.nama_file_asli} (${b.formatted_size})</small>
+                  </div>
+                  <a href="${b.download_url}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i></a>
                 </div>
-                <button class="btn btn-sm btn-outline-primary" type="button" onclick="alert('Membuka file dari direktori: ' + '${b.path}')" title="Lihat Berkas">
-                  <i class="bi bi-eye"></i>
-                </button>
               </div>
-            </div>
-          `).join('')}
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('modalSuratBody').innerHTML = `
+      ${berkasHtml}
+      <div class="p-3 mb-3 rounded" style="background:#f0fdf4;border:1px solid #bbf7d0;font-size:0.85rem;">
+        <div class="row g-2">
+          <div class="col-6"><strong>Nama Pemohon:</strong> ${s.nama_pemohon}</div>
+          <div class="col-6"><strong>NIK:</strong> <code>${s.nik_pemohon || '-'}</code></div>
+          <div class="col-6"><strong>Jenis Surat:</strong> <span class="badge bg-success">${s.nama_jenis_surat}</span></div>
+          <div class="col-6"><strong>Status Saat Ini:</strong> ${s.status}</div>
+          <div class="col-12"><strong>Keperluan:</strong> ${s.keperluan}</div>
         </div>
       </div>
-    `;
-  } else {
-    lampiranHtml = `
-      <div class="mb-3 p-2 rounded bg-light border text-muted small">
-        <i class="bi bi-folder-check me-1"></i> Berkas KTP, KK, dan Surat Pengantar tersimpan di folder <code>uploads/ktp/</code>, <code>uploads/kk/</code>, dan <code>uploads/pengantar_jorong/</code>.
+
+      <div class="mb-3 p-3 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
+        <label class="form-label small fw-bold text-primary"><i class="bi bi-123 me-1"></i>Beri Nomor Surat Dinas Resmi Nagari:</label>
+        <input type="text" id="modalNomorSurat" class="form-control fw-bold text-primary font-monospace" value="${s.nomor_surat || defaultNo}"/>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small fw-bold">Redaksi Isi Naskah Surat:</label>
+        <textarea id="modalIsiSurat" class="form-control font-monospace" rows="6" style="font-size:0.85rem;">${s.isi_surat || ''}</textarea>
       </div>
     `;
-  }
 
-  document.getElementById('modalSuratBody').innerHTML = `
-    ${lampiranHtml}
-    <div class="p-3 mb-3 rounded" style="background:#f0fdf4;border:1px solid #bbf7d0;font-size:0.85rem;">
-      <div class="row g-2">
-        <div class="col-6"><strong>Nama Pemohon:</strong> ${s.pengirim}</div>
-        <div class="col-6"><strong>NIK:</strong> <code>${s.nik || '-'}</code></div>
-        <div class="col-6"><strong>Jenis Surat:</strong> <span class="badge bg-success">${s.jenisSurat}</span></div>
-        <div class="col-6"><strong>Status Saat Ini:</strong> ${labelStatus(s.status)}</div>
-        <div class="col-12"><strong>Keperluan:</strong> ${s.subjek}</div>
-      </div>
-    </div>
+    let footButtons = `<button class="btn btn-sm btn-outline-secondary" onclick="closeModal('modalSurat')">Tutup</button>`;
+    if (s.status === 'menunggu_admin') {
+      footButtons += `
+        <button class="btn btn-sm btn-danger" onclick="closeModal('modalSurat'); openTolakModal('${s.id}');"><i class="bi bi-x-circle me-1"></i> Tolak Surat</button>
+        <button class="btn-hijau" onclick="teruskanKeWali('${s.id}')"><i class="bi bi-arrow-right-circle-fill me-1"></i> Simpan Nomor & Teruskan ke Wali Nagari</button>
+      `;
+    }
 
-    <div class="mb-3 p-3 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
-      <label class="form-label small fw-bold text-primary"><i class="bi bi-123 me-1"></i>Beri Nomor Surat Dinas Resmi Nagari:</label>
-      <input type="text" id="modalNomorSurat" class="form-control fw-bold text-primary font-monospace" value="${s.nomorSurat || defaultNo}" placeholder="Contoh: 470 / 024 / WN-KM / VIII / 2026"/>
-      <small class="text-muted" style="font-size:0.75rem;">Nomor surat akan dicantumkan pada naskah resmi yang diteruskan ke Wali Nagari.</small>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label small fw-bold">Redaksi Isi Naskah Surat:</label>
-      <textarea id="modalIsiSurat" class="form-control font-monospace" rows="6" style="font-size:0.85rem;">${s.isi}</textarea>
-    </div>
-
-    ${s.alasanTolak ? `<div class="alert alert-danger p-2 small mb-0"><strong>Catatan Penolakan:</strong> ${s.alasanTolak}</div>` : ''}
-  `;
-
-  let footButtons = `<button class="btn btn-sm btn-outline-secondary" onclick="closeModal('modalSurat')">Tutup</button>`;
-
-  if (s.status === 'menunggu_admin') {
-    footButtons += `
-      <button class="btn btn-sm btn-danger" onclick="closeModal('modalSurat'); openTolakModal('${s.id}');"><i class="bi bi-x-circle me-1"></i> Tolak Surat</button>
-      <button class="btn-hijau" onclick="teruskanKeWali('${s.id}')"><i class="bi bi-arrow-right-circle-fill me-1"></i> Simpan Nomor & Teruskan ke Wali Nagari</button>
-    `;
-  } else if (s.status === 'menunggu_walinagari') {
-    footButtons += `<span class="badge bg-primary align-self-center py-2 px-3">Surat Sedang Berada di Meja Wali Nagari</span>`;
-  } else if (s.status === 'disetujui') {
-    footButtons += `<button class="btn btn-sm btn-primary" onclick="cetakSuratResmi('${s.id}')"><i class="bi bi-printer-fill me-1"></i> Cetak Dokumen PDF</button>`;
-  }
-
-  document.getElementById('modalSuratFoot').innerHTML = footButtons;
-  openModal('modalSurat');
+    document.getElementById('modalSuratFoot').innerHTML = footButtons;
+    openModal('modalSurat');
+  } catch (e) {}
 }
 
-function teruskanKeWali(id) {
-  const no = document.getElementById('modalNomorSurat').value.trim();
+async function teruskanKeWali(id) {
+  const nomor = document.getElementById('modalNomorSurat').value.trim();
   const isi = document.getElementById('modalIsiSurat').value.trim();
-  if (!no) { toast('Nomor surat dinas wajib diisi sebelum diteruskan!', 'error'); return; }
+  if (!nomor) { toast('Nomor surat wajib diisi!', 'error'); return; }
 
-  const list = KotoAuth.getSuratMasuk();
-  const s = list.find(x => x.id === id);
-  if (s) {
-    s.nomorSurat = no;
-    if (isi) s.isi = isi;
-    s.status = 'menunggu_walinagari';
-    KotoAuth.saveSuratMasuk(list);
-    closeModal('modalSurat');
-    renderSuratTable(currentFilter);
-    loadDashboard();
-    toast('Surat berhasil diberi nomor & diteruskan ke Meja Wali Nagari!');
-  }
+  const formData = new FormData();
+  formData.append('nomor_surat', nomor);
+  formData.append('isi_surat', isi);
+
+  const res = await apiFetch(`/api/admin/surat/${id}/verify`, { method: 'POST', body: formData });
+  closeModal('modalSurat');
+  toast(res.message || 'Surat berhasil diteruskan ke Wali Nagari!');
+  renderSuratTable(currentFilter);
+  loadDashboard();
 }
 
 function openTolakModal(id) {
@@ -766,248 +2026,75 @@ function openTolakModal(id) {
   openModal('modalTolak');
 }
 
-function submitTolakSurat() {
+async function submitTolakSurat() {
   const id = document.getElementById('tolakSuratId').value;
   const alasan = document.getElementById('tolakAlasan').value.trim();
-  if (!alasan) { toast('Alasan penolakan wajib diisi untuk pemberitahuan ke warga.', 'error'); return; }
+  if (!alasan) { toast('Alasan penolakan wajib diisi.', 'error'); return; }
 
-  const list = KotoAuth.getSuratMasuk();
-  const s = list.find(x => x.id === id);
-  if (s) {
-    s.status = 'ditolak';
-    s.alasanTolak = alasan;
-    KotoAuth.saveSuratMasuk(list);
-    closeModal('modalTolak');
-    renderSuratTable(currentFilter);
-    loadDashboard();
-    toast('Surat ditolak dan status dikirim ke panel warga.');
+  const formData = new FormData();
+  formData.append('alasan_penolakan', alasan);
+
+  const res = await apiFetch(`/api/admin/surat/${id}/reject`, { method: 'POST', body: formData });
+  closeModal('modalTolak');
+  toast(res.message || 'Surat ditolak.');
+  renderSuratTable(currentFilter);
+  loadDashboard();
+}
+
+async function renderArsipTable() {
+  try {
+    const res = await apiFetch('/api/admin/arsip');
+    const list = res.data || [];
+    const tbody = document.getElementById('arsipTableBody');
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada arsip surat.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(s => `
+      <tr>
+        <td><span class="font-monospace fw-bold text-primary">${s.nomor_surat || 'N/A'}</span></td>
+        <td><strong>${s.nama_pemohon}</strong><div class="small text-muted">NIK: ${s.nik_pemohon || '-'}</div></td>
+        <td>${s.nama_jenis_surat}</td>
+        <td>${new Date(s.created_at).toLocaleDateString('id-ID')}</td>
+        <td><span class="badge bg-${s.status === 'disetujui' ? 'success' : 'danger'}">${s.status}</span></td>
+      </tr>
+    `).join('');
+  } catch (e) {}
+}
+
+async function renderUsersTable() {
+  try {
+    const res = await apiFetch('/api/admin/warga');
+    const users = res.data || [];
+    const tbody = document.getElementById('usersTableBody');
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada pengguna terdaftar.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td><strong>${u.name}</strong></td>
+        <td><code>${u.username || '-'}</code></td>
+        <td>${u.nik || '-'}</td>
+        <td><div>${u.email || '-'}</div><small class="text-muted">${u.phone || '-'}</small></td>
+        <td><span class="badge bg-primary rounded-pill">${u.surat_permohonans_count || 0} Surat</span></td>
+      </tr>
+    `).join('');
+  } catch (e) {}
+}
+
+async function doLogout() {
+  if (!confirm('Keluar dari Panel Administrator?')) return;
+  try {
+    await apiFetch('/api/admin/logout', { method: 'POST' });
+  } catch(e) {}
+  if (typeof localStorage !== 'undefined') {
+    localStorage.removeItem('km_session');
   }
-}
-
-// ── BERKAS ARSIP & BACKUP LOCAL DISK / GOOGLE DRIVE ─────────────
-function renderArsipTable() {
-  const list = KotoAuth.getSuratMasuk().filter(s => s.status === 'disetujui' || s.status === 'ditolak');
-  const tbody = document.getElementById('arsipTableBody');
-  if (!tbody) return;
-
-  tbody.innerHTML = list.length === 0 ? '<tr><td colspan="6" class="text-center py-4 text-muted">Belum ada berkas arsip yang terselesaikan.</td></tr>' : list.map(s => `
-    <tr>
-      <td><span class="font-monospace fw-bold text-primary">${s.nomorSurat || 'N/A'}</span></td>
-      <td><strong>${s.pengirim}</strong><div class="small text-muted">NIK: ${s.nik || '-'}</div></td>
-      <td>${s.jenisSurat}</td>
-      <td>${s.disetujuiPada ? new Date(s.disetujuiPada).toLocaleDateString('id-ID') : new Date(s.tanggal).toLocaleDateString('id-ID')}</td>
-      <td>
-        <span class="badge bg-success bg-opacity-10 text-success me-1"><i class="bi bi-hdd-fill me-1"></i>Local Disk</span>
-        <span class="badge bg-primary bg-opacity-10 text-primary"><i class="bi bi-google me-1"></i>Google Drive</span>
-      </td>
-      <td>
-        <button class="btn btn-sm btn-outline-primary me-1" onclick="cetakSuratResmi('${s.id}')"><i class="bi bi-printer"></i></button>
-        <button class="btn btn-sm btn-outline-success" onclick="openGdriveLink()"><i class="bi bi-cloud-arrow-up"></i></button>
-      </td>
-    </tr>`).join('');
-}
-
-function backupLocalDisk() {
-  const data = JSON.stringify(KotoAuth.getSuratMasuk(), null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'Arsip_Surat_Koto_Malintang_' + new Date().toISOString().split('T')[0] + '.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  toast('Berkas arsip surat berhasil diunduh ke Local Disk!');
-}
-
-function openGdriveModal() {
-  document.getElementById('inputGdriveUrl').value = localStorage.getItem('km_gdrive_folder') || 'https://drive.google.com/drive/folders/kotomalintang_arsip_2026';
-  openModal('modalGdrive');
-}
-
-function saveGdriveUrl() {
-  const url = document.getElementById('inputGdriveUrl').value.trim();
-  localStorage.setItem('km_gdrive_folder', url);
-  document.getElementById('linkGdriveFolder').textContent = url;
-  document.getElementById('linkGdriveFolder').href = url;
-  closeModal('modalGdrive');
-  toast('Tautan Google Drive berhasil diperbarui!');
-}
-
-function openGdriveLink() {
-  const url = localStorage.getItem('km_gdrive_folder') || 'https://drive.google.com';
-  window.open(url, '_blank');
-}
-
-// ── CMS KONTEN PUBLIK ──────────────────────────────────────────
-function renderBeritaTable() {
-  const list = KotoAuth.getBerita();
-  const tbody = document.getElementById('beritaTableBody');
-  tbody.innerHTML = list.map(b => `
-    <tr>
-      <td><strong>${b.judul}</strong></td>
-      <td><span class="badge bg-success">${b.kategori}</span></td>
-      <td>${b.tanggal}</td>
-      <td><span class="badge bg-success">${b.status}</span></td>
-      <td><button class="btn btn-sm btn-outline-danger" onclick="deleteBerita('${b.id}')"><i class="bi bi-trash"></i></button></td>
-    </tr>`).join('');
-}
-
-function openBeritaModal() {
-  document.getElementById('bJudul').value = '';
-  document.getElementById('bTanggal').value = new Date().toISOString().split('T')[0];
-  document.getElementById('bIsi').value = '';
-  openModal('modalBerita');
-}
-
-function saveBerita() {
-  const judul = document.getElementById('bJudul').value.trim();
-  const isi = document.getElementById('bIsi').value.trim();
-  if (!judul || !isi) return;
-  const list = KotoAuth.getBerita();
-  list.unshift({ id: 'b' + Date.now(), judul, isi, kategori: document.getElementById('bKategori').value, tanggal: document.getElementById('bTanggal').value, status: 'publish' });
-  KotoAuth.saveBerita(list);
-  closeModal('modalBerita');
-  renderBeritaTable();
-  toast('Berita publik berhasil diterbitkan!');
-}
-
-function deleteBerita(id) {
-  if (!confirm('Hapus berita ini?')) return;
-  KotoAuth.saveBerita(KotoAuth.getBerita().filter(b => b.id !== id));
-  renderBeritaTable();
-  toast('Berita dihapus.');
-}
-
-function renderPengumumanTable() {
-  const list = KotoAuth.getPengumuman();
-  const tbody = document.getElementById('pengumumanTableBody');
-  tbody.innerHTML = list.map(p => `
-    <tr>
-      <td><strong>${p.judul}</strong></td>
-      <td>${p.tanggal}</td>
-      <td><span class="badge bg-primary">Aktif</span></td>
-      <td><button class="btn btn-sm btn-outline-danger" onclick="deletePengumuman('${p.id}')"><i class="bi bi-trash"></i></button></td>
-    </tr>`).join('');
-}
-
-function openPengumumanModal() {
-  document.getElementById('pJudul').value = '';
-  document.getElementById('pTanggal').value = new Date().toISOString().split('T')[0];
-  document.getElementById('pIsi').value = '';
-  openModal('modalPengumuman');
-}
-
-function savePengumuman() {
-  const judul = document.getElementById('pJudul').value.trim();
-  const isi = document.getElementById('pIsi').value.trim();
-  if (!judul || !isi) return;
-  const list = KotoAuth.getPengumuman();
-  list.unshift({ id: 'p' + Date.now(), judul, isi, tanggal: document.getElementById('pTanggal').value, status: 'aktif' });
-  KotoAuth.savePengumuman(list);
-  closeModal('modalPengumuman');
-  renderPengumumanTable();
-  toast('Pengumuman berhasil disimpan!');
-}
-
-function deletePengumuman(id) {
-  if (!confirm('Hapus pengumuman ini?')) return;
-  KotoAuth.savePengumuman(KotoAuth.getPengumuman().filter(p => p.id !== id));
-  renderPengumumanTable();
-  toast('Pengumuman dihapus.');
-}
-
-function renderGaleri() {
-  const list = JSON.parse(localStorage.getItem('km_galeri') || '[]');
-  const grid = document.getElementById('galeriGrid');
-  grid.innerHTML = list.map(g => `
-    <div class="col-md-4">
-      <div class="border rounded overflow-hidden shadow-sm">
-        <img src="${g.url}" style="width:100%;height:140px;object-fit:cover;" onerror="this.src='image/bg.jpg'"/>
-        <div class="p-2 small">${g.caption || 'Dokumentasi Nagari'}</div>
-      </div>
-    </div>`).join('');
-}
-
-function addGaleri() {
-  const url = document.getElementById('galeriUrl').value.trim();
-  const caption = document.getElementById('galeriCaption').value.trim();
-  if (!url) return;
-  const list = JSON.parse(localStorage.getItem('km_galeri') || '[]');
-  list.unshift({ id: 'g' + Date.now(), url, caption });
-  localStorage.setItem('km_galeri', JSON.stringify(list));
-  document.getElementById('galeriUrl').value = '';
-  document.getElementById('galeriCaption').value = '';
-  renderGaleri();
-  toast('Foto ditambahkan ke Galeri!');
-}
-
-function saveProfilNagari() {
-  toast('Profil nagari berhasil disimpan!');
-}
-
-function renderUsersTable() {
-  const users = KotoAuth.getUsers();
-  document.getElementById('usersTableBody').innerHTML = users.map(u => `
-    <tr>
-      <td><strong>${u.name}</strong></td>
-      <td>${u.username}</td>
-      <td><span class="badge ${u.role === 'admin' ? 'bg-success' : (u.role === 'walinagari' ? 'bg-warning text-dark' : 'bg-primary')}">${u.role}</span></td>
-      <td>${u.email}</td>
-      <td><span class="text-success small"><i class="bi bi-check-circle-fill"></i> Aktif</span></td>
-    </tr>`).join('');
-}
-
-function cetakSuratResmi(id) {
-  const list = KotoAuth.getSuratMasuk();
-  const s = list.find(x => x.id === id);
-  if (!s) return;
-  const printWin = window.open('', '_blank');
-  const doc = printWin.document;
-  doc.open();
-  const content = '<!DOCTYPE html><html><head><title>Surat Resmi - ' + (s.jenisSurat || 'Surat') + '<' + '/title>' +
-    '<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>' +
-    '<style>body { font-family: "Times New Roman", serif; padding: 40px 60px; color: #000; line-height: 1.8; }' +
-    '.kop { text-align: center; border-bottom: 3px double #000; padding-bottom: 12px; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 20px; }' +
-    '.kop img { width: 70px; } .kop h4 { margin: 2px 0; font-size: 1.15rem; text-transform: uppercase; }' +
-    '.kop h3 { margin: 2px 0; font-size: 1.35rem; font-weight: 800; text-transform: uppercase; }' +
-    '.kop p { margin: 2px 0; font-size: 0.85rem; font-style: italic; }' +
-    '.judul { text-align: center; margin: 24px 0 20px; } .judul h5 { text-decoration: underline; font-size: 1.15rem; text-transform: uppercase; margin: 0; }' +
-    '.isi { text-align: justify; white-space: pre-line; font-size: 1rem; margin-bottom: 35px; }' +
-    '.ttd-box { float: right; width: 280px; text-align: center; position: relative; }' +
-    '.stempel-img { position: absolute; left: 10px; top: 25px; width: 90px; opacity: 0.85; transform: rotate(-8deg); }' +
-    '.ttd-nama { font-family: "Pacifico", cursive; font-size: 1.5rem; color: #1e3a8a; position: absolute; right: 25px; top: 40px; transform: rotate(-5deg); }<' + '/style>' +
-    '<' + '/head><body>' +
-    '<div class="kop"><img src="image/logo agam.png" alt="Logo"/><div><h4>PEMERINTAH KABUPATEN AGAM</h4><h4>KECAMATAN TANJUNG RAYA</h4><h3>PEMERINTAH NAGARI KOTO MALINTANG</h3><p>Alamat: Jl. Raya Maninjau - Lubuk Basung, Kode Pos: 26454</p></div></div>' +
-    '<div class="judul"><h5>' + (s.jenisSurat || 'SURAT KETERANGAN RESMI') + '<' + '/h5><div>Nomor: ' + (s.nomorSurat || '470 / 024 / WN-KM / VIII / 2026') + '</div></div>' +
-    '<div class="isi">' + s.isi + '</div>' +
-    '<div class="ttd-box"><div>Koto Malintang, ' + new Date(s.disetujuiPada || s.tanggal).toLocaleDateString('id-ID') + '</div><div style="font-weight:bold;">WALI NAGARI KOTO MALINTANG</div>' +
-    '<div style="height:100px;position:relative;">' + (s.stempel ? '<img src="image/stempel_resmi.svg" class="stempel-img"/>' : '') + '<div class="ttd-nama">Nazaruddin</div></div>' +
-    '<div style="font-weight:bold;text-decoration:underline;">NAZARUDDIN, S.Pd.I</div><small>NIP. -</small></div><' + '/body><' + '/html>';
-  doc.write(content);
-  doc.close();
-  printWin.focus();
-  setTimeout(() => { try { printWin.print(); } catch(e) {} }, 500);
-}
-
-function labelStatus(s) {
-  if (s === 'menunggu_admin') return '<span class="badge bg-warning text-dark"><i class="bi bi-clock me-1"></i>Menunggu Admin</span>';
-  if (s === 'menunggu_walinagari') return '<span class="badge bg-primary"><i class="bi bi-send me-1"></i>Di Meja Wali Nagari</span>';
-  if (s === 'disetujui') return '<span class="badge bg-success"><i class="bi bi-patch-check-fill me-1"></i>Disetujui (Berstempel)</span>';
-  if (s === 'ditolak') return '<span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Ditolak</span>';
-  return '<span class="badge bg-secondary">Arsip</span>';
-}
-
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function toast(msg, type = 'success') {
-  const t = document.getElementById('toastAdmin');
-  document.getElementById('toastMsg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-function doLogout() {
-  if (confirm('Keluar dari Panel Admin?')) { KotoAuth.logout(); window.location.href = 'login.html'; }
+  if (typeof sessionStorage !== 'undefined') {
+    sessionStorage.clear();
+  }
+  window.location.href = 'login.html';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

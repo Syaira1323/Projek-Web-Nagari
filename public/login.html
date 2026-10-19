@@ -215,7 +215,7 @@
     <!-- NAVBAR (Match user frontend navbar) -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-success px-3" id="mainNavbar">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="index.html">
                 <img src="image/logo agam.png" alt="Logo Agam" width="40" class="me-2" />
                 NAGARI KOTO MALINTANG
             </a>
@@ -228,7 +228,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item">
-                        <a class="nav-link " href="/">
+                        <a class="nav-link " href="index.html">
                             Beranda
                         </a>
                     </li>
@@ -239,26 +239,26 @@
                             Profil Nagari
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item " href="/profil-nagari">Profil Nagari</a></li>
-                            <li><a class="dropdown-item " href="/sejarah">Sejarah Nagari</a></li>
-                            <li><a class="dropdown-item " href="/struktur-nagari">Struktur Nagari</a></li>
-                            <li><a class="dropdown-item " href="/visi-misi">Visi Misi</a></li>
-                            <li><a class="dropdown-item " href="/perangkat-nagari">Perangkat Nagari</a></li>
-                            <li><a class="dropdown-item " href="/umkm">UMKM Nagari</a></li>
+                            <li><a class="dropdown-item " href="profil-nagari.html">Profil Nagari</a></li>
+                            <li><a class="dropdown-item " href="sejarah.html">Sejarah Nagari</a></li>
+                            <li><a class="dropdown-item " href="struktur-nagari.html">Struktur Nagari</a></li>
+                            <li><a class="dropdown-item " href="visi-misi.html">Visi Misi</a></li>
+                            <li><a class="dropdown-item " href="perangkat-nagari.html">Perangkat Nagari</a></li>
+                            <li><a class="dropdown-item " href="umkm.html">UMKM Nagari</a></li>
                         </ul>
                     </li>
 
                     <!-- Menu Lainnya -->
                     <li class="nav-item">
-                        <a class="nav-link " href="/layanan-surat">
+                        <a class="nav-link " href="layanan-surat.html">
                             <i class="bi bi-file-earmark-text me-1"></i> Layanan Surat
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="/objek-wisata">Objek Wisata</a>
+                        <a class="nav-link " href="objek-wisata.html">Objek Wisata</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="/kaba-nagari">Kaba Nagari</a>
+                        <a class="nav-link " href="kaba-nagari.html">Kaba Nagari</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="https://ppid.agamkab.go.id/" target="_blank">PPID</a>
@@ -337,7 +337,7 @@
                         <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1" style="cursor:pointer;" onclick="quickLogin('walinagari', 'password', 'walinagari.html')">
                             🏛️ Wali Nagari
                         </span>
-                        <span class="badge bg-secondary bg-opacity-10 text-dark border px-2 py-1" style="cursor:pointer;" onclick="quickLogin('warga', 'password', 'Layanan Surat.html')">
+                        <span class="badge bg-secondary bg-opacity-10 text-dark border px-2 py-1" style="cursor:pointer;" onclick="quickLogin('warga', 'password', 'dashboard-warga.html')">
                             👤 Warga
                         </span>
                     </div>
@@ -359,7 +359,7 @@
 </div>
     </main>
 
-    <script src="Auth.js"></script>
+    <script src="Auth.js?v=20260828-session"></script>
     <script>
         function quickLogin(username, password, target) {
             document.getElementById('login_id').value = username;
@@ -370,27 +370,49 @@
             alertBox.classList.remove('d-none');
         }
 
-        function handleLoginSubmit(e) {
+        async function handleLoginSubmit(e) {
             e.preventDefault();
-            const loginId = document.getElementById('login_id').value.trim().toLowerCase();
-            let dest = 'Layanan Surat.html';
+            const loginId = document.getElementById('login_id').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember')?.checked || false;
+            const alertBox = document.getElementById('loginAlert');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
 
-            if (loginId === 'admin') {
-                dest = 'Admin.html';
-            } else if (loginId === 'walinagari') {
-                dest = 'walinagari.html';
-            } else {
-                dest = 'Layanan Surat.html';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Memverifikasi...';
             }
 
-            const alertBox = document.getElementById('loginAlert');
-            alertBox.className = 'alert alert-success small';
-            alertBox.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Berhasil masuk! Mengarahkan ke halaman...';
-            alertBox.classList.remove('d-none');
+            try {
+                const res = await KotoAuth.login(loginId, password, remember);
+                const role = res.user?.role || 'warga';
+                let dest = 'dashboard-warga.html';
 
-            setTimeout(() => {
-                window.location.href = dest;
-            }, 400);
+                if (role === 'admin' || role === 'superadmin' || role === 'perangkat') {
+                    dest = 'Admin.html';
+                } else if (role === 'wali_nagari' || role === 'walinagari') {
+                    dest = 'walinagari.html';
+                } else {
+                    dest = 'dashboard-warga.html';
+                }
+
+                alertBox.className = 'alert alert-success small';
+                alertBox.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Selamat datang, <strong>${res.user?.name || loginId}</strong>! Mengarahkan ke panel...`;
+                alertBox.classList.remove('d-none');
+
+                setTimeout(() => {
+                    window.location.href = dest;
+                }, 500);
+            } catch (err) {
+                alertBox.className = 'alert alert-danger small';
+                alertBox.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> ${err.message || 'Login gagal. Periksa username dan password Anda.'}`;
+                alertBox.classList.remove('d-none');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Masuk Sekarang';
+                }
+            }
         }
     </script>
 

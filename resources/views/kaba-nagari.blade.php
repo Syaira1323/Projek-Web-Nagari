@@ -116,12 +116,43 @@
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body p-4">
+                                @if ($kabaImg)
+                                    <div class="mb-3 rounded-3 overflow-hidden shadow-sm" style="max-height: 300px;">
+                                        <img src="{{ $kabaImg }}" alt="{{ $kaba->judul }}" class="w-100 h-100" style="object-fit: cover;" />
+                                    </div>
+                                @endif
                                 <div class="p-3 bg-light rounded-3 mb-4 border-start border-4 border-success fst-italic text-secondary">
                                     {{ $kaba->ringkasan }}
                                 </div>
                                 <div class="text-dark lh-lg" style="white-space: pre-line; font-size: 1.05rem;">
                                     {{ $kaba->isi }}
                                 </div>
+
+                                @if ($kaba->gambarKabaNagaris && $kaba->gambarKabaNagaris->count() > 0)
+                                    <div class="mt-4 pt-3 border-top">
+                                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-images text-success me-2"></i>Foto Dokumentasi Kegiatan:</h6>
+                                        <div class="row g-2">
+                                            @foreach ($kaba->gambarKabaNagaris as $foto)
+                                                @php
+                                                    $fUrl = asset($foto->gambar);
+                                                    if (file_exists(public_path($foto->gambar))) {
+                                                        $fUrl = asset($foto->gambar);
+                                                    } elseif (file_exists(public_path('image/' . $foto->gambar))) {
+                                                        $fUrl = asset('image/' . $foto->gambar);
+                                                    }
+                                                @endphp
+                                                <div class="col-4 col-md-3">
+                                                    <a href="{{ $fUrl }}" target="_blank" class="d-block rounded-3 overflow-hidden border shadow-sm" style="height: 80px;">
+                                                        <img src="{{ $fUrl }}" alt="{{ $foto->caption ?? 'Foto' }}" style="width:100%; height:100%; object-fit:cover;" />
+                                                    </a>
+                                                    @if ($foto->caption)
+                                                        <small class="text-muted d-block text-truncate mt-1" style="font-size:0.7rem;">{{ $foto->caption }}</small>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                             <div class="modal-footer border-0 p-4 pt-0">
                                 <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>

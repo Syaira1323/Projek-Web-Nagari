@@ -99,8 +99,16 @@
                     <div class="card-body p-4 p-md-5">
                         <div class="row g-4 align-items-center">
                             @if (!empty($sejarahSingkat->gambar))
+                                @php
+                                    $singkatImg = asset($sejarahSingkat->gambar);
+                                    if (file_exists(public_path($sejarahSingkat->gambar))) {
+                                        $singkatImg = asset($sejarahSingkat->gambar);
+                                    } elseif (file_exists(public_path('image/' . $sejarahSingkat->gambar))) {
+                                        $singkatImg = asset('image/' . $sejarahSingkat->gambar);
+                                    }
+                                @endphp
                                 <div class="col-md-5">
-                                    <img src="{{ asset($sejarahSingkat->gambar) }}" alt="{{ $sejarahSingkat->judul }}" class="img-fluid rounded-4 shadow-sm" />
+                                    <img src="{{ $singkatImg }}" alt="{{ $sejarahSingkat->judul }}" class="img-fluid rounded-4 shadow-sm" />
                                 </div>
                             @endif
                             <div class="{{ !empty($sejarahSingkat->gambar) ? 'col-md-7' : 'col-12' }}">
@@ -139,8 +147,16 @@
                             <div id="collapse{{ $item->id }}" class="accordion-collapse collapse {{ $index === 0 ? 'show' : '' }}" aria-labelledby="heading{{ $item->id }}" data-bs-parent="#sejarahAccordion">
                                 <div class="accordion-body text-secondary lh-lg p-4" style="font-size: 1rem;">
                                     @if (!empty($item->gambar))
+                                        @php
+                                            $pImg = asset($item->gambar);
+                                            if (file_exists(public_path($item->gambar))) {
+                                                $pImg = asset($item->gambar);
+                                            } elseif (file_exists(public_path('image/' . $item->gambar))) {
+                                                $pImg = asset('image/' . $item->gambar);
+                                            }
+                                        @endphp
                                         <div class="mb-3">
-                                            <img src="{{ asset($item->gambar) }}" alt="{{ $item->judul }}" class="img-thumbnail rounded-3" style="max-height: 200px;" />
+                                            <img src="{{ $pImg }}" alt="{{ $item->judul }}" class="img-thumbnail rounded-3" style="max-height: 200px;" />
                                         </div>
                                     @endif
                                     <div style="white-space: pre-line;">{{ $item->isi }}</div>

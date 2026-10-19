@@ -1,143 +1,608 @@
-// =============================================
-// Auth.js — Sistem Autentikasi & Data Store Nagari Koto Malintang
-// =============================================
+// =========================================================================
+// Auth.js — REST API Client & Autentikasi Nagari Koto Malintang
+// Terhubung langsung ke Backend Laravel di C:\laragon\www\layanan-surat
+// =========================================================================
 
-const KotoAuth = (function () {
-  const DEFAULT_USERS = [
-    { id: 'usr-admin', username: 'admin', password: 'password', name: 'Administrator Nagari', role: 'admin', email: 'admin@kotomalintang.id', status: 'active', createdAt: '2026-01-01' },
-    { id: 'usr-wali', username: 'walinagari', password: 'password', name: 'Nazaruddin, S.Pd.I', role: 'walinagari', email: 'wali@kotomalintang.id', status: 'active', createdAt: '2026-01-01' },
-    { id: 'usr-warga', username: 'warga', password: 'password', name: 'Ahmad Fauzi', role: 'warga', email: 'ahmad.fauzi@kotomalintang.id', nik: '1306011205900001', status: 'active', createdAt: '2026-02-10' }
-  ];
-
-  const DEFAULT_SURAT = [
-    {
-      id: 'srt-001',
-      jenisSurat: 'Surat Keterangan Usaha (SKU)',
-      pengirim: 'Ahmad Fauzi',
-      nik: '1306011205900001',
-      email: 'ahmad.fauzi@kotomalintang.id',
-      subjek: 'Pengajuan Tambahan Modal Usaha KUR Bank BRI',
-      nomorSurat: '510 / 024 / WN-KM / VIII / 2026',
-      isi: 'Yang bertanda tangan di bawah ini, Wali Nagari Koto Malintang menerangkan bahwa:\n\nNama: Ahmad Fauzi\nNIK: 1306011205900001\nUsaha: Bengkel Las & Bubut Karya Maju\nAlamat: Jorong Koto Gadang, Nagari Koto Malintang\n\nAdalah benar memiliki usaha tersebut dan surat ini dibuat untuk keperluan pengajuan modal usaha KUR.',
-      tanggal: '2026-08-25T08:30:00.000Z',
-      status: 'menunggu_walinagari', // menunggu_admin | menunggu_walinagari | disetujui | ditolak | arsip
-      alasanTolak: '',
-      stempel: false,
-      ttdWali: false,
-      disetujuiPada: null,
-      arsipLocal: true,
-      gdriveUrl: 'https://drive.google.com/drive/folders/kotomalintang_arsip_2026'
-    },
-    {
-      id: 'srt-002',
-      jenisSurat: 'Surat Keterangan Tidak Mampu (SKTM)',
-      pengirim: 'Siti Aminah',
-      nik: '1306015508880002',
-      email: 'siti.aminah@gmail.com',
-      subjek: 'Permohonan Beasiswa KIP-Kuliah',
-      nomorSurat: '',
-      isi: 'Yang bertanda tangan di bawah ini, menerangkan bahwa Siti Aminah benar berasal dari keluarga pra-sejahtera.',
-      tanggal: '2026-08-26T02:15:00.000Z',
-      status: 'menunggu_admin',
-      alasanTolak: '',
-      stempel: false,
-      ttdWali: false,
-      disetujuiPada: null,
-      arsipLocal: false,
-      gdriveUrl: ''
-    },
-    {
-      id: 'srt-003',
-      jenisSurat: 'Surat Keterangan Domisili (SKD)',
-      pengirim: 'Rian Hidayat',
-      nik: '1306012003950003',
-      email: 'rian.hidayat@yahoo.com',
-      subjek: 'Keterangan Domisili Tempat Tinggal Baru',
-      nomorSurat: '470 / 012 / WN-KM / VIII / 2026',
-      isi: 'Menerangkan bahwa Rian Hidayat benar berdomisili di Jorong Muko-Muko, Nagari Koto Malintang.',
-      tanggal: '2026-08-22T09:00:00.000Z',
-      status: 'disetujui',
-      alasanTolak: '',
-      stempel: true,
-      ttdWali: true,
-      disetujuiPada: '2026-08-23T10:00:00.000Z',
-      arsipLocal: true,
-      gdriveUrl: 'https://drive.google.com/drive/folders/kotomalintang_arsip_2026'
-    },
-    {
-      id: 'srt-004',
-      jenisSurat: 'Surat Pengantar Nikah (Model NA)',
-      pengirim: 'Budi Santoso',
-      nik: '1306011406980004',
-      email: 'budi.santoso@gmail.com',
-      subjek: 'Pengantar Nikah ke KUA Tanjung Raya',
-      nomorSurat: '',
-      isi: 'Permohonan pengantar nikah ke KUA.',
-      tanggal: '2026-08-21T11:00:00.000Z',
-      status: 'ditolak',
-      alasanTolak: 'Berkas belum lengkap: Mohon lampirkan Surat Keterangan Imunisasi Catin dari Puskesmas dan Fotokopi KTP Orang Tua.',
-      stempel: false,
-      ttdWali: false,
-      disetujuiPada: null,
-      arsipLocal: false,
-      gdriveUrl: ''
+(function (global) {
+  // 1. Konfigurasi Base URL API Laravel
+  // 1. Konfigurasi Base URL API Laravel
+  let activeApiBase = (function() {
+    if (typeof window !== 'undefined' && window.API_BASE) {
+      return window.API_BASE.replace(/\/$/, '');
     }
-  ];
+    if (typeof window !== 'undefined' && window.location) {
+      const origin = window.location.origin;
+      const pathname = window.location.pathname || '';
+      const port = window.location.port || '';
 
-  const DEFAULT_BERITA = [
-    { id: 'b1', judul: 'Musrenbang Nagari Koto Malintang Tahun Anggaran 2027 Sukses Digelar', kategori: 'Pemerintahan', tanggal: '2026-08-20', status: 'publish', isi: 'Pemerintah Nagari Koto Malintang bersama Bamus dan tokoh masyarakat menyepakati prioritas pembangunan infrastruktur dan pemberdayaan ekonomi.' },
-    { id: 'b2', judul: 'Penyaluran Bantuan Langsung Tunai (BLT) Dana Desa Tahap III', kategori: 'Sosial', tanggal: '2026-08-15', status: 'publish', isi: 'Sebanyak 85 Keluarga Penerima Manfaat (KPM) menerima penyaluran BLT Dana Desa di Kantor Wali Nagari.' },
-    { id: 'b3', judul: 'Pelatihan Digital Marketing dan Packaging untuk UMKM Lokal', kategori: 'Ekonomi', tanggal: '2026-08-10', status: 'publish', isi: 'Mendorong daya saing produk UMKM Danau Maninjau melalui pelatihan pemasaran digital dan pengemasan higienis.' }
-  ];
+      // Jika diakses melalui Apache subfolder
+      if (pathname.includes('/layanan-surat/public')) {
+        return origin + '/layanan-surat/public/api';
+      }
+      if (pathname.includes('/layanan-surat')) {
+        return origin + '/layanan-surat/public/api';
+      }
+      if (pathname.includes('/frontend/public')) {
+        return 'http://localhost/layanan-surat/public/api';
+      }
+      // Jika port Laravel dev server (8000)
+      if (port === '8000') {
+        return origin + '/api';
+      }
+      // Jika port Live Server (5500, 5501, etc.) atau file://
+      if (['5500', '5501', '5502', '3000', '5173'].includes(port) || window.location.protocol === 'file:') {
+        return 'http://localhost/layanan-surat/public/api';
+      }
+      // Jika hostname localhost atau 127.0.0.1
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return origin + '/layanan-surat/public/api';
+      }
+      // Default: gunakan relative path /api
+      return origin + '/api';
+    }
+    return 'http://localhost/layanan-surat/public/api';
+  })();
 
-  const DEFAULT_PENGUMUMAN = [
-    { id: 'p1', judul: 'Jadwal Gotong Royong Massal Kebersihan Lingkungan Nagari', tanggal: '2026-08-28', status: 'aktif', isi: 'Dihimbau kepada seluruh warga di 4 Jorong untuk berpartisipasi dalam goro bersama pada hari Minggu, 30 Agustus 2026.' },
-    { id: 'p2', judul: 'Pelayanan Perekaman KTP Elektronik Keliling dari Disdukcapil Agam', tanggal: '2026-08-22', status: 'aktif', isi: 'Pelayanan jemput bola perekaman KTP-el akan dilaksanakan di Aula Kantor Wali Nagari Koto Malintang.' }
-  ];
+  const fallbackApiBase = 'http://localhost/layanan-surat/public/api';
 
-  const DEFAULT_UMKM = [
-    { id: 'u1', nama: 'Kopi Robusta Maninjau Asli', kategori: 'Kuliner', pemilik: 'Mak Datuk', wa: '081234567890', alamat: 'Jorong Koto Gadang', deskripsi: 'Kopi robusta pegunungan Maninjau diproses secara tradisional dengan aroma khas dan nikmat.' },
-    { id: 'u2', nama: 'Kerajinan Anyaman Pandan Koto', kategori: 'Kerajinan', pemilik: 'Ibu Nurhayati', wa: '085298765432', alamat: 'Jorong Muko-Muko', deskripsi: 'Produk tas, tikar, dan souvenir anyaman pandan alami ramah lingkungan khas Nagari Koto Malintang.' },
-    { id: 'u3', nama: 'Rinuak Goreng Renyah Danau Maninjau', kategori: 'Kuliner', pemilik: 'Uni Erna', wa: '082188776655', alamat: 'Jorong Tanjung Alai', deskripsi: 'Olahan ikan rinuak khas Danau Maninjau yang gurih, renyah, dan kaya protein.' }
-  ];
+  // 2. Helper HTTP Fetch Request dengan session cookie Laravel
+  async function apiRequest(endpoint, options = {}) {
+    let url = `${activeApiBase}${endpoint}`;
 
-  function init() {
-    if (!localStorage.getItem('km_users')) localStorage.setItem('km_users', JSON.stringify(DEFAULT_USERS));
-    if (!localStorage.getItem('km_surat')) localStorage.setItem('km_surat', JSON.stringify(DEFAULT_SURAT));
-    if (!localStorage.getItem('km_berita')) localStorage.setItem('km_berita', JSON.stringify(DEFAULT_BERITA));
-    if (!localStorage.getItem('km_pengumuman')) localStorage.setItem('km_pengumuman', JSON.stringify(DEFAULT_PENGUMUMAN));
-    if (!localStorage.getItem('km_umkm')) localStorage.setItem('km_umkm', JSON.stringify(DEFAULT_UMKM));
-    if (!localStorage.getItem('km_gdrive_folder')) localStorage.setItem('km_gdrive_folder', 'https://drive.google.com/drive/folders/kotomalintang_arsip_2026');
+    const headers = {
+      'Accept': 'application/json',
+      ...(options.headers || {})
+    };
+
+    let reqBody = options.body;
+    const isFormData = typeof FormData !== 'undefined' && reqBody instanceof FormData;
+    let requestMethod = options.method || 'GET';
+
+    // PHP only parses multipart fields reliably for POST requests. Laravel
+    // supports method spoofing, so file edits remain real PUT/PATCH routes.
+    if (isFormData && (requestMethod === 'PUT' || requestMethod === 'PATCH')) {
+      reqBody.append('_method', requestMethod);
+      requestMethod = 'POST';
+    }
+
+    if (!isFormData && reqBody && typeof reqBody === 'object') {
+      headers['Content-Type'] = 'application/json';
+      reqBody = JSON.stringify(reqBody);
+    }
+
+    try {
+      let response = null;
+      try {
+        response = await fetch(url, {
+          ...options,
+          method: requestMethod,
+          body: reqBody,
+          headers,
+          credentials: 'include',
+        });
+      } catch (fetchErr) {
+        // Fallback jika fetch ke activeApiBase gagal
+        if (activeApiBase !== fallbackApiBase) {
+          const altUrl = `${fallbackApiBase}${endpoint}`;
+          try {
+            response = await fetch(altUrl, {
+              ...options,
+              method: requestMethod,
+              body: reqBody,
+              headers,
+              credentials: 'include',
+            });
+            activeApiBase = fallbackApiBase;
+          } catch (altErr) {
+            throw new Error(`Tidak dapat terhubung ke server API (${fetchErr.message})`);
+          }
+        } else {
+          throw new Error(`Tidak dapat terhubung ke server API (${fetchErr.message})`);
+        }
+      }
+
+      // Jika response 404 Not Found pada URL non-subfolder, coba fallback ke subfolder Laragon
+      if (response && response.status === 404 && !url.includes('/layanan-surat/public/api')) {
+        const altUrl = `${fallbackApiBase}${endpoint}`;
+        try {
+          const altRes = await fetch(altUrl, {
+            ...options,
+            method: requestMethod,
+            body: reqBody,
+            headers,
+            credentials: 'include',
+          });
+          if (altRes.ok) {
+            response = altRes;
+            activeApiBase = fallbackApiBase;
+          }
+        } catch (e) {}
+      }
+
+      if (!response) {
+        throw new Error('Tidak ada respon dari server API');
+      }
+
+      let data = null;
+      const contentType = response.headers.get('content-type') || '';
+
+      if (contentType.includes('application/json')) {
+        try {
+          data = await response.json();
+        } catch (jsonErr) {
+          console.warn('[KotoAPI] Parsing JSON gagal:', jsonErr);
+          data = null;
+        }
+      } else {
+        const textResp = await response.text().catch(() => '');
+        console.warn('[KotoAPI] Menerima non-JSON response dari', url, textResp.substring(0, 150));
+      }
+
+      if (!response.ok) {
+        const errMsg = (data && (data.message || data.error)) || `Terjadi kesalahan pada server (HTTP ${response.status} ${response.statusText})`;
+        throw new Error(errMsg);
+      }
+
+      return data || { success: true };
+    } catch (err) {
+      console.warn(`[KotoAPI] Error pada request ke ${endpoint}:`, err.message);
+      throw err;
+    }
   }
-  init();
 
-  function getUsers() { return JSON.parse(localStorage.getItem('km_users') || '[]'); }
-  function saveUsers(u) { localStorage.setItem('km_users', JSON.stringify(u)); }
+  // 3. Autentikasi & Akun Pengguna
+  async function login(loginId, password, remember = false) {
+    const res = await apiRequest('/login', {
+      method: 'POST',
+      body: { login_id: loginId, password: password, remember: remember }
+    });
 
-  function getSuratMasuk() { return JSON.parse(localStorage.getItem('km_surat') || '[]'); }
-  function saveSuratMasuk(s) { localStorage.setItem('km_surat', JSON.stringify(s)); }
+    if (res && res.success) {
+      setSession(res.user);
+      return res;
+    }
+    throw new Error(res.message || 'Login gagal.');
+  }
 
-  function getBerita() { return JSON.parse(localStorage.getItem('km_berita') || '[]'); }
-  function saveBerita(b) { localStorage.setItem('km_berita', JSON.stringify(b)); }
+  async function register(userData) {
+    return await apiRequest('/register', {
+      method: 'POST',
+      body: userData
+    });
+  }
 
-  function getPengumuman() { return JSON.parse(localStorage.getItem('km_pengumuman') || '[]'); }
-  function savePengumuman(p) { localStorage.setItem('km_pengumuman', JSON.stringify(p)); }
+  async function logout() {
+    try {
+      await apiRequest('/logout', { method: 'POST' });
+    } catch (e) {
+      // Abaikan error jaringan saat logout
+    } finally {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('km_session');
+      }
+    }
+  }
 
-  function getUmkm() { return JSON.parse(localStorage.getItem('km_umkm') || '[]'); }
-  function saveUmkm(u) { localStorage.setItem('km_umkm', JSON.stringify(u)); }
+  async function updatePassword(currentPassword, newPassword, confirmPassword) {
+    return await apiRequest('/profile/password', {
+      method: 'PUT',
+      body: {
+        current_password: currentPassword,
+        password: newPassword,
+        password_confirmation: confirmPassword,
+        password_lama: currentPassword,
+        password_baru: newPassword,
+        password_baru_confirmation: confirmPassword,
+      }
+    });
+  }
 
+  // 4. API Dashboard & Layanan Surat Warga
+  async function getDashboardWarga() {
+    return await apiRequest('/warga/dashboard');
+  }
+
+  async function getSuratList(status = 'semua') {
+    const q = status !== 'semua' ? `?status=${encodeURIComponent(status)}` : '';
+    return await apiRequest(`/pengajuan-surat${q}`);
+  }
+
+  async function getSuratDetail(id) {
+    return await apiRequest(`/pengajuan-surat/${id}`);
+  }
+
+  async function submitSurat(formData) {
+    return await apiRequest('/pengajuan-surat', {
+      method: 'POST',
+      body: formData
+    });
+  }
+
+  async function submitRevisiSurat(id, formData) {
+    return await apiRequest(`/pengajuan-surat/${id}/revisi`, {
+      method: 'POST',
+      body: formData
+    });
+  }
+
+  // 5. API Notifikasi Surat
+  async function getNotifikasi() {
+    return await apiRequest('/notifikasi');
+  }
+
+  async function markNotifikasiRead(id) {
+    return await apiRequest(`/notifikasi/${id}/read`, { method: 'PATCH' });
+  }
+
+  async function markAllNotifikasiRead() {
+    return await apiRequest('/notifikasi/read-all', { method: 'PATCH' });
+  }
+
+  // 6. API UMKM Warga
+  async function getMyUmkm() {
+    return await apiRequest('/umkm/my');
+  }
+
+  async function tambahUmkm(formData) {
+    return await apiRequest('/umkm', {
+      method: 'POST',
+      body: formData
+    });
+  }
+
+  async function updateUmkm(id, formData) {
+    return await apiRequest(`/umkm/${id}`, {
+      method: 'PUT',
+      body: formData
+    });
+  }
+
+  async function deleteUmkm(id) {
+    return await apiRequest(`/umkm/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // 7. API Konten Publik Nagari
+  async function getProfilNagari() {
+    return await apiRequest('/profil-nagari');
+  }
+
+  async function getPerangkatNagari() {
+    return await apiRequest('/perangkat-nagari');
+  }
+
+  async function getVisiMisi() {
+    return await apiRequest('/visi-misi');
+  }
+
+  async function getSejarah() {
+    return await apiRequest('/sejarah');
+  }
+
+  async function getAdatBudaya() {
+    return await apiRequest('/adat-budaya');
+  }
+
+  async function getStrukturNagari() {
+    return await apiRequest('/struktur-nagari');
+  }
+
+  async function getUmkm(kategori = '') {
+    const q = kategori ? `?kategori=${encodeURIComponent(kategori)}` : '';
+    return await apiRequest(`/umkm${q}`);
+  }
+
+  async function getObjekWisata() {
+    return await apiRequest('/objek-wisata');
+  }
+
+  async function getKabaNagari(kategori = '') {
+    const q = kategori ? `?kategori=${encodeURIComponent(kategori)}` : '';
+    return await apiRequest(`/kaba-nagari${q}`);
+  }
+
+  async function getJenisSurat() {
+    return await apiRequest('/jenis-surat');
+  }
+
+  async function getPersyaratanSurat() {
+    return await apiRequest('/persyaratan-surat');
+  }
+
+  async function getGaleri() {
+    return await apiRequest('/galeri');
+  }
+
+  // 8. API Panel Wali Nagari
+  async function getWaliProfile() {
+    return await apiRequest('/wali-nagari/profile');
+  }
+
+  async function getWaliDashboard() {
+    return await apiRequest('/wali-nagari/dashboard');
+  }
+
+  async function getWaliSuratList(status = 'menunggu_wali_nagari') {
+    const q = status ? `?status=${encodeURIComponent(status)}` : '';
+    return await apiRequest(`/wali-nagari/surat${q}`);
+  }
+
+  async function getWaliSuratDetail(id) {
+    return await apiRequest(`/wali-nagari/surat/${id}`);
+  }
+
+  async function uploadWaliTtd(formData) {
+    return await apiRequest('/wali-nagari/tanda-tangan', {
+      method: 'POST',
+      body: formData
+    });
+  }
+
+  async function deleteWaliTtd() {
+    return await apiRequest('/wali-nagari/tanda-tangan', {
+      method: 'DELETE'
+    });
+  }
+
+  async function approveSuratWali(id, catatan = '') {
+    return await apiRequest(`/wali-nagari/surat/${id}/approve`, {
+      method: 'POST',
+      body: { catatan_wali: catatan }
+    });
+  }
+
+  async function kembalikanSuratWali(id, catatanWali) {
+    return await apiRequest(`/wali-nagari/surat/${id}/kembalikan`, {
+      method: 'POST',
+      body: { catatan_wali: catatanWali }
+    });
+  }
+
+  async function rejectSuratWali(id, alasan = '') {
+    return await apiRequest(`/wali-nagari/surat/${id}/reject`, {
+      method: 'POST',
+      body: { alasan_penolakan: alasan }
+    });
+  }
+
+  // 9. Integrasi Asisten AI Hugging Face
+  async function askAiSurat(message, jenisSurat = '', suratId = null) {
+    return await apiRequest('/ai/surat', {
+      method: 'POST',
+      body: {
+        message: message,
+        jenis_surat: jenisSurat,
+        surat_id: suratId
+      }
+    });
+  }
+
+  async function askAiChat(message) {
+    return await apiRequest('/ai/chat', {
+      method: 'POST',
+      body: { message: message }
+    });
+  }
+
+  async function getRekomendasiSurat(text) {
+    return await apiRequest('/ai/rekomendasi-surat', {
+      method: 'POST',
+      body: { text: text }
+    });
+  }
+
+  // 10. API Panel Administrator
+  async function getAdminDashboard() {
+    return await apiRequest('/admin/dashboard');
+  }
+
+  async function getAdminSuratList(status = 'semua', search = '') {
+    const params = new URLSearchParams();
+    if (status && status !== 'semua') params.append('status', status);
+    if (search) params.append('search', search);
+    const q = params.toString() ? `?${params.toString()}` : '';
+    return await apiRequest(`/admin/surat${q}`);
+  }
+
+  async function getAdminSuratDetail(id) {
+    return await apiRequest(`/admin/surat/${id}`);
+  }
+
+  async function verifySuratAdmin(id, payload) {
+    return await apiRequest(`/admin/surat/${id}/verify`, {
+      method: 'POST',
+      body: payload
+    });
+  }
+
+  async function mintaRevisiAdmin(id, catatanAdmin) {
+    return await apiRequest(`/admin/surat/${id}/minta-revisi`, {
+      method: 'POST',
+      body: { catatan_admin: catatanAdmin }
+    });
+  }
+
+  async function rejectSuratAdmin(id, alasan) {
+    return await apiRequest(`/admin/surat/${id}/reject`, {
+      method: 'POST',
+      body: { alasan_penolakan: alasan }
+    });
+  }
+
+  async function getAdminWarga(search = '') {
+    const q = search ? `?search=${encodeURIComponent(search)}` : '';
+    return await apiRequest(`/admin/warga${q}`);
+  }
+
+  async function getAdminProfil() {
+    return await apiRequest('/admin/konten/profil');
+  }
+
+  async function updateAdminProfil(data) {
+    return await apiRequest('/admin/konten/profil', {
+      method: 'PUT',
+      body: data
+    });
+  }
+
+  async function getAdminKaba(kategori = '', search = '') {
+    const params = new URLSearchParams();
+    if (kategori && kategori !== 'semua') params.append('kategori', kategori);
+    if (search) params.append('search', search);
+    const q = params.toString() ? `?${params.toString()}` : '';
+    return await apiRequest(`/admin/kaba-nagari${q}`);
+  }
+
+  async function tambahAdminKaba(data) {
+    return await apiRequest('/admin/kaba-nagari', {
+      method: 'POST',
+      body: data
+    });
+  }
+
+  async function updateAdminKaba(id, data) {
+    return await apiRequest(`/admin/kaba-nagari/${id}`, {
+      method: 'PUT',
+      body: data
+    });
+  }
+
+  async function deleteAdminKaba(id) {
+    return await apiRequest(`/admin/kaba-nagari/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async function getAdminKabaDetail(id) { return await apiRequest(`/admin/kaba-nagari/${id}`); }
+  async function uploadAdminKabaGambar(id, formData) { return await apiRequest(`/admin/kaba-nagari/${id}/gambar`, { method: 'POST', body: formData }); }
+  async function deleteAdminKabaGambar(id, gambarId) { return await apiRequest(`/admin/kaba-nagari/${id}/gambar/${gambarId}`, { method: 'DELETE' }); }
+
+  // 11. Session & Storage Helpers
   function getSession() {
     try { return JSON.parse(localStorage.getItem('km_session')); } catch (e) { return null; }
   }
-  function setSession(s) { localStorage.setItem('km_session', JSON.stringify(s)); }
-  function logout() { localStorage.removeItem('km_session'); }
+  function setSession(s) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('km_session', JSON.stringify(s));
+    }
+  }
+  function getUsers() {
+    try { return JSON.parse(localStorage.getItem('km_users') || '[]'); } catch (e) { return []; }
+  }
+  function saveUsers(u) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('km_users', JSON.stringify(u));
+    }
+  }
+  function getSuratMasuk() {
+    try { return JSON.parse(localStorage.getItem('km_surat') || '[]'); } catch (e) { return []; }
+  }
+  function saveSuratMasuk(s) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('km_surat', JSON.stringify(s));
+    }
+  }
+  function getBerita() {
+    try { return JSON.parse(localStorage.getItem('km_berita') || '[]'); } catch (e) { return []; }
+  }
+  function saveBerita(b) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('km_berita', JSON.stringify(b));
+    }
+  }
+  function getPengumuman() {
+    try { return JSON.parse(localStorage.getItem('km_pengumuman') || '[]'); } catch (e) { return []; }
+  }
+  function savePengumuman(p) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('km_pengumuman', JSON.stringify(p));
+    }
+  }
+  function getUmkmSync() {
+    try { return JSON.parse(localStorage.getItem('km_umkm') || '[]'); } catch (e) { return []; }
+  }
+  function saveUmkm(u) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('km_umkm', JSON.stringify(u));
+    }
+  }
 
-  return {
+  const KotoAuthObj = {
+    get API_BASE() { return activeApiBase; },
+    get activeApiBase() { return activeApiBase; },
+    apiRequest,
+    login,
+    register,
+    logout,
+    updatePassword,
+    getDashboardWarga,
+    getSuratList,
+    getSuratDetail,
+    submitSurat,
+    submitRevisiSurat,
+    getNotifikasi,
+    markNotifikasiRead,
+    markAllNotifikasiRead,
+    getMyUmkm,
+    tambahUmkm,
+    updateUmkm,
+    deleteUmkm,
+    getProfilNagari,
+    getPerangkatNagari,
+    getVisiMisi,
+    getSejarah,
+    getAdatBudaya,
+    getStrukturNagari,
+    getUmkm,
+    getObjekWisata,
+    getKabaNagari,
+    getGaleri,
+    getJenisSurat,
+    getPersyaratanSurat,
+    getWaliProfile,
+    getWaliDashboard,
+    getWaliSuratList,
+    getWaliSuratDetail,
+    uploadWaliTtd,
+    deleteWaliTtd,
+    approveSuratWali,
+    kembalikanSuratWali,
+    rejectSuratWali,
+    getAdminDashboard,
+    getAdminSuratList,
+    getAdminSuratDetail,
+    verifySuratAdmin,
+    mintaRevisiAdmin,
+    rejectSuratAdmin,
+    getAdminWarga,
+    getAdminProfil,
+    updateAdminProfil,
+    getAdminKaba,
+    tambahAdminKaba,
+    updateAdminKaba,
+    deleteAdminKaba,
+    getAdminKabaDetail,
+    uploadAdminKabaGambar,
+    deleteAdminKabaGambar,
+    askAiSurat,
+    askAiChat,
+    getRekomendasiSurat,
+    getSession,
+    setSession,
     getUsers, saveUsers,
     getSuratMasuk, saveSuratMasuk,
     getBerita, saveBerita,
     getPengumuman, savePengumuman,
-    getUmkm, saveUmkm,
-    getSession, setSession, logout
+    getUmkmSync, saveUmkm
   };
-})();
+
+  // Attach to global window and export
+  global.KotoAuth = KotoAuthObj;
+  if (typeof window !== 'undefined') {
+    window.KotoAuth = KotoAuthObj;
+  }
+  if (typeof globalThis !== 'undefined') {
+    globalThis.KotoAuth = KotoAuthObj;
+  }
+})(typeof window !== 'undefined' ? window : (typeof global !== 'undefined' ? global : this));

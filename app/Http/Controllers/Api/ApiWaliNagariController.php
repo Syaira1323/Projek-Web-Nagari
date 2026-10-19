@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Pengaturan;
 use App\Models\SuratPermohonan;
 use App\Models\User;
+use App\Services\GoogleDriveService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ApiWaliNagariController extends Controller
@@ -194,15 +196,24 @@ class ApiWaliNagariController extends Controller
     }
 
     /**
+     * PUT/POST /api/wali-nagari/profile
+     * Wali Nagari is forbidden from changing their name or position directly.
+     */
+    public function forbiddenProfileUpdate(Request $request): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Wali Nagari tidak memiliki izin untuk mengubah nama atau jabatan. Identitas Wali Nagari hanya dapat diubah oleh Administrator.',
+        ], 403);
+    }
+
+    /**
      * POST /api/wali-nagari/tanda-tangan
      */
     public function uploadTtd(Request $request): JsonResponse
     {
         $request->validate([
             'tanda_tangan' => 'required|file|image|mimes:png,jpg,jpeg,webp|max:3072',
-            'nama_wali' => 'nullable|string|max:255',
-            'gelar_wali' => 'nullable|string|max:100',
-            'jabatan' => 'nullable|string|max:150',
         ], [
             'tanda_tangan.required' => 'File gambar tanda tangan wajib diunggah.',
             'tanda_tangan.image' => 'File harus berupa gambar (PNG/JPG/WEBP).',
@@ -234,19 +245,8 @@ class ApiWaliNagariController extends Controller
             }
         }
 
-        // Save to user record
+        // Save to user record (TTD only)
         $user->ttd_path = $publicPath;
-        if ($request->filled('nama_wali')) {
-            $user->name = trim($request->input('nama_wali'));
-            Pengaturan::set('nama_wali_nagari', $user->name, 'umum');
-        }
-        if ($request->filled('gelar_wali')) {
-            $user->gelar = trim($request->input('gelar_wali'));
-            Pengaturan::set('gelar_wali_nagari', $user->gelar, 'umum');
-        }
-        if ($request->filled('jabatan')) {
-            $user->jabatan = trim($request->input('jabatan'));
-        }
         $user->save();
 
         // Update global fallback in Pengaturan
@@ -257,9 +257,9 @@ class ApiWaliNagariController extends Controller
             'message' => 'Tanda Tangan Wali Nagari berhasil diunggah dan disimpan di database & storage!',
             'ttd_path' => $publicPath,
             'ttd_url' => asset($publicPath),
-            'nama_wali' => $user->name,
-            'gelar_wali' => $user->gelar ?? 'Datuak Bandaro',
-            'jabatan' => $user->jabatan ?? 'Wali Nagari Koto Malintang',
+            'nama_wali' => $user->name ?? Pengaturan::get('nama_wali_nagari', 'NAZARUDDIN, S.Pd.I'),
+            'gelar_wali' => $user->gelar ?? Pengaturan::get('gelar_wali_nagari', 'Datuak Bandaro'),
+            'jabatan' => $user->jabatan ?? Pengaturan::get('jabatan_wali_nagari', 'Wali Nagari Koto Malintang'),
         ]);
     }
 
@@ -339,6 +339,13 @@ class ApiWaliNagariController extends Controller
             return response()->json(['success' => false, 'message' => 'Surat tidak ditemukan.'], 404);
         }
 
+        if ($surat->status !== 'menunggu_wali_nagari') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya surat dengan status menunggu persetujuan Wali Nagari yang dapat disetujui/ditandatangani.'
+            ], 422);
+        }
+
         $user = $this->getAuthenticatedWali($request);
         $ttdPath = $user?->ttd_path ?: Pengaturan::get('tanda_tangan_wali_path');
 
@@ -369,7 +376,33 @@ class ApiWaliNagariController extends Controller
         $surat->ttd_wali_path = $ttdPath;
         $surat->signed_by_user_id = $user?->id;
         $surat->catatan_wali = $request->input('catatan_wali', 'Disetujui dan dibubuhi Tanda Tangan & Stempel Resmi Wali Nagari.');
+
+        // Snapshot identitas penandatangan aktif ke data_spesifik surat agar historis surat tersimpan permanen
+        $ds = $surat->data_spesifik ?? [];
+        if (!is_array($ds)) {
+            $ds = json_decode((string) $ds, true) ?? [];
+        }
+        $namaWaliAktif = Pengaturan::get('nama_wali_nagari', $user?->name ?? 'NAZARUDDIN, S.Pd.I');
+        $jabatanWaliAktif = Pengaturan::get('jabatan_wali_nagari', $user?->jabatan ?? 'WALI NAGARI KOTO MALINTANG');
+        $ds['penandatangan_nama'] = $namaWaliAktif;
+        $ds['penandatangan_jabatan'] = $jabatanWaliAktif;
+        $surat->data_spesifik = $ds;
+
         $surat->save();
+
+        // Trigger Arsip PDF Final ke Google Drive (Idempotent & Aman)
+        try {
+            $gdriveService = app(GoogleDriveService::class);
+            $gdriveService->archiveSuratSelesai($surat);
+        } catch (\Throwable $e) {
+            Log::error("Gagal memicu arsip Google Drive pada approval Wali Nagari (Surat ID {$surat->id}): " . $e->getMessage(), [
+                'surat_id' => $surat->id,
+                'jenis_surat' => $surat->jenis_surat,
+                'status' => $surat->status,
+                'tahap' => 'approval_wali_nagari_api',
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'success' => true,
@@ -382,6 +415,43 @@ class ApiWaliNagariController extends Controller
     }
 
     /**
+     * POST /api/wali-nagari/surat/{id}/kembalikan
+     */
+    public function kembalikan(Request $request, int $id): JsonResponse
+    {
+        $surat = SuratPermohonan::find($id);
+
+        if (!$surat) {
+            return response()->json(['success' => false, 'message' => 'Surat tidak ditemukan.'], 404);
+        }
+
+        if ($surat->status !== 'menunggu_wali_nagari') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya surat dengan status menunggu persetujuan Wali Nagari yang dapat dikembalikan ke Meja Admin.'
+            ], 422);
+        }
+
+        $validated = $request->validate([
+            'catatan_wali' => 'required|string|min:5|max:1000',
+        ], [
+            'catatan_wali.required' => 'Catatan koreksi/pengembalian naskah wajib diisi.',
+            'catatan_wali.min' => 'Catatan koreksi minimal 5 karakter.',
+            'catatan_wali.max' => 'Catatan koreksi maksimal 1000 karakter.',
+        ]);
+
+        $surat->status = 'dikembalikan_ke_admin';
+        $surat->catatan_wali = $validated['catatan_wali'];
+        $surat->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Surat berhasil dikembalikan ke Meja Admin Nagari beserta catatan perbaikan.',
+            'data' => $surat,
+        ]);
+    }
+
+    /**
      * POST /api/wali-nagari/surat/{id}/reject
      */
     public function reject(Request $request, int $id): JsonResponse
@@ -390,6 +460,13 @@ class ApiWaliNagariController extends Controller
 
         if (!$surat) {
             return response()->json(['success' => false, 'message' => 'Surat tidak ditemukan.'], 404);
+        }
+
+        if ($surat->status !== 'menunggu_wali_nagari') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya surat dengan status menunggu persetujuan Wali Nagari yang dapat ditolak oleh Wali Nagari.'
+            ], 422);
         }
 
         $validated = $request->validate([

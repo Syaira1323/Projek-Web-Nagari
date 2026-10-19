@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdatBudayaNagari;
+use App\Models\FotoKabaNagari;
 use App\Models\KabaNagari;
 use App\Models\MaknaVisi;
 use App\Models\Misi;
@@ -57,8 +58,10 @@ class AdminKontenController extends Controller
             'luas_wilayah' => 'required|numeric|min:0.1',
             'deskripsi' => 'required|string',
             'alamat' => 'nullable|string|max:500',
+            'kode_pos' => 'nullable|string|max:10',
             'email' => 'nullable|email|max:150',
             'telepon' => 'nullable|string|max:50',
+            'website' => 'nullable|string|max:255',
             'foto_utama' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:4096',
             'logo' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
@@ -135,17 +138,23 @@ class AdminKontenController extends Controller
     {
         $visi = Visi::first();
         if (!$visi) {
-            $visi = Visi::create(['judul' => 'VISI', 'isi' => 'Terwujudnya Nagari Koto Malintang yang Maju, Mandiri, dan Sejahtera...']);
+            $visi = Visi::create(['judul' => 'VISI', 'isi' => 'Terwujudnya Nagari Koto Malintang yang Maju, Mandiri, dan Sejahtera Berdasarkan Nilai-nilai Adat Basandi Syarak, Syarak Basandi Kitabullah']);
         }
 
         $validated = $request->validate([
+            'judul' => 'nullable|string|max:255',
             'isi' => 'required|string',
             'misi_raw' => 'required|string',
+            'makna_raw' => 'nullable|string',
         ]);
 
+        if (!empty($validated['judul'])) {
+            $visi->judul = $validated['judul'];
+        }
         $visi->isi = $validated['isi'];
         $visi->save();
 
+        // 1. Simpan Misi
         $lines = array_filter(array_map('trim', explode("\n", $validated['misi_raw'])));
         Misi::where('visi_id', $visi->id)->delete();
 
@@ -162,7 +171,29 @@ class AdminKontenController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Data Visi dan Misi Nagari berhasil diperbarui.');
+        // 2. Simpan Makna Visi (jika diisi)
+        if (!empty($validated['makna_raw'])) {
+            $maknaLines = array_filter(array_map('trim', explode("\n", $validated['makna_raw'])));
+            MaknaVisi::where('visi_id', $visi->id)->delete();
+
+            $defaultIcons = ['arrow-up', 'shield', 'heart', 'book'];
+            foreach ($maknaLines as $mIndex => $mLine) {
+                $mParts = explode(':', $mLine);
+                $istilah = trim($mParts[0]);
+                $deskripsi = isset($mParts[1]) ? trim($mParts[1]) : $istilah;
+                $icon = isset($mParts[2]) ? trim($mParts[2]) : ($defaultIcons[$mIndex % 4] ?? 'arrow-up');
+
+                MaknaVisi::create([
+                    'visi_id' => $visi->id,
+                    'istilah' => $istilah,
+                    'deskripsi' => $deskripsi,
+                    'icon' => $icon,
+                    'urutan' => $mIndex + 1,
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Data Visi, Makna Visi, dan Misi Nagari berhasil diperbarui di database.');
     }
 
     // ==========================================
@@ -208,6 +239,13 @@ class AdminKontenController extends Controller
         ]);
 
         if ($request->hasFile('gambar')) {
+            if ($sejarah->gambar && str_starts_with($sejarah->gambar, 'storage/uploads/sejarah/')) {
+                $oldPath = substr($sejarah->gambar, 8);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
             $path = $request->file('gambar')->store('uploads/sejarah', 'public');
             $validated['gambar'] = 'storage/' . $path;
         } else {
@@ -221,6 +259,13 @@ class AdminKontenController extends Controller
 
     public function destroySejarah(SejarahNagari $sejarah): RedirectResponse
     {
+        if ($sejarah->gambar && str_starts_with($sejarah->gambar, 'storage/uploads/sejarah/')) {
+            $path = substr($sejarah->gambar, 8);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
         $sejarah->delete();
 
         return back()->with('success', 'Data sejarah berhasil dihapus.');
@@ -231,7 +276,7 @@ class AdminKontenController extends Controller
     // ==========================================
     public function perangkat(): View
     {
-        $perangkatList = PerangkatNagari::all();
+        $perangkatList = PerangkatNagari::orderBy('id')->get();
 
         return view('admin.konten.perangkat', compact('perangkatList'));
     }
@@ -241,14 +286,16 @@ class AdminKontenController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
+            'pangkat_gol' => 'nullable|string|max:50',
             'nip' => 'nullable|string|max:50',
             'tempat_lahir' => 'nullable|string|max:100',
             'tanggal_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'required|string|in:Laki-laki,Perempuan',
+            'jenis_kelamin' => 'nullable|string|in:Laki-laki,Perempuan',
             'pendidikan_terakhir' => 'nullable|string|max:50',
-            'status_keaktifan' => 'required|string|in:Aktif,Nonaktif',
-            'foto' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'foto' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:4096',
         ]);
+
+        $validated['tempat_lahir'] = $validated['tempat_lahir'] ?: '-';
 
         if ($request->hasFile('foto')) {
             $path = $request->file('foto')->store('uploads/perangkat', 'public');
@@ -265,16 +312,25 @@ class AdminKontenController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
+            'pangkat_gol' => 'nullable|string|max:50',
             'nip' => 'nullable|string|max:50',
             'tempat_lahir' => 'nullable|string|max:100',
             'tanggal_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'required|string|in:Laki-laki,Perempuan',
+            'jenis_kelamin' => 'nullable|string|in:Laki-laki,Perempuan',
             'pendidikan_terakhir' => 'nullable|string|max:50',
-            'status_keaktifan' => 'required|string|in:Aktif,Nonaktif',
-            'foto' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'foto' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:4096',
         ]);
 
+        $validated['tempat_lahir'] = $validated['tempat_lahir'] ?: '-';
+
         if ($request->hasFile('foto')) {
+            if ($perangkat->foto && str_starts_with($perangkat->foto, 'storage/uploads/perangkat/')) {
+                $oldPath = substr($perangkat->foto, 8);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
             $path = $request->file('foto')->store('uploads/perangkat', 'public');
             $validated['foto'] = 'storage/' . $path;
         } else {
@@ -288,6 +344,13 @@ class AdminKontenController extends Controller
 
     public function destroyPerangkat(PerangkatNagari $perangkat): RedirectResponse
     {
+        if ($perangkat->foto && str_starts_with($perangkat->foto, 'storage/uploads/perangkat/')) {
+            $path = substr($perangkat->foto, 8);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
         $perangkat->delete();
 
         return back()->with('success', 'Data perangkat nagari berhasil dihapus.');
@@ -330,6 +393,13 @@ class AdminKontenController extends Controller
         ]);
 
         if ($request->hasFile('foto_bagan')) {
+            if ($struktur->foto_bagan && str_starts_with($struktur->foto_bagan, 'storage/uploads/struktur/')) {
+                $oldPath = substr($struktur->foto_bagan, 8);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
             $path = $request->file('foto_bagan')->store('uploads/struktur', 'public');
             $validated['foto_bagan'] = 'storage/' . $path;
         } else {
@@ -343,6 +413,13 @@ class AdminKontenController extends Controller
 
     public function destroyStruktur(StrukturNagari $struktur): RedirectResponse
     {
+        if ($struktur->foto_bagan && str_starts_with($struktur->foto_bagan, 'storage/uploads/struktur/')) {
+            $path = substr($struktur->foto_bagan, 8);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
         $struktur->delete();
 
         return back()->with('success', 'Posisi struktur organisasi berhasil dihapus.');
@@ -365,7 +442,9 @@ class AdminKontenController extends Controller
             'kategori' => 'required|string|max:100',
             'deskripsi' => 'required|string',
             'lokasi' => 'nullable|string|max:255',
-            'google_maps_url' => 'nullable|url|max:500',
+            'google_maps_url' => 'nullable|string|max:500',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'gambar' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:4096',
         ]);
 
@@ -386,7 +465,9 @@ class AdminKontenController extends Controller
             'kategori' => 'required|string|max:100',
             'deskripsi' => 'required|string',
             'lokasi' => 'nullable|string|max:255',
-            'google_maps_url' => 'nullable|url|max:500',
+            'google_maps_url' => 'nullable|string|max:500',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'gambar' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:4096',
         ]);
 
@@ -489,10 +570,10 @@ class AdminKontenController extends Controller
             'deskripsi' => 'required|string',
             'whatsapp' => 'nullable|string|max:30',
             'instagram' => 'nullable|string|max:100',
-            'google_maps_url' => 'nullable|url|max:500',
+            'google_maps_url' => 'nullable|string|max:500',
             'jam_operasional' => 'nullable|string|max:100',
             'tahun_berdiri' => 'nullable|string|max:10',
-            'foto' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'foto' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:4096',
         ]);
 
         if ($request->hasFile('foto')) {
@@ -514,13 +595,20 @@ class AdminKontenController extends Controller
             'deskripsi' => 'required|string',
             'whatsapp' => 'nullable|string|max:30',
             'instagram' => 'nullable|string|max:100',
-            'google_maps_url' => 'nullable|url|max:500',
+            'google_maps_url' => 'nullable|string|max:500',
             'jam_operasional' => 'nullable|string|max:100',
             'tahun_berdiri' => 'nullable|string|max:10',
-            'foto' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'foto' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:4096',
         ]);
 
         if ($request->hasFile('foto')) {
+            if ($umkm->foto && str_starts_with($umkm->foto, 'storage/uploads/umkm/')) {
+                $oldPath = substr($umkm->foto, 8);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
             $path = $request->file('foto')->store('uploads/umkm', 'public');
             $validated['foto'] = 'storage/' . $path;
         } else {
@@ -534,8 +622,85 @@ class AdminKontenController extends Controller
 
     public function destroyUmkm(UMKM $umkm): RedirectResponse
     {
+        if ($umkm->foto && str_starts_with($umkm->foto, 'storage/uploads/umkm/')) {
+            $path = substr($umkm->foto, 8);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
         $umkm->delete();
 
         return back()->with('success', 'Data UMKM berhasil dihapus.');
+    }
+
+    // ==========================================
+    // 10. GALERI & MEDIA NAGARI (CRUD + UPLOAD FOTO)
+    // ==========================================
+    public function galeri(): View
+    {
+        $galeriList = FotoKabaNagari::with('kabaNagari')->latest()->paginate(12);
+        $kabaList = KabaNagari::select('id', 'judul')->latest()->get();
+
+        return view('admin.konten.galeri', compact('galeriList', 'kabaList'));
+    }
+
+    public function storeGaleri(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'gambar' => 'required|file|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'caption' => 'nullable|string|max:255',
+            'kaba_nagari_id' => 'nullable|exists:kaba_nagaris,id',
+        ]);
+
+        if ($request->hasFile('gambar')) {
+            $path = $request->file('gambar')->store('uploads/galeri', 'public');
+            $validated['gambar'] = 'storage/' . $path;
+        }
+
+        FotoKabaNagari::create($validated);
+
+        return back()->with('success', 'Foto dokumentasi berhasil ditambahkan ke Galeri.');
+    }
+
+    public function updateGaleri(Request $request, FotoKabaNagari $galeri): RedirectResponse
+    {
+        $validated = $request->validate([
+            'caption' => 'nullable|string|max:255',
+            'kaba_nagari_id' => 'nullable|exists:kaba_nagaris,id',
+            'gambar' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:4096',
+        ]);
+
+        if ($request->hasFile('gambar')) {
+            if ($galeri->gambar && str_starts_with($galeri->gambar, 'storage/uploads/galeri/')) {
+                $oldPath = substr($galeri->gambar, 8);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
+            $path = $request->file('gambar')->store('uploads/galeri', 'public');
+            $validated['gambar'] = 'storage/' . $path;
+        } else {
+            unset($validated['gambar']);
+        }
+
+        $galeri->update($validated);
+
+        return back()->with('success', 'Data galeri foto berhasil diperbarui.');
+    }
+
+    public function destroyGaleri(FotoKabaNagari $galeri): RedirectResponse
+    {
+        if ($galeri->gambar && str_starts_with($galeri->gambar, 'storage/uploads/galeri/')) {
+            $path = substr($galeri->gambar, 8);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
+        $galeri->delete();
+
+        return back()->with('success', 'Foto galeri berhasil dihapus.');
     }
 }

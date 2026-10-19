@@ -114,7 +114,7 @@
       <div class="news-card">
         <a href="kaba-detail.html?id=${p.id}" class="text-decoration-none text-reset">
           <div class="news-image">
-            <img src="${p.image}" alt="${p.title}" />
+            <img src="${p.image}" alt="${p.title}" onerror="this.src='image/wisata1.jpg'" />
           </div>
           <div class="news-content">
             <span class="news-category">${p.category}</span>
@@ -130,4 +130,80 @@
       </div>
     `).join('');
   };
+
+  // Sinkronisasi Live News dari REST API Laravel jika tersedia
+  if (typeof fetch !== 'undefined') {
+    const fetchLiveNews = async () => {
+      try {
+        let liveNews = null;
+        if (typeof window !== 'undefined' && window.KotoAuth && typeof window.KotoAuth.getKabaNagari === 'function') {
+          const res = await window.KotoAuth.getKabaNagari();
+          liveNews = res.data?.data || res.data || res.items;
+        } else {
+          let apiBase = window.API_BASE;
+          if (!apiBase && typeof window !== 'undefined' && window.location) {
+            const origin = window.location.origin;
+            const pathname = window.location.pathname || '';
+            const port = window.location.port || '';
+            if (pathname.includes('/layanan-surat/public')) {
+              apiBase = origin + '/layanan-surat/public/api';
+            } else if (pathname.includes('/layanan-surat')) {
+              apiBase = origin + '/layanan-surat/public/api';
+            } else if (pathname.includes('/frontend/public')) {
+              apiBase = 'http://localhost/layanan-surat/public/api';
+            } else if (port === '8000') {
+              apiBase = origin + '/api';
+            } else if (['5500', '5501', '5502', '3000', '5173'].includes(port) || window.location.protocol === 'file:') {
+              apiBase = 'http://localhost/layanan-surat/public/api';
+            } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+              apiBase = origin + '/layanan-surat/public/api';
+            } else {
+              apiBase = origin + '/api';
+            }
+          }
+          apiBase = apiBase || 'http://localhost/layanan-surat/public/api';
+          let res = null;
+          try {
+            res = await fetch(`${apiBase}/kaba-nagari`, {
+              headers: { 'Accept': 'application/json' }
+            });
+          } catch (err) {
+            if (apiBase !== 'http://localhost/layanan-surat/public/api') {
+              try {
+                res = await fetch('http://localhost/layanan-surat/public/api/kaba-nagari', {
+                  headers: { 'Accept': 'application/json' }
+                });
+              } catch (e2) {}
+            }
+          }
+          if (res && res.ok) {
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+              const json = await res.json();
+              liveNews = json.data?.data || json.data || json.items;
+            }
+          }
+        }
+
+        if (Array.isArray(liveNews) && liveNews.length > 0) {
+          const formatted = liveNews.map(item => ({
+            id: item.slug || item.id,
+            title: item.judul || item.title,
+            date: item.tanggal ? (new Date(item.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})) : (item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'}) : 'Terbaru'),
+            category: item.kategori || 'Berita',
+            image: item.gambar ? (item.gambar.startsWith('http') ? item.gambar : (item.gambar.startsWith('/') ? item.gambar : '/' + item.gambar)) : 'image/wisata1.jpg',
+            excerpt: item.ringkasan || (item.isi ? item.isi.substring(0, 140) + '...' : ''),
+            detail: item.isi || item.konten || ''
+          }));
+          window.KABA_POSTS = [...formatted, ...window.KABA_POSTS];
+          if (document.querySelector('.news-grid')) {
+            window.renderKabaGrid('.news-grid');
+          }
+        }
+      } catch (e) {
+        // Safe fallback - keep existing DEFAULT_POSTS
+      }
+    };
+    fetchLiveNews();
+  }
 })();

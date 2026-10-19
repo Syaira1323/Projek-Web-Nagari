@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminPengaturanController;
 use App\Http\Controllers\Admin\AdminSuratController;
 use App\Http\Controllers\Admin\AdminWargaController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\KabaNagariController;
 use App\Http\Controllers\LayananSuratController;
 use App\Http\Controllers\ObjekWisataController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\Warga\WargaProfilController;
 use App\Http\Controllers\Warga\WargaSuratController;
 use App\Http\Controllers\Warga\WargaUmkmController;
 use App\Models\KabaNagari;
+use App\Models\ObjekWisata;
 use App\Models\PerangkatNagari;
 use App\Models\ProfilNagari;
 use Illuminate\Support\Facades\Route;
@@ -45,8 +47,9 @@ Route::get('/', function () {
     $profil = ProfilNagari::first();
     $kabaTerbaru = KabaNagari::latest()->take(3)->get();
     $totalPerangkat = PerangkatNagari::count();
+    $wisataTerbaru = ObjekWisata::take(3)->get();
 
-    return view('welcome', compact('profil', 'kabaTerbaru', 'totalPerangkat'));
+    return view('welcome', compact('profil', 'kabaTerbaru', 'totalPerangkat', 'wisataTerbaru'));
 })->name('beranda');
 
 Route::get('/profil-nagari', [ProfilNagariController::class, 'index'])->name('profil-nagari');
@@ -57,6 +60,7 @@ Route::get('/perangkat-nagari', [PerangkatNagariController::class, 'index'])->na
 Route::get('/struktur-nagari', [StrukturNagariController::class, 'index'])->name('struktur-nagari');
 Route::get('/objek-wisata', [ObjekWisataController::class, 'index'])->name('objek-wisata');
 Route::get('/kaba-nagari', [KabaNagariController::class, 'index'])->name('kaba-nagari');
+Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri');
 Route::get('/umkm', [UmkmController::class, 'index'])->name('umkm');
 Route::get('/layanan-surat', [LayananSuratController::class, 'index'])->name('layanan-surat');
 
@@ -93,6 +97,7 @@ Route::middleware(['auth', 'role:warga,admin,wali_nagari'])->prefix('warga')->na
     Route::post('/surat', [WargaSuratController::class, 'store'])->name('surat.store');
     Route::get('/surat/{surat}', [WargaSuratController::class, 'show'])->name('surat.show');
     Route::get('/surat/{surat}/print', [WargaSuratController::class, 'print'])->name('surat.print');
+    Route::get('/surat/{surat}/download-pdf', [WargaSuratController::class, 'downloadPdf'])->name('surat.download-pdf');
     Route::get('/berkas/{berkas}/download', [WargaSuratController::class, 'downloadBerkas'])->name('berkas.download');
 
     // Kelola UMKM Milik Warga
@@ -108,7 +113,12 @@ Route::middleware(['auth', 'role:warga,admin,wali_nagari'])->prefix('warga')->na
 });
 
 // ==========================================
-// 4. ADMIN PANEL (Role: admin)
+// 4. GOOGLE DRIVE OAUTH CALLBACK (PUBLIC ROUTE)
+// ==========================================
+Route::get('/admin/gdrive/callback', [AdminGoogleDriveController::class, 'callback'])->name('admin.gdrive.callback');
+
+// ==========================================
+// 5. ADMIN PANEL (Role: admin)
 // ==========================================
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -126,7 +136,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Google Drive Integration
     Route::get('/gdrive', [AdminGoogleDriveController::class, 'index'])->name('gdrive.index');
     Route::post('/gdrive/credentials', [AdminGoogleDriveController::class, 'saveCredentials'])->name('gdrive.save-credentials');
-    Route::get('/gdrive/callback', [AdminGoogleDriveController::class, 'callback'])->name('gdrive.callback');
     Route::post('/gdrive/test', [AdminGoogleDriveController::class, 'testConnection'])->name('gdrive.test');
     Route::post('/gdrive/disconnect', [AdminGoogleDriveController::class, 'disconnect'])->name('gdrive.disconnect');
 
@@ -182,6 +191,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::post('/kaba', [AdminKontenController::class, 'storeKaba'])->name('kaba.store');
         Route::put('/kaba/{kaba}', [AdminKontenController::class, 'updateKaba'])->name('kaba.update');
         Route::delete('/kaba/{kaba}', [AdminKontenController::class, 'destroyKaba'])->name('kaba.destroy');
+
+        // Galeri & Media
+        Route::get('/galeri', [AdminKontenController::class, 'galeri'])->name('galeri');
+        Route::post('/galeri', [AdminKontenController::class, 'storeGaleri'])->name('galeri.store');
+        Route::put('/galeri/{galeri}', [AdminKontenController::class, 'updateGaleri'])->name('galeri.update');
+        Route::delete('/galeri/{galeri}', [AdminKontenController::class, 'destroyGaleri'])->name('galeri.destroy');
 
         // UMKM
         Route::get('/umkm', [AdminKontenController::class, 'umkm'])->name('umkm');

@@ -1,0 +1,121 @@
+[
+    {
+        "input_text": "Saya membutuhkan surat keterangan untuk pengajuan beasiswa anak kuliah karena penghasilan bulanan keluarga tidak mencukupi.",
+        "top3": [
+            {
+                "label": "SKTM",
+                "prob": 0.9788181781768799
+            },
+            {
+                "label": "SKP",
+                "prob": 0.013925057835876942
+            },
+            {
+                "label": "SKBM",
+                "prob": 0.0021074197720736265
+            }
+        ]
+    },
+    {
+        "input_text": "Perlu surat untuk mengurus izin mendirikan kios kelontong dan permohonan pinjaman KUR di bank Nagari.",
+        "top3": [
+            {
+                "label": "SKU",
+                "prob": 0.9778939485549927
+            },
+            {
+                "label": "SKD",
+                "prob": 0.007068365812301636
+            },
+            {
+                "label": "SKP",
+                "prob": 0.004722368437796831
+            }
+        ]
+    },
+    {
+        "input_text": "Surat keterangan untuk menyatakan bahwa saya saat ini berdomisili menetap di Jorong Pasar Nagari Koto Malintang.",
+        "top3": [
+            {
+                "label": "SKD",
+                "prob": 0.9787272810935974
+            },
+            {
+                "label": "SKBM",
+                "prob": 0.005233056843280792
+            },
+            {
+                "label": "Model NA",
+                "prob": 0.0045787799172103405
+            }
+        ]
+    },
+    {
+        "input_text": "Pengurusan surat pengantar untuk kelengkapan administrasi pendaftaran pernikahan di KUA bulan depan.",
+        "top3": [
+            {
+                "label": "Model NA",
+                "prob": 0.993241548538208
+            },
+            {
+                "label": "SKBM",
+                "prob": 0.0016442321939393878
+            },
+            {
+                "label": "SKTM",
+                "prob": 0.0013893997529521585
+            }
+        ]
+    },
+    {
+        "input_text": "Surat keterangan bahwa sampai saat ini saya belum pernah menikah untuk syarat melamar pekerjaan.",
+        "top3": [
+            {
+                "label": "SKBM",
+                "prob": 0.9899497032165527
+            },
+            {
+                "label": "Model NA",
+                "prob": 0.00259146629832685
+            },
+            {
+                "label": "SKTM",
+                "prob": 0.002174648456275463
+            }
+        ]
+    },
+    {
+        "input_text": "Saya butuh surat pindah domisili kependudukan ke Kota Padang karena mutasi tempat kerja.",
+        "top3": [
+            {
+                "label": "SKD",
+                "prob": 0.9917117357254028
+            },
+            {
+                "label": "SKM",
+                "prob": 0.0019666729494929314
+            },
+            {
+                "label": "SKBM",
+                "prob": 0.001566602266393602
+            }
+        ]
+    },
+    {
+        "input_text": "Permohonan surat keterangan kematian almarhum kakek saya untuk keperluan klaim asuransi dan waris.",
+        "top3": [
+            {
+                "label": "SKM",
+                "prob": 0.9913498163223267
+            },
+            {
+                "label": "Model NA",
+                "prob": 0.0020124276634305716
+            },
+            {
+                "label": "SKP",
+                "prob": 0.0016543860547244549
+            }
+        ]
+    }
+]

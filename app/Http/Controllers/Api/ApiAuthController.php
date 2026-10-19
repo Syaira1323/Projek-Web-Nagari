@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -40,9 +41,12 @@ class ApiAuthController extends Controller
                 $request->session()->regenerate();
             }
 
+            $token = Crypt::encryptString("user_auth|{$user->id}|" . time());
+
             return response()->json([
                 'success' => true,
                 'message' => 'Login berhasil.',
+                'token' => $token,
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
@@ -98,14 +102,17 @@ class ApiAuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
+        $token = Crypt::encryptString("user_auth|{$user->id}|" . time());
+
         return response()->json([
             'success' => true,
             'message' => 'Pendaftaran akun berhasil!',
+            'token' => $token,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'username' => $user->username,
-                'email' => $user->email,
+                'email' => $email,
                 'role' => $user->role,
                 'nik' => $user->nik,
                 'phone' => $user->phone,
@@ -132,9 +139,23 @@ class ApiAuthController extends Controller
     /**
      * GET /api/user
      */
-    public function user(): JsonResponse
+    public function user(Request $request): JsonResponse
     {
         $user = Auth::user();
+
+        if (!$user) {
+            $authHeader = $request->header('Authorization');
+            if ($authHeader && str_starts_with($authHeader, 'Bearer ')) {
+                $token = trim(substr($authHeader, 7));
+                try {
+                    $decrypted = Crypt::decryptString($token);
+                    $parts = explode('|', $decrypted);
+                    if (isset($parts[0], $parts[1]) && $parts[0] === 'user_auth' && is_numeric($parts[1])) {
+                        $user = User::find($parts[1]);
+                    }
+                } catch (\Throwable $e) {}
+            }
+        }
 
         if (!$user) {
             return response()->json([
